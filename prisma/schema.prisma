@@ -1,0 +1,235 @@
+generator client {
+  provider = "prisma-client-ts"
+  output   = "../src/prisma/generated"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model adresse_livraison {
+  id_adresse     Int         @id @default(autoincrement())
+  rue            String
+  numero         String
+  par_defaut     Int?        @default(0)
+  utilisateur_id Int
+  localite_id    Int
+  localite       localite    @relation(fields: [localite_id], references: [id_localite], onUpdate: NoAction)
+  utilisateur    utilisateur @relation(fields: [utilisateur_id], references: [id_utilisateur], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model aromate {
+  id_aromate        Int                 @id @default(autoincrement())
+  partie_utilisee   String?
+  propriete         String?
+  usage_culinaire   String?
+  variete_id        Int
+  variete           variete             @relation(fields: [variete_id], references: [id_variete], onDelete: Cascade, onUpdate: NoAction)
+  aromate_propriete aromate_propriete[]
+}
+
+model aromate_propriete {
+  aromate_id           Int
+  propriete_id         Int
+  propriete_medicinale propriete_medicinale @relation(fields: [propriete_id], references: [id_propriete], onDelete: Cascade, onUpdate: NoAction)
+  aromate              aromate              @relation(fields: [aromate_id], references: [id_aromate], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([aromate_id, propriete_id])
+}
+
+model article_commande {
+  id_article_commande Int      @id @default(autoincrement())
+  quantite            Int
+  prix_unitaire       Float
+  commande_id         Int
+  produit_id          Int
+  produit             produit  @relation(fields: [produit_id], references: [id_produit], onDelete: Cascade, onUpdate: NoAction)
+  commande            commande @relation(fields: [commande_id], references: [id_commande], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([commande_id, produit_id], map: "sqlite_autoindex_article_commande_1")
+}
+
+model avis {
+  id_avis        Int         @id @default(autoincrement())
+  note           Int?        @default(5)
+  titre          String?
+  commentaire    String?
+  date_depot     String?     @default("CURRENT_TIMESTAMP")
+  statut         String?     @default("nouveau")
+  nombre_jaime   Int?        @default(0)
+  utilisateur_id Int
+  produit_id     Int
+  produit        produit     @relation(fields: [produit_id], references: [id_produit], onDelete: Cascade, onUpdate: NoAction)
+  utilisateur    utilisateur @relation(fields: [utilisateur_id], references: [id_utilisateur], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model categorie {
+  id_categorie  Int       @id @default(autoincrement())
+  nom_categorie String    @unique(map: "sqlite_autoindex_categorie_1")
+  descriptif    String?
+  produit       produit[]
+}
+
+model code_promotionnel {
+  id_code_promo   Int      @id @default(autoincrement())
+  code_texte      String   @unique(map: "sqlite_autoindex_code_promotionnel_1")
+  type_remise     String
+  remise          Float
+  date_expiration String?
+  actif           Int?     @default(1)
+  panier          panier[]
+}
+
+model commande {
+  id_commande      Int                @id @default(autoincrement())
+  date_commande    String?            @default("CURRENT_TIMESTAMP")
+  utilisateur_id   Int
+  article_commande article_commande[]
+  utilisateur      utilisateur        @relation(fields: [utilisateur_id], references: [id_utilisateur], onDelete: Cascade, onUpdate: NoAction)
+  demande_retour   demande_retour[]
+  paiement         paiement[]
+}
+
+model demande_retour {
+  id_retour      Int         @id @default(autoincrement())
+  numero_retour  String?     @unique(map: "sqlite_autoindex_demande_retour_1")
+  raison         String?     @default("produit abimé")
+  descriptif     String?
+  date_demande   String?     @default("CURRENT_TIMESTAMP")
+  statut         String?     @default("en attente")
+  utilisateur_id Int
+  commande_id    Int
+  commande       commande    @relation(fields: [commande_id], references: [id_commande], onDelete: Cascade, onUpdate: NoAction)
+  utilisateur    utilisateur @relation(fields: [utilisateur_id], references: [id_utilisateur], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model espece {
+  id_espece        Int       @id @default(autoincrement())
+  nom_scientifique String
+  nom_commun       String
+  type_plante      String
+  variete          variete[]
+
+  @@unique([nom_scientifique, nom_commun], map: "sqlite_autoindex_espece_1")
+}
+
+model localite {
+  id_localite       Int                 @id @default(autoincrement())
+  code_postal       String
+  localite          String
+  adresse_livraison adresse_livraison[]
+
+  @@unique([code_postal, localite], map: "sqlite_autoindex_localite_1")
+}
+
+model paiement {
+  id_paiement            Int      @id @default(autoincrement())
+  date_paiement          String?  @default("CURRENT_TIMESTAMP")
+  montant                Float
+  moyen                  String
+  statut                 String?  @default("en_attente")
+  date_echeance          String?
+  numero_echeance        Int?
+  nombre_echeances_total Int?
+  commande_id            Int
+  commande               commande @relation(fields: [commande_id], references: [id_commande], onUpdate: NoAction)
+}
+
+model panier {
+  id_panier         Int                @id @default(autoincrement())
+  quantite          Int
+  date_ajout        String?            @default("CURRENT_TIMESTAMP")
+  utilisateur_id    Int
+  produit_id        Int
+  code_promo_id     Int?
+  code_promotionnel code_promotionnel? @relation(fields: [code_promo_id], references: [id_code_promo], onUpdate: NoAction)
+  produit           produit            @relation(fields: [produit_id], references: [id_produit], onDelete: Cascade, onUpdate: NoAction)
+  utilisateur       utilisateur        @relation(fields: [utilisateur_id], references: [id_utilisateur], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([utilisateur_id, produit_id], map: "sqlite_autoindex_panier_1")
+}
+
+model produit {
+  id_produit       Int                @id @default(autoincrement())
+  intitule         String
+  prix_unitaire    Float
+  image_produit    String?
+  actif            Int?               @default(1)
+  date_ajout       String?            @default("CURRENT_TIMESTAMP")
+  variete_id       Int
+  categorie_id     Int
+  article_commande article_commande[]
+  avis             avis[]
+  panier           panier[]
+  categorie        categorie          @relation(fields: [categorie_id], references: [id_categorie], onUpdate: NoAction)
+  variete          variete            @relation(fields: [variete_id], references: [id_variete], onUpdate: NoAction)
+}
+
+model propriete_medicinale {
+  id_propriete      Int                 @id @default(autoincrement())
+  nom_propriete     String
+  aromate_propriete aromate_propriete[]
+}
+
+model role {
+  id_role          Int                @id @default(autoincrement())
+  nom_role         String             @unique(map: "sqlite_autoindex_role_1")
+  utilisateur_role utilisateur_role[]
+}
+
+model utilisateur {
+  id_utilisateur    Int                 @id @default(autoincrement())
+  nom               String
+  prenom            String
+  email             String              @unique(map: "sqlite_autoindex_utilisateur_1")
+  mot_de_passe      String
+  mot_de_passe_salt Bytes
+  date_inscription  String?             @default("CURRENT_TIMESTAMP")
+  actif             Int?                @default(1)
+  adresse_livraison adresse_livraison[]
+  avis              avis[]
+  commande          commande[]
+  demande_retour    demande_retour[]
+  panier            panier[]
+  utilisateur_role  utilisateur_role[]
+}
+
+model utilisateur_role {
+  utilisateur_id Int
+  role_id        Int
+  role           role        @relation(fields: [role_id], references: [id_role], onDelete: Cascade, onUpdate: NoAction)
+  utilisateur    utilisateur @relation(fields: [utilisateur_id], references: [id_utilisateur], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([utilisateur_id, role_id])
+}
+
+model variete {
+  id_variete                     Int       @id @default(autoincrement())
+  nom                            String
+  descriptif                     String?
+  bio                            Int?      @default(1)
+  cycle_jours                    Int?
+  couleur_legume                 String?
+  taille_fixe_legume             Float?
+  taille_min_legume              Float?
+  taille_max_legume              Float?
+  espacement_entre_les_plants    Int?
+  espacement_entre_les_lignes    Int?
+  type_ensoleillement            String?
+  type_feuillage                 String?
+  hauteur_adulte_min             Int?
+  hauteur_adulte_max             Int?
+  duree_de_germination           String?
+  temperature_min_de_germination Int?
+  cycle_de_vie                   String?
+  rusticite_plante               String?
+  date_semis_min                 String?
+  date_semis_max                 String?
+  duree_avant_recolte            String?
+  type_de_sol                    String?
+  conseil_plantation             String?
+  espece_id                      Int
+  aromate                        aromate[]
+  produit                        produit[]
+  espece                         espece    @relation(fields: [espece_id], references: [id_espece], onUpdate: NoAction)
+}
