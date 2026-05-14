@@ -48,16 +48,7 @@ const createWindow = () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', async () => {
-  const categories = await prisma.categorie.findMany();
-
-  console.log(
-    'Nombre de catégories trouvées :',
-    categories.length
-  );
-
-  createWindow();
-});
+app.on('ready', createWindow);
 
 // Fermeture propre de Prisma.
 app.on('before-quit', async () => {
@@ -69,12 +60,38 @@ ipcMain.handle(
   'categories:get-all',
   async () => {
     return prisma.categorie.findMany({
-      orderBy: {
-        nom_categorie: 'asc',
+      orderBy: { nom_categorie: 'asc' },
+    });
+  }
+);
+
+// IPC : récupérer tous les produits.
+ipcMain.handle('produits:get-all',
+  async () => {
+    return prisma.produit.findMany({
+      include: {
+        categorie: true,
+        variete: { include: {  espece: true } },
+      },
+      orderBy: { intitule: 'asc' },
+    });
+  }
+);
+
+// IPC : récupérer un produit par son identifiant.
+ipcMain.handle(
+  'produits:get-by-id',
+  async (_event, id: number) => {
+    return prisma.produit.findUnique({
+      where: { id_produit: id },
+      include: {
+        categorie: true,
+        variete: { include: { espece: true } },
       },
     });
   }
 );
+
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

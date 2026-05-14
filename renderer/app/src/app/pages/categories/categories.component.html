@@ -1,0 +1,24 @@
+<h1>Catégories</h1>
+
+@if (isLoading()) {
+  <p>Chargement des catégories...</p>
+}
+@else if (message()) {
+  <p>{{ message() }}</p>
+}
+@else if (categories().length === 0) {
+  <p>Aucune catégorie trouvée.</p>
+}
+@else {
+  <ul>
+    @for (categorie of categories(); track categorie.id_categorie) {
+      <li>
+        <strong>{{ categorie.nom_categorie }}</strong>
+
+        @if (categorie.descriptif) {
+          <span>{{ categorie.descriptif }}</span>
+        }
+      </li>
+    }
+  </ul>
+}

@@ -1,0 +1,20 @@
+nav {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+a {
+  color: #f2a65a;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.active {
+  color: #8fd694;
+  font-weight: bold;
+  text-decoration: underline;
+}

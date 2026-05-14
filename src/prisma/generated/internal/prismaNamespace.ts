@@ -2013,13 +2013,14 @@ export type PanierScalarFieldEnum = (typeof PanierScalarFieldEnum)[keyof typeof 
 
 export const ProduitScalarFieldEnum = {
   id_produit: 'id_produit',
+  variete_id: 'variete_id',
+  categorie_id: 'categorie_id',
   intitule: 'intitule',
   prix_unitaire: 'prix_unitaire',
-  image_produit: 'image_produit',
-  actif: 'actif',
+  quantite: 'quantite',
   date_ajout: 'date_ajout',
-  variete_id: 'variete_id',
-  categorie_id: 'categorie_id'
+  actif: 'actif',
+  image_produit: 'image_produit'
 } as const
 
 export type ProduitScalarFieldEnum = (typeof ProduitScalarFieldEnum)[keyof typeof ProduitScalarFieldEnum]

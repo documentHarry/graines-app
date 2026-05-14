@@ -1,0 +1,12 @@
+:host {
+  display: block;
+  padding: 24px;
+  font-family: Arial, sans-serif;
+  background-color: #3b2416;
+  color: #f8ead8;
+}
+
+main {
+  width: 100%;
+  max-width: 1400px;
+}

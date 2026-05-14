@@ -1,0 +1,36 @@
+.accueil {
+  max-width: 900px;
+}
+
+h1 {
+  margin: 0 0 16px;
+  color: #ffb86b;
+}
+
+p {
+  line-height: 1.5;
+}
+
+.bloc {
+  margin-top: 24px;
+  padding: 16px;
+  border: 1px solid #8a5a36;
+  border-radius: 12px;
+  background-color: #f8ead8;
+  color: #2a1a10;
+}
+
+h2 {
+  margin: 0 0 12px;
+  color: #d9782d;
+  font-size: 18px;
+}
+
+ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+li {
+  margin-bottom: 8px;
+}

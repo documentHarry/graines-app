@@ -151,18 +151,19 @@ model panier {
 
 model produit {
   id_produit       Int                @id @default(autoincrement())
-  intitule         String
-  prix_unitaire    Float
-  image_produit    String?
-  actif            Int?               @default(1)
-  date_ajout       String?            @default("CURRENT_TIMESTAMP")
   variete_id       Int
   categorie_id     Int
+  intitule         String
+  prix_unitaire    Float
+  quantite         Int                @default(0)
+  date_ajout       String?            @default("CURRENT_TIMESTAMP")
+  actif            Int?               @default(1)
+  image_produit    String?
   article_commande article_commande[]
   avis             avis[]
   panier           panier[]
-  categorie        categorie          @relation(fields: [categorie_id], references: [id_categorie], onUpdate: NoAction)
-  variete          variete            @relation(fields: [variete_id], references: [id_variete], onUpdate: NoAction)
+  categorie        categorie          @relation(fields: [categorie_id], references: [id_categorie], onDelete: Cascade, onUpdate: NoAction)
+  variete          variete            @relation(fields: [variete_id], references: [id_variete], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model propriete_medicinale {

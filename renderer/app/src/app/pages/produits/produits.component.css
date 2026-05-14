@@ -1,0 +1,87 @@
+h1 {
+  margin-bottom: 16px;
+  color: #f2a65a;
+}
+
+h2 {
+  margin: 0 0 6px;
+  color: #c96f2d;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.produits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 16px;
+  align-items: stretch;
+}
+
+.produit-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 210px;
+  padding: 12px;
+  border: 1px solid #8a5a36;
+  border-radius: 12px;
+  background-color: #f8ead8;
+  color: #2a1a10;
+}
+
+.prix {
+  margin: 0 0 10px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.infos {
+  margin-bottom: 12px;
+}
+
+
+.nom-scientifique {
+   color: #5f4b3b;
+  font-style: italic;
+}
+
+.produit-footer {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.details-link {
+  justify-self: start;
+  color: #7a3e13;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.details-link:hover {
+  color: #3f7d20;
+  text-decoration: underline;
+}
+
+.prix {
+  justify-self: center;
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.statut {
+  justify-self: end;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background-color: #dff2d8;
+  color: #256029;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.statut.inactif {
+  background-color: #eaded2;
+  color: #7a3e13;
+}
