@@ -1,11 +1,30 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
+
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
+import { PrismaClient } from '../prisma/generated/client.js';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
   app.quit();
 }
+
+const dbPath = path.join(
+  __dirname,
+  '..',
+  '..',
+  'database',
+  'graines.db'
+);
+
+const adapter = new PrismaBetterSqlite3({
+  url: 'file:' + dbPath,
+});
+
+const prisma = new PrismaClient({
+  adapter,
+});
 
 const createWindow = () => {
   // Create the browser window.
@@ -29,7 +48,33 @@ const createWindow = () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', async () => {
+  const categories = await prisma.categorie.findMany();
+
+  console.log(
+    'Nombre de catégories trouvées :',
+    categories.length
+  );
+
+  createWindow();
+});
+
+// Fermeture propre de Prisma.
+app.on('before-quit', async () => {
+  await prisma.$disconnect();
+});
+
+// IPC : récupérer toutes les catégories.
+ipcMain.handle(
+  'categories:get-all',
+  async () => {
+    return prisma.categorie.findMany({
+      orderBy: {
+        nom_categorie: 'asc',
+      },
+    });
+  }
+);
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

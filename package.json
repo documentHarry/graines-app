@@ -28,10 +28,11 @@
     "@electron-forge/plugin-fuses": "^7.11.1",
     "@electron-forge/plugin-vite": "^7.11.1",
     "@electron/fuses": "^1.8.0",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/electron-squirrel-startup": "^1.0.2",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
-    "electron": "42.0.1",
+    "electron": "^38.8.6",
     "eslint": "^8.57.1",
     "eslint-plugin-import": "^2.32.0",
     "prisma": "^7.8.0",
@@ -39,7 +40,9 @@
     "vite": "^5.4.21"
   },
   "dependencies": {
+    "@prisma/adapter-better-sqlite3": "^7.8.0",
     "@prisma/client": "^7.8.0",
+    "better-sqlite3": "^12.10.0",
     "dotenv": "^17.4.2",
     "electron-squirrel-startup": "^1.0.1"
   }
