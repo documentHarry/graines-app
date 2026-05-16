@@ -3,6 +3,21 @@ h1 {
   color: #f2a65a;
 }
 
+.add-link {
+  display: inline-block;
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background-color: #f2a65a;
+  color: #2a1a10;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.add-link:hover {
+  background-color: #ffb86b;
+}
+
 h2 {
   margin: 0 0 6px;
   color: #c96f2d;
@@ -46,7 +61,7 @@ h2 {
 
 .produit-footer {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: 1fr auto auto auto;
   align-items: center;
   gap: 12px;
   margin-top: auto;
@@ -67,8 +82,15 @@ h2 {
 .prix {
   justify-self: center;
   margin: 0;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
+}
+
+.quantite {
+  justify-self: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: #5f4b3b;
 }
 
 .statut {

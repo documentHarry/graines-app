@@ -1,0 +1,76 @@
+<a class="back-link" routerLink="/produits">← Grille de produits</a>
+
+<h1>Modifier un produit</h1>
+
+@if (isLoading()) {
+  <p>Chargement du produit...</p>
+}
+@else if (message() && !produit()) {
+  <p class="message">{{ message() }}</p>
+}
+@else {
+  @if (message()) {
+    <p class="message">{{ message() }}</p>
+  }
+
+  <form [formGroup]="produitForm" (ngSubmit)="enregistrer()">
+    <div class="form-field">
+      <label for="intitule">Intitulé</label>
+      <input id="intitule" type="text" formControlName="intitule">
+
+      @if (produitForm.controls.intitule.invalid && produitForm.controls.intitule.touched) {
+        <p class="error">L'intitulé est obligatoire.</p>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="prix_unitaire">Prix unitaire</label>
+      <input id="prix_unitaire" type="number" step="0.01" formControlName="prix_unitaire">
+
+      @if (produitForm.controls.prix_unitaire.invalid && produitForm.controls.prix_unitaire.touched) {
+        <p class="error">Le prix doit être supérieur à 0.</p>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="quantite">Quantité</label>
+      <input id="quantite" type="number" min="0" formControlName="quantite">
+
+      @if (produitForm.controls.quantite.invalid && produitForm.controls.quantite.touched) {
+        <p class="error">La quantité doit être supérieure ou égale à 0.</p>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="categorie_id">Catégorie</label>
+      <select id="categorie_id" formControlName="categorie_id">
+        <option [value]="0">Sélectionner une catégorie</option>
+
+        @for (categorie of categories(); track categorie.id_categorie) {
+          <option [value]="categorie.id_categorie">{{ categorie.nom_categorie }}</option>
+        }
+      </select>
+
+      @if (produitForm.controls.categorie_id.invalid && produitForm.controls.categorie_id.touched) {
+        <p class="error">La catégorie est obligatoire.</p>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="variete_id">Variété</label>
+      <select id="variete_id" formControlName="variete_id">
+        <option [value]="0">Sélectionner une variété</option>
+
+        @for (variete of varietes(); track variete.id_variete) {
+          <option [value]="variete.id_variete">{{ variete.nom }} - {{ variete.espece.nom_commun }}</option>
+        }
+      </select>
+
+      @if (produitForm.controls.variete_id.invalid && produitForm.controls.variete_id.touched) {
+        <p class="error">La variété est obligatoire.</p>
+      }
+    </div>
+
+    <button type="submit">Enregistrer les modifications</button>
+  </form>
+}

@@ -157,7 +157,6 @@ model produit {
   prix_unitaire    Float
   quantite         Int                @default(0)
   date_ajout       String?            @default("CURRENT_TIMESTAMP")
-  actif            Int?               @default(1)
   image_produit    String?
   article_commande article_commande[]
   avis             avis[]

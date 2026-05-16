@@ -14,12 +14,16 @@
         <p class="variete">{{ produit()?.variete?.nom }}</p>
       </div>
 
-      <span class="statut" [class.inactif]="produit()?.actif !== 1">
-        {{ getStatutProduit() }}
-      </span>
+      <span class="statut" [class.inactif]="produit()?.quantite === 0">{{ getStatutProduit() }}</span>
     </header>
 
     <p class="prix">{{ produit()?.prix_unitaire }} €</p>
+    <p><strong>Quantité: </strong>{{ produit()?.quantite }}</p>
+
+    <div class="actions">
+      <a class="edit-link" [routerLink]="['/produits/modifier', produit()?.id_produit]">Modifier le produit</a>
+      <button type="button" class="delete-button" (click)="supprimerProduit()">Supprimer le produit</button>
+    </div>
 
     <section>
       <h2>Informations générales</h2>
@@ -50,7 +54,7 @@
         <h2>Conseil de plantation</h2>
 
         @for (phrase of getConseilsPlantation(); track phrase) {
-        <p>{{ phrase }}</p>
+          <p>{{ phrase }}</p>
         }
       </section>
     }

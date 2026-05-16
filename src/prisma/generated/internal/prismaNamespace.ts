@@ -2019,7 +2019,6 @@ export const ProduitScalarFieldEnum = {
   prix_unitaire: 'prix_unitaire',
   quantite: 'quantite',
   date_ajout: 'date_ajout',
-  actif: 'actif',
   image_produit: 'image_produit'
 } as const
 

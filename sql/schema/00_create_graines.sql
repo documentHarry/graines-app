@@ -128,7 +128,6 @@ CREATE TABLE IF NOT EXISTS produit (
     prix_unitaire REAL NOT NULL CHECK(prix_unitaire > 0),
     quantite INTEGER NOT NULL DEFAULT 0 CHECK(quantite >= 0),
     image_produit TEXT,
-    actif INTEGER DEFAULT 1 CHECK(actif IN (0,1)),
     date_ajout TEXT DEFAULT CURRENT_TIMESTAMP,
     variete_id INTEGER NOT NULL,
     categorie_id INTEGER NOT NULL,

@@ -37,10 +37,10 @@ export class ProduitsComponent {
   }
 
   getStatutProduit(produit: Produit): string {
-    if (produit.actif === 1) {
-      return 'En Stock';
+    if (produit.quantite > 0) {
+      return 'En stock';
     }
 
-    return 'Non disponible';
+    return 'Rupture de stock';
   }
 }

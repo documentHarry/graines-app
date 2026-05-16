@@ -45,7 +45,7 @@ export interface Produit {
   intitule: string;
   prix_unitaire: number;
   image_produit: string | null;
-  actif: number | null;
+  quantite: number;
   date_ajout: string | null;
   variete_id: number;
   categorie_id: number;
@@ -53,10 +53,31 @@ export interface Produit {
   variete: Variete;
 }
 
+export interface ProduitCreateInput {
+  intitule: string;
+  prix_unitaire: number;
+  quantite: number;
+  categorie_id: number;
+  variete_id: number;
+}
+
+export interface ProduitUpdateInput {
+  id_produit: number;
+  intitule: string;
+  prix_unitaire: number;
+  quantite: number;
+  categorie_id: number;
+  variete_id: number;
+}
+
 export interface ElectronAPI {
   getCategories: () => Promise<Categorie[]>;
+  getVarietes: () => Promise<Variete[]>;
   getProduits: () => Promise<Produit[]>;
   getProduitById: (id: number) => Promise<Produit | null>;
+  createProduit: (produit: ProduitCreateInput) => Promise<Produit>;
+  updateProduit: (produit: ProduitUpdateInput) => Promise<Produit>;
+  deleteProduit: (id: number) => Promise<Produit>;
 }
 
 declare global {

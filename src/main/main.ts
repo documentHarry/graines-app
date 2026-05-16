@@ -10,21 +10,9 @@ if (started) {
   app.quit();
 }
 
-const dbPath = path.join(
-  __dirname,
-  '..',
-  '..',
-  'database',
-  'graines.db'
-);
-
-const adapter = new PrismaBetterSqlite3({
-  url: 'file:' + dbPath,
-});
-
-const prisma = new PrismaClient({
-  adapter,
-});
+const dbPath = path.join( __dirname, '..', '..', 'database', 'graines.db');
+const adapter = new PrismaBetterSqlite3({ url: 'file:' + dbPath });
+const prisma = new PrismaClient({ adapter });
 
 const createWindow = () => {
   // Create the browser window.
@@ -56,42 +44,111 @@ app.on('before-quit', async () => {
 });
 
 // IPC : récupérer toutes les catégories.
-ipcMain.handle(
-  'categories:get-all',
-  async () => {
-    return prisma.categorie.findMany({
-      orderBy: { nom_categorie: 'asc' },
-    });
-  }
-);
+ipcMain.handle('categories:get-all', async () => {
+  return prisma.categorie.findMany({
+    orderBy: { nom_categorie: 'asc' },
+  });
+});
+
+// IPC : récupérer toutes les variétés.
+ipcMain.handle('varietes:get-all', async () => {
+  return prisma.variete.findMany({
+    include: { espece: true },
+    orderBy: { nom: 'asc' },
+  });
+});
 
 // IPC : récupérer tous les produits.
-ipcMain.handle('produits:get-all',
-  async () => {
-    return prisma.produit.findMany({
-      include: {
-        categorie: true,
-        variete: { include: {  espece: true } },
-      },
-      orderBy: { intitule: 'asc' },
-    });
-  }
-);
+ipcMain.handle('produits:get-all', async () => {
+  return prisma.produit.findMany({
+    include: { categorie: true, variete: { include: {  espece: true } } },
+    orderBy: { intitule: 'asc' },
+  });
+});
 
 // IPC : récupérer un produit par son identifiant.
-ipcMain.handle(
-  'produits:get-by-id',
-  async (_event, id: number) => {
+ipcMain.handle('produits:get-by-id', async (_event,
+  id: number) => {
     return prisma.produit.findUnique({
       where: { id_produit: id },
-      include: {
-        categorie: true,
-        variete: { include: { espece: true } },
+      include: { categorie: true, variete: { include: { espece: true } },
       },
     });
   }
 );
 
+// IPC : créer un produit.
+ipcMain.handle('produits:create', async (_event,
+  produit: {
+    intitule: string;
+    prix_unitaire: number;
+    quantite: number;
+    categorie_id: number;
+    variete_id: number;
+  }) => {
+    const doublon = await prisma.produit.findFirst({
+      where: { intitule: produit.intitule, variete_id: produit.variete_id },
+    });
+
+    if (doublon) {
+      throw new Error('DUPLICATE_PRODUCT');
+    }
+
+    return prisma.produit.create({
+      data: {
+        intitule: produit.intitule,
+        prix_unitaire: produit.prix_unitaire,
+        categorie_id: produit.categorie_id,
+        variete_id: produit.variete_id,
+      },
+      include: { categorie: true, variete: { include: { espece: true } } },
+    });
+  }
+);
+
+// IPC : modifier un produit.
+ipcMain.handle('produits:update', async (_event,
+  produit: {
+    id_produit: number;
+    intitule: string;
+    prix_unitaire: number;
+    quantite: number;
+    categorie_id: number;
+    variete_id: number;
+  }) => {
+    const doublon = await prisma.produit.findFirst({
+      where: { intitule: produit.intitule, variete_id: produit.variete_id,
+        NOT: { id_produit: produit.id_produit },
+      },
+    });
+
+    if (doublon) {
+      throw new Error('DUPLICATE_PRODUCT');
+    }
+
+    return prisma.produit.update({
+      where: { id_produit: produit.id_produit },
+      data: {
+        intitule: produit.intitule,
+        prix_unitaire: produit.prix_unitaire,
+        quantite: produit.quantite,
+        categorie_id: produit.categorie_id,
+        variete_id: produit.variete_id,
+      },
+      include: { categorie: true, variete: { include: { espece: true } } },
+    });
+  }
+);
+
+// IPC : supprimer un produit.
+ipcMain.handle('produits:delete', async (_event,
+  id: number) => {
+    return prisma.produit.delete({
+      where: { id_produit: id, },
+      include: { categorie: true, variete: { include: { espece: true } } },
+    });
+  }
+);
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -108,6 +165,7 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
+
 });
 
 // In this file you can include the rest of your app's specific main process

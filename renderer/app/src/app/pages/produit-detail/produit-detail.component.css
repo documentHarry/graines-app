@@ -47,6 +47,50 @@ h1 {
   font-weight: bold;
 }
 
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.delete-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #9b1c1c;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  text-decoration: underline;
+}
+
+.edit-link {
+  display: inline-block;
+  color: #7a3e13;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.edit-link:hover {
+  color: #3f7d20;
+  text-decoration: underline;
+}
+
+.disable-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #9b1c1c;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.disable-button:hover {
+  text-decoration: underline;
+}
+
 section {
   margin-top: 24px;
 }

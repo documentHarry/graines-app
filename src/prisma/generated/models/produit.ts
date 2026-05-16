@@ -32,7 +32,6 @@ export type ProduitAvgAggregateOutputType = {
   categorie_id: number | null
   prix_unitaire: number | null
   quantite: number | null
-  actif: number | null
 }
 
 export type ProduitSumAggregateOutputType = {
@@ -41,7 +40,6 @@ export type ProduitSumAggregateOutputType = {
   categorie_id: number | null
   prix_unitaire: number | null
   quantite: number | null
-  actif: number | null
 }
 
 export type ProduitMinAggregateOutputType = {
@@ -52,7 +50,6 @@ export type ProduitMinAggregateOutputType = {
   prix_unitaire: number | null
   quantite: number | null
   date_ajout: string | null
-  actif: number | null
   image_produit: string | null
 }
 
@@ -64,7 +61,6 @@ export type ProduitMaxAggregateOutputType = {
   prix_unitaire: number | null
   quantite: number | null
   date_ajout: string | null
-  actif: number | null
   image_produit: string | null
 }
 
@@ -76,7 +72,6 @@ export type ProduitCountAggregateOutputType = {
   prix_unitaire: number
   quantite: number
   date_ajout: number
-  actif: number
   image_produit: number
   _all: number
 }
@@ -88,7 +83,6 @@ export type ProduitAvgAggregateInputType = {
   categorie_id?: true
   prix_unitaire?: true
   quantite?: true
-  actif?: true
 }
 
 export type ProduitSumAggregateInputType = {
@@ -97,7 +91,6 @@ export type ProduitSumAggregateInputType = {
   categorie_id?: true
   prix_unitaire?: true
   quantite?: true
-  actif?: true
 }
 
 export type ProduitMinAggregateInputType = {
@@ -108,7 +101,6 @@ export type ProduitMinAggregateInputType = {
   prix_unitaire?: true
   quantite?: true
   date_ajout?: true
-  actif?: true
   image_produit?: true
 }
 
@@ -120,7 +112,6 @@ export type ProduitMaxAggregateInputType = {
   prix_unitaire?: true
   quantite?: true
   date_ajout?: true
-  actif?: true
   image_produit?: true
 }
 
@@ -132,7 +123,6 @@ export type ProduitCountAggregateInputType = {
   prix_unitaire?: true
   quantite?: true
   date_ajout?: true
-  actif?: true
   image_produit?: true
   _all?: true
 }
@@ -231,7 +221,6 @@ export type ProduitGroupByOutputType = {
   prix_unitaire: number
   quantite: number
   date_ajout: string | null
-  actif: number | null
   image_produit: string | null
   _count: ProduitCountAggregateOutputType | null
   _avg: ProduitAvgAggregateOutputType | null
@@ -266,7 +255,6 @@ export type produitWhereInput = {
   prix_unitaire?: Prisma.FloatFilter<"produit"> | number
   quantite?: Prisma.IntFilter<"produit"> | number
   date_ajout?: Prisma.StringNullableFilter<"produit"> | string | null
-  actif?: Prisma.IntNullableFilter<"produit"> | number | null
   image_produit?: Prisma.StringNullableFilter<"produit"> | string | null
   article_commande?: Prisma.Article_commandeListRelationFilter
   avis?: Prisma.AvisListRelationFilter
@@ -283,7 +271,6 @@ export type produitOrderByWithRelationInput = {
   prix_unitaire?: Prisma.SortOrder
   quantite?: Prisma.SortOrder
   date_ajout?: Prisma.SortOrderInput | Prisma.SortOrder
-  actif?: Prisma.SortOrderInput | Prisma.SortOrder
   image_produit?: Prisma.SortOrderInput | Prisma.SortOrder
   article_commande?: Prisma.article_commandeOrderByRelationAggregateInput
   avis?: Prisma.avisOrderByRelationAggregateInput
@@ -303,7 +290,6 @@ export type produitWhereUniqueInput = Prisma.AtLeast<{
   prix_unitaire?: Prisma.FloatFilter<"produit"> | number
   quantite?: Prisma.IntFilter<"produit"> | number
   date_ajout?: Prisma.StringNullableFilter<"produit"> | string | null
-  actif?: Prisma.IntNullableFilter<"produit"> | number | null
   image_produit?: Prisma.StringNullableFilter<"produit"> | string | null
   article_commande?: Prisma.Article_commandeListRelationFilter
   avis?: Prisma.AvisListRelationFilter
@@ -320,7 +306,6 @@ export type produitOrderByWithAggregationInput = {
   prix_unitaire?: Prisma.SortOrder
   quantite?: Prisma.SortOrder
   date_ajout?: Prisma.SortOrderInput | Prisma.SortOrder
-  actif?: Prisma.SortOrderInput | Prisma.SortOrder
   image_produit?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.produitCountOrderByAggregateInput
   _avg?: Prisma.produitAvgOrderByAggregateInput
@@ -340,7 +325,6 @@ export type produitScalarWhereWithAggregatesInput = {
   prix_unitaire?: Prisma.FloatWithAggregatesFilter<"produit"> | number
   quantite?: Prisma.IntWithAggregatesFilter<"produit"> | number
   date_ajout?: Prisma.StringNullableWithAggregatesFilter<"produit"> | string | null
-  actif?: Prisma.IntNullableWithAggregatesFilter<"produit"> | number | null
   image_produit?: Prisma.StringNullableWithAggregatesFilter<"produit"> | string | null
 }
 
@@ -349,7 +333,6 @@ export type produitCreateInput = {
   prix_unitaire: number
   quantite?: number
   date_ajout?: string | null
-  actif?: number | null
   image_produit?: string | null
   article_commande?: Prisma.article_commandeCreateNestedManyWithoutProduitInput
   avis?: Prisma.avisCreateNestedManyWithoutProduitInput
@@ -366,7 +349,6 @@ export type produitUncheckedCreateInput = {
   prix_unitaire: number
   quantite?: number
   date_ajout?: string | null
-  actif?: number | null
   image_produit?: string | null
   article_commande?: Prisma.article_commandeUncheckedCreateNestedManyWithoutProduitInput
   avis?: Prisma.avisUncheckedCreateNestedManyWithoutProduitInput
@@ -378,7 +360,6 @@ export type produitUpdateInput = {
   prix_unitaire?: Prisma.FloatFieldUpdateOperationsInput | number
   quantite?: Prisma.IntFieldUpdateOperationsInput | number
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   article_commande?: Prisma.article_commandeUpdateManyWithoutProduitNestedInput
   avis?: Prisma.avisUpdateManyWithoutProduitNestedInput
@@ -395,7 +376,6 @@ export type produitUncheckedUpdateInput = {
   prix_unitaire?: Prisma.FloatFieldUpdateOperationsInput | number
   quantite?: Prisma.IntFieldUpdateOperationsInput | number
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   article_commande?: Prisma.article_commandeUncheckedUpdateManyWithoutProduitNestedInput
   avis?: Prisma.avisUncheckedUpdateManyWithoutProduitNestedInput
@@ -410,7 +390,6 @@ export type produitCreateManyInput = {
   prix_unitaire: number
   quantite?: number
   date_ajout?: string | null
-  actif?: number | null
   image_produit?: string | null
 }
 
@@ -419,7 +398,6 @@ export type produitUpdateManyMutationInput = {
   prix_unitaire?: Prisma.FloatFieldUpdateOperationsInput | number
   quantite?: Prisma.IntFieldUpdateOperationsInput | number
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -431,7 +409,6 @@ export type produitUncheckedUpdateManyInput = {
   prix_unitaire?: Prisma.FloatFieldUpdateOperationsInput | number
   quantite?: Prisma.IntFieldUpdateOperationsInput | number
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -458,7 +435,6 @@ export type produitCountOrderByAggregateInput = {
   prix_unitaire?: Prisma.SortOrder
   quantite?: Prisma.SortOrder
   date_ajout?: Prisma.SortOrder
-  actif?: Prisma.SortOrder
   image_produit?: Prisma.SortOrder
 }
 
@@ -468,7 +444,6 @@ export type produitAvgOrderByAggregateInput = {
   categorie_id?: Prisma.SortOrder
   prix_unitaire?: Prisma.SortOrder
   quantite?: Prisma.SortOrder
-  actif?: Prisma.SortOrder
 }
 
 export type produitMaxOrderByAggregateInput = {
@@ -479,7 +454,6 @@ export type produitMaxOrderByAggregateInput = {
   prix_unitaire?: Prisma.SortOrder
   quantite?: Prisma.SortOrder
   date_ajout?: Prisma.SortOrder
-  actif?: Prisma.SortOrder
   image_produit?: Prisma.SortOrder
 }
 
@@ -491,7 +465,6 @@ export type produitMinOrderByAggregateInput = {
   prix_unitaire?: Prisma.SortOrder
   quantite?: Prisma.SortOrder
   date_ajout?: Prisma.SortOrder
-  actif?: Prisma.SortOrder
   image_produit?: Prisma.SortOrder
 }
 
@@ -501,7 +474,6 @@ export type produitSumOrderByAggregateInput = {
   categorie_id?: Prisma.SortOrder
   prix_unitaire?: Prisma.SortOrder
   quantite?: Prisma.SortOrder
-  actif?: Prisma.SortOrder
 }
 
 export type produitCreateNestedOneWithoutArticle_commandeInput = {
@@ -635,7 +607,6 @@ export type produitCreateWithoutArticle_commandeInput = {
   prix_unitaire: number
   quantite?: number
   date_ajout?: string | null
-  actif?: number | null
   image_produit?: string | null
   avis?: Prisma.avisCreateNestedManyWithoutProduitInput
   panier?: Prisma.panierCreateNestedManyWithoutProduitInput
@@ -651,7 +622,6 @@ export type produitUncheckedCreateWithoutArticle_commandeInput = {
   prix_unitaire: number
   quantite?: number
   date_ajout?: string | null
-  actif?: number | null
   image_produit?: string | null
   avis?: Prisma.avisUncheckedCreateNestedManyWithoutProduitInput
   panier?: Prisma.panierUncheckedCreateNestedManyWithoutProduitInput
@@ -678,7 +648,6 @@ export type produitUpdateWithoutArticle_commandeInput = {
   prix_unitaire?: Prisma.FloatFieldUpdateOperationsInput | number
   quantite?: Prisma.IntFieldUpdateOperationsInput | number
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avis?: Prisma.avisUpdateManyWithoutProduitNestedInput
   panier?: Prisma.panierUpdateManyWithoutProduitNestedInput
@@ -694,7 +663,6 @@ export type produitUncheckedUpdateWithoutArticle_commandeInput = {
   prix_unitaire?: Prisma.FloatFieldUpdateOperationsInput | number
   quantite?: Prisma.IntFieldUpdateOperationsInput | number
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avis?: Prisma.avisUncheckedUpdateManyWithoutProduitNestedInput
   panier?: Prisma.panierUncheckedUpdateManyWithoutProduitNestedInput
@@ -705,7 +673,6 @@ export type produitCreateWithoutAvisInput = {
   prix_unitaire: number
   quantite?: number
   date_ajout?: string | null
-  actif?: number | null
   image_produit?: string | null
   article_commande?: Prisma.article_commandeCreateNestedManyWithoutProduitInput
   panier?: Prisma.panierCreateNestedManyWithoutProduitInput
@@ -721,7 +688,6 @@ export type produitUncheckedCreateWithoutAvisInput = {
   prix_unitaire: number
   quantite?: number
   date_ajout?: string | null
-  actif?: number | null
   image_produit?: string | null
   article_commande?: Prisma.article_commandeUncheckedCreateNestedManyWithoutProduitInput
   panier?: Prisma.panierUncheckedCreateNestedManyWithoutProduitInput
@@ -748,7 +714,6 @@ export type produitUpdateWithoutAvisInput = {
   prix_unitaire?: Prisma.FloatFieldUpdateOperationsInput | number
   quantite?: Prisma.IntFieldUpdateOperationsInput | number
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   article_commande?: Prisma.article_commandeUpdateManyWithoutProduitNestedInput
   panier?: Prisma.panierUpdateManyWithoutProduitNestedInput
@@ -764,7 +729,6 @@ export type produitUncheckedUpdateWithoutAvisInput = {
   prix_unitaire?: Prisma.FloatFieldUpdateOperationsInput | number
   quantite?: Prisma.IntFieldUpdateOperationsInput | number
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   article_commande?: Prisma.article_commandeUncheckedUpdateManyWithoutProduitNestedInput
   panier?: Prisma.panierUncheckedUpdateManyWithoutProduitNestedInput
@@ -775,7 +739,6 @@ export type produitCreateWithoutCategorieInput = {
   prix_unitaire: number
   quantite?: number
   date_ajout?: string | null
-  actif?: number | null
   image_produit?: string | null
   article_commande?: Prisma.article_commandeCreateNestedManyWithoutProduitInput
   avis?: Prisma.avisCreateNestedManyWithoutProduitInput
@@ -790,7 +753,6 @@ export type produitUncheckedCreateWithoutCategorieInput = {
   prix_unitaire: number
   quantite?: number
   date_ajout?: string | null
-  actif?: number | null
   image_produit?: string | null
   article_commande?: Prisma.article_commandeUncheckedCreateNestedManyWithoutProduitInput
   avis?: Prisma.avisUncheckedCreateNestedManyWithoutProduitInput
@@ -833,7 +795,6 @@ export type produitScalarWhereInput = {
   prix_unitaire?: Prisma.FloatFilter<"produit"> | number
   quantite?: Prisma.IntFilter<"produit"> | number
   date_ajout?: Prisma.StringNullableFilter<"produit"> | string | null
-  actif?: Prisma.IntNullableFilter<"produit"> | number | null
   image_produit?: Prisma.StringNullableFilter<"produit"> | string | null
 }
 
@@ -842,7 +803,6 @@ export type produitCreateWithoutPanierInput = {
   prix_unitaire: number
   quantite?: number
   date_ajout?: string | null
-  actif?: number | null
   image_produit?: string | null
   article_commande?: Prisma.article_commandeCreateNestedManyWithoutProduitInput
   avis?: Prisma.avisCreateNestedManyWithoutProduitInput
@@ -858,7 +818,6 @@ export type produitUncheckedCreateWithoutPanierInput = {
   prix_unitaire: number
   quantite?: number
   date_ajout?: string | null
-  actif?: number | null
   image_produit?: string | null
   article_commande?: Prisma.article_commandeUncheckedCreateNestedManyWithoutProduitInput
   avis?: Prisma.avisUncheckedCreateNestedManyWithoutProduitInput
@@ -885,7 +844,6 @@ export type produitUpdateWithoutPanierInput = {
   prix_unitaire?: Prisma.FloatFieldUpdateOperationsInput | number
   quantite?: Prisma.IntFieldUpdateOperationsInput | number
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   article_commande?: Prisma.article_commandeUpdateManyWithoutProduitNestedInput
   avis?: Prisma.avisUpdateManyWithoutProduitNestedInput
@@ -901,7 +859,6 @@ export type produitUncheckedUpdateWithoutPanierInput = {
   prix_unitaire?: Prisma.FloatFieldUpdateOperationsInput | number
   quantite?: Prisma.IntFieldUpdateOperationsInput | number
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   article_commande?: Prisma.article_commandeUncheckedUpdateManyWithoutProduitNestedInput
   avis?: Prisma.avisUncheckedUpdateManyWithoutProduitNestedInput
@@ -912,7 +869,6 @@ export type produitCreateWithoutVarieteInput = {
   prix_unitaire: number
   quantite?: number
   date_ajout?: string | null
-  actif?: number | null
   image_produit?: string | null
   article_commande?: Prisma.article_commandeCreateNestedManyWithoutProduitInput
   avis?: Prisma.avisCreateNestedManyWithoutProduitInput
@@ -927,7 +883,6 @@ export type produitUncheckedCreateWithoutVarieteInput = {
   prix_unitaire: number
   quantite?: number
   date_ajout?: string | null
-  actif?: number | null
   image_produit?: string | null
   article_commande?: Prisma.article_commandeUncheckedCreateNestedManyWithoutProduitInput
   avis?: Prisma.avisUncheckedCreateNestedManyWithoutProduitInput
@@ -966,7 +921,6 @@ export type produitCreateManyCategorieInput = {
   prix_unitaire: number
   quantite?: number
   date_ajout?: string | null
-  actif?: number | null
   image_produit?: string | null
 }
 
@@ -975,7 +929,6 @@ export type produitUpdateWithoutCategorieInput = {
   prix_unitaire?: Prisma.FloatFieldUpdateOperationsInput | number
   quantite?: Prisma.IntFieldUpdateOperationsInput | number
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   article_commande?: Prisma.article_commandeUpdateManyWithoutProduitNestedInput
   avis?: Prisma.avisUpdateManyWithoutProduitNestedInput
@@ -990,7 +943,6 @@ export type produitUncheckedUpdateWithoutCategorieInput = {
   prix_unitaire?: Prisma.FloatFieldUpdateOperationsInput | number
   quantite?: Prisma.IntFieldUpdateOperationsInput | number
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   article_commande?: Prisma.article_commandeUncheckedUpdateManyWithoutProduitNestedInput
   avis?: Prisma.avisUncheckedUpdateManyWithoutProduitNestedInput
@@ -1004,7 +956,6 @@ export type produitUncheckedUpdateManyWithoutCategorieInput = {
   prix_unitaire?: Prisma.FloatFieldUpdateOperationsInput | number
   quantite?: Prisma.IntFieldUpdateOperationsInput | number
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -1015,7 +966,6 @@ export type produitCreateManyVarieteInput = {
   prix_unitaire: number
   quantite?: number
   date_ajout?: string | null
-  actif?: number | null
   image_produit?: string | null
 }
 
@@ -1024,7 +974,6 @@ export type produitUpdateWithoutVarieteInput = {
   prix_unitaire?: Prisma.FloatFieldUpdateOperationsInput | number
   quantite?: Prisma.IntFieldUpdateOperationsInput | number
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   article_commande?: Prisma.article_commandeUpdateManyWithoutProduitNestedInput
   avis?: Prisma.avisUpdateManyWithoutProduitNestedInput
@@ -1039,7 +988,6 @@ export type produitUncheckedUpdateWithoutVarieteInput = {
   prix_unitaire?: Prisma.FloatFieldUpdateOperationsInput | number
   quantite?: Prisma.IntFieldUpdateOperationsInput | number
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   article_commande?: Prisma.article_commandeUncheckedUpdateManyWithoutProduitNestedInput
   avis?: Prisma.avisUncheckedUpdateManyWithoutProduitNestedInput
@@ -1053,7 +1001,6 @@ export type produitUncheckedUpdateManyWithoutVarieteInput = {
   prix_unitaire?: Prisma.FloatFieldUpdateOperationsInput | number
   quantite?: Prisma.IntFieldUpdateOperationsInput | number
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -1114,7 +1061,6 @@ export type produitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   prix_unitaire?: boolean
   quantite?: boolean
   date_ajout?: boolean
-  actif?: boolean
   image_produit?: boolean
   article_commande?: boolean | Prisma.produit$article_commandeArgs<ExtArgs>
   avis?: boolean | Prisma.produit$avisArgs<ExtArgs>
@@ -1132,7 +1078,6 @@ export type produitSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   prix_unitaire?: boolean
   quantite?: boolean
   date_ajout?: boolean
-  actif?: boolean
   image_produit?: boolean
   categorie?: boolean | Prisma.categorieDefaultArgs<ExtArgs>
   variete?: boolean | Prisma.varieteDefaultArgs<ExtArgs>
@@ -1146,7 +1091,6 @@ export type produitSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   prix_unitaire?: boolean
   quantite?: boolean
   date_ajout?: boolean
-  actif?: boolean
   image_produit?: boolean
   categorie?: boolean | Prisma.categorieDefaultArgs<ExtArgs>
   variete?: boolean | Prisma.varieteDefaultArgs<ExtArgs>
@@ -1160,11 +1104,10 @@ export type produitSelectScalar = {
   prix_unitaire?: boolean
   quantite?: boolean
   date_ajout?: boolean
-  actif?: boolean
   image_produit?: boolean
 }
 
-export type produitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id_produit" | "variete_id" | "categorie_id" | "intitule" | "prix_unitaire" | "quantite" | "date_ajout" | "actif" | "image_produit", ExtArgs["result"]["produit"]>
+export type produitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id_produit" | "variete_id" | "categorie_id" | "intitule" | "prix_unitaire" | "quantite" | "date_ajout" | "image_produit", ExtArgs["result"]["produit"]>
 export type produitInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   article_commande?: boolean | Prisma.produit$article_commandeArgs<ExtArgs>
   avis?: boolean | Prisma.produit$avisArgs<ExtArgs>
@@ -1199,7 +1142,6 @@ export type $produitPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     prix_unitaire: number
     quantite: number
     date_ajout: string | null
-    actif: number | null
     image_produit: string | null
   }, ExtArgs["result"]["produit"]>
   composites: {}
@@ -1636,7 +1578,6 @@ export interface produitFieldRefs {
   readonly prix_unitaire: Prisma.FieldRef<"produit", 'Float'>
   readonly quantite: Prisma.FieldRef<"produit", 'Int'>
   readonly date_ajout: Prisma.FieldRef<"produit", 'String'>
-  readonly actif: Prisma.FieldRef<"produit", 'Int'>
   readonly image_produit: Prisma.FieldRef<"produit", 'String'>
 }
     

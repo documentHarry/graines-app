@@ -9,8 +9,6 @@ export class CategorieService {
   private readonly electronService = inject(ElectronService);
 
   getCategories(): Promise<Categorie[]> {
-    return this.electronService
-      .getApi()
-      .getCategories();
+    return this.electronService.getApi().getCategories();
   }
 }

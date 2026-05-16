@@ -1,5 +1,5 @@
 import { Component, inject, input, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Produit } from '../../types/electron';
 import { ProduitService } from '../../services/produit.service';
 
@@ -10,8 +10,9 @@ import { ProduitService } from '../../services/produit.service';
   styleUrl: './produit-detail.component.css',
 })
 export class ProduitDetailComponent {
-  private readonly produitService = inject(ProduitService);
 
+  private readonly produitService = inject(ProduitService);
+  private readonly router = inject(Router);
   id = input<string>();
 
   produit = signal<Produit | null>(null);
@@ -49,11 +50,11 @@ export class ProduitDetailComponent {
   }
 
   getStatutProduit(): string {
-    if (this.produit()?.actif === 1) {
-      return 'Actif';
+    if (this.produit()?.quantite && this.produit()!.quantite > 0) {
+      return 'En stock';
     }
 
-    return 'Inactif';
+    return 'Rupture de stock';
   }
 
   getConseilsPlantation(): string[] {
@@ -67,4 +68,28 @@ export class ProduitDetailComponent {
       .filter(phrase => phrase.length > 0)
       .map(phrase => phrase + '.');
   }
+
+  async supprimerProduit(): Promise<void> {
+    const produit = this.produit();
+
+    if (!produit) {
+      return;
+    }
+
+    const confirmation = confirm('Voulez-vous vraiment supprimer ce produit ?');
+
+    if (!confirmation) {
+      return;
+    }
+
+    try {
+      await this.produitService.deleteProduit(produit.id_produit);
+      await this.router.navigate(['/produits']);
+    }
+    catch (error) {
+      console.error(error);
+      this.message.set('Une erreur est survenue pendant la suppression du produit.');
+    }
+  }
+
 }

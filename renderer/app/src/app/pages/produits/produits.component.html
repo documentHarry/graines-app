@@ -1,4 +1,5 @@
 <h1>Graines, plantes maraîchères et aromatiques</h1>
+<a class="add-link" routerLink="/produits/ajouter">Ajouter un produit</a>
 
 @if (isLoading()) {
   <p>Chargement des produits...</p>
@@ -24,10 +25,9 @@
 
         <div class="produit-footer">
           <a class="details-link" [routerLink]="['/produits', produit.id_produit]">Voir le détail</a>
-          <p class="prix">{{ produit.prix_unitaire }} €</p>
-          <span class="statut" [class.inactif]="produit.actif !== 1">
-            {{ getStatutProduit(produit) }}
-          </span>
+          <span class="prix">{{ produit.prix_unitaire }} €</span>
+          <span class="quantite">Quantité: {{ produit.quantite }}</span>
+          <span class="statut" [class.inactif]="produit.quantite === 0">{{ getStatutProduit(produit) }}</span>
         </div>
       </article>
     }
