@@ -135,6 +135,18 @@ CREATE TABLE IF NOT EXISTS produit (
     FOREIGN KEY (categorie_id) REFERENCES categorie(id_categorie) ON DELETE RESTRICT
 );
 
+CREATE TABLE IF NOT EXISTS code_promotionnel (
+    id_code_promo INTEGER PRIMARY KEY AUTOINCREMENT,
+    code_texte TEXT UNIQUE NOT NULL,
+    type_remise TEXT NOT NULL CHECK(type_remise IN ('pourcentage', 'montant fixe')),
+    remise REAL NOT NULL CHECK(
+        (type_remise = 'pourcentage' AND remise > 0 AND remise <= 100) OR
+        (type_remise = 'montant fixe' AND remise > 0 AND remise <= 2000)
+    ),
+    date_expiration TEXT,
+    actif INTEGER DEFAULT 1 CHECK(actif IN (0,1))
+);
+
 CREATE TABLE IF NOT EXISTS panier (
     id_panier INTEGER PRIMARY KEY AUTOINCREMENT,
     quantite INTEGER NOT NULL CHECK(quantite > 0),
@@ -206,14 +218,4 @@ CREATE TABLE IF NOT EXISTS demande_retour (
     FOREIGN KEY (commande_id) REFERENCES commande(id_commande) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS code_promotionnel (
-    id_code_promo INTEGER PRIMARY KEY AUTOINCREMENT,
-    code_texte TEXT UNIQUE NOT NULL,
-    type_remise TEXT NOT NULL CHECK(type_remise IN ('pourcentage', 'montant fixe')),
-    remise REAL NOT NULL CHECK(
-        (type_remise = 'pourcentage' AND remise > 0 AND remise <= 100) OR
-        (type_remise = 'montant fixe' AND remise > 0 AND remise <= 2000)
-    ),
-    date_expiration TEXT,
-    actif INTEGER DEFAULT 1 CHECK(actif IN (0,1))
-);
+

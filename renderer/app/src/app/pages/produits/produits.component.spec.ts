@@ -3,63 +3,67 @@ import { provideRouter } from '@angular/router';
 
 import { ProduitsComponent } from './produits.component';
 import { ProduitService } from '../../services/produit.service';
-import { Produit } from '../../types/electron';
+import { CategorieService } from '../../services/categorie.service';
+import { Produit, Categorie } from '../../types/electron';
 
 describe('ProduitsComponent', () => {
   let component: ProduitsComponent;
   let fixture: ComponentFixture<ProduitsComponent>;
 
-  const produitTest: Produit = {
-    id_produit: 1,
-    intitule: 'Tomate test',
-    prix_unitaire: 3.5,
-    quantite: 10,
-    image_produit: null,
-    date_ajout: null,
-    categorie_id: 1,
-    variete_id: 1,
-    categorie: {
-      id_categorie: 1,
-      nom_categorie: 'Tomate',
-      descriptif: null,
-    },
-    variete: {
-      id_variete: 1,
-      nom: 'Marmande',
-      descriptif: null,
-      bio: 1,
-      cycle_jours: null,
-      couleur_legume: null,
-      taille_fixe_legume: null,
-      taille_min_legume: null,
-      taille_max_legume: null,
-      espacement_entre_les_plants: null,
-      espacement_entre_les_lignes: null,
-      type_ensoleillement: null,
-      type_feuillage: null,
-      hauteur_adulte_min: null,
-      hauteur_adulte_max: null,
-      duree_de_germination: null,
-      temperature_min_de_germination: null,
-      cycle_de_vie: null,
-      rusticite_plante: null,
-      date_semis_min: null,
-      date_semis_max: null,
-      duree_avant_recolte: null,
-      type_de_sol: null,
-      conseil_plantation: null,
-      espece_id: 1,
-      espece: {
-        id_espece: 1,
-        nom_scientifique: 'Solanum lycopersicum',
-        nom_commun: 'Tomate',
-        type_plante: 'Légume fruit',
+  const categorieMock: Categorie = {
+    id_categorie: 1,
+    nom_categorie: 'Légumes',
+    descriptif: 'Catégorie légumes',
+  } as Categorie;
+
+  const produitsMock: Produit[] = [
+    {
+      id_produit: 1,
+      intitule: 'Tomate Marmande',
+      prix_unitaire: 2.5,
+      quantite: 10,
+      categorie: {
+        id_categorie: 1,
+        nom_categorie: 'Légumes',
       },
-    },
-  };
+      variete: {
+        id_variete: 1,
+        nom: 'Marmande',
+        espece: {
+          id_espece: 1,
+          nom_commun: 'Tomate',
+          nom_scientifique: 'Solanum lycopersicum',
+        },
+      },
+    } as Produit,
+    {
+      id_produit: 2,
+      intitule: 'Basilic',
+      prix_unitaire: 1.8,
+      quantite: 0,
+      categorie: {
+        id_categorie: 2,
+        nom_categorie: 'Aromatiques',
+      },
+      variete: {
+        id_variete: 2,
+        nom: 'Grand Vert',
+        espece: {
+          id_espece: 2,
+          nom_commun: 'Basilic',
+          nom_scientifique: 'Ocimum basilicum',
+        },
+      },
+    } as Produit,
+  ];
 
   const produitServiceMock = {
-    getProduits: () => Promise.resolve([produitTest]),
+    getProduits: () => Promise.resolve(produitsMock),
+    getProduitsByCategorie: () => Promise.resolve(produitsMock),
+  };
+
+  const categorieServiceMock = {
+    getCategorieById: () => Promise.resolve(categorieMock),
   };
 
   beforeEach(async () => {
@@ -71,41 +75,63 @@ describe('ProduitsComponent', () => {
           provide: ProduitService,
           useValue: produitServiceMock,
         },
+        {
+          provide: CategorieService,
+          useValue: categorieServiceMock,
+        },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProduitsComponent);
     component = fixture.componentInstance;
+
+    fixture.detectChanges();
     await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('devrait afficher En stock quand la quantité est supérieure à 0', () => {
-    const statut = component.getStatutProduit(produitTest);
+  it('devrait charger les produits', () => {
+    expect(component.produits()).toEqual(produitsMock);
+    expect(component.isLoading()).toBe(false);
+    expect(component.message()).toBe('');
+  });
 
+  it('devrait afficher les produits dans la page', () => {
+    const element: HTMLElement = fixture.nativeElement;
+    expect(element.textContent).toContain('Tomate Marmande');
+    expect(element.textContent).toContain('Basilic');
+  });
+
+  it('devrait afficher les informations des produits', () => {
+    const element: HTMLElement = fixture.nativeElement;
+    expect(element.textContent).toContain('Légumes');
+    expect(element.textContent).toContain('Marmande');
+    expect(element.textContent).toContain('Tomate');
+    expect(element.textContent).toContain('Solanum lycopersicum');
+  });
+
+  it('devrait afficher le prix et la quantité', () => {
+    const element: HTMLElement = fixture.nativeElement;
+    expect(element.textContent).toContain('2.5 €');
+    expect(element.textContent).toContain('Quantité: 10');
+  });
+
+  it('devrait afficher En stock si la quantité est supérieure à 0', () => {
+    const statut = component.getStatutProduit(produitsMock[0]);
     expect(statut).toBe('En stock');
   });
 
-  it('devrait afficher Rupture de stock quand la quantité est égale à 0', () => {
-    const produitSansStock: Produit = {
-      ...produitTest,
-      quantite: 0,
-    };
-
-    const statut = component.getStatutProduit(produitSansStock);
-
+  it('devrait afficher Rupture de stock si la quantité est égale à 0', () => {
+    const statut = component.getStatutProduit(produitsMock[1]);
     expect(statut).toBe('Rupture de stock');
   });
 
-  it('devrait charger les produits depuis le service', async () => {
-    await component.chargerProduits();
-
-    expect(component.produits().length).toBe(1);
-    expect(component.produits()[0].intitule).toBe('Tomate test');
-    expect(component.isLoading()).toBe(false);
-    expect(component.message()).toBe('');
+  it('devrait afficher le lien Ajouter un produit', () => {
+    const element: HTMLElement = fixture.nativeElement;
+    expect(element.textContent).toContain('Ajouter un produit');
   });
 });

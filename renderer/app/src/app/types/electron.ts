@@ -2,6 +2,20 @@ export interface Categorie {
   id_categorie: number;
   nom_categorie: string;
   descriptif: string | null;
+  _count?: { produit: number; };
+  // J’ai mis _count? en optionnel pour éviter de casser du code
+  // si une catégorie est utilisée ailleurs sans compteur.
+}
+
+export interface CategorieCreateInput {
+  nom_categorie: string;
+  descriptif: string | null;
+}
+
+export interface CategorieUpdateInput {
+  id_categorie: number;
+  nom_categorie: string;
+  descriptif: string | null;
 }
 
 export interface Espece {
@@ -72,9 +86,19 @@ export interface ProduitUpdateInput {
 
 export interface ElectronAPI {
   getCategories: () => Promise<Categorie[]>;
+  getCategorieById: (id: number) => Promise<Categorie | null>;
+  createCategorie: (categorie: CategorieCreateInput) => Promise<Categorie>;
+  updateCategorie: (categorie: CategorieUpdateInput) => Promise<Categorie>;
+
+  deleteCategorie: (id: number) => Promise<Categorie>;
+    deleteCategorieWithReaffectation: (
+      idCategorieASupprimer: number,
+      idCategorieDestination: number) => Promise<Categorie>;
+
   getVarietes: () => Promise<Variete[]>;
   getProduits: () => Promise<Produit[]>;
   getProduitById: (id: number) => Promise<Produit | null>;
+  getProduitsByCategorie: (categorieId: number) => Promise<Produit[]>;
   createProduit: (produit: ProduitCreateInput) => Promise<Produit>;
   updateProduit: (produit: ProduitUpdateInput) => Promise<Produit>;
   deleteProduit: (id: number) => Promise<Produit>;

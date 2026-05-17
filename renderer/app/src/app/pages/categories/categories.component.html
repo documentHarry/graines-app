@@ -1,4 +1,5 @@
 <h1>Catégories</h1>
+<a class="add-link" routerLink="/categories/ajouter">Ajouter une catégorie</a>
 
 @if (isLoading()) {
   <p>Chargement des catégories...</p>
@@ -10,15 +11,29 @@
   <p>Aucune catégorie trouvée.</p>
 }
 @else {
-  <ul>
+  <section class="categories-grid">
     @for (categorie of categories(); track categorie.id_categorie) {
-      <li>
-        <strong>{{ categorie.nom_categorie }}</strong>
+      <article class="categorie-card">
+        <header class="categorie-header">
+          <h2>{{ categorie.nom_categorie }}</h2>
+          <span class="produits-count"[class.empty]="getNombreProduits(categorie) === 0">
+            {{ getNombreProduits(categorie) }}
+          </span>
+        </header>
 
         @if (categorie.descriptif) {
-          <span>{{ categorie.descriptif }}</span>
+          <p class="categorie-description">{{ categorie.descriptif }}</p>
         }
-      </li>
+
+        <div class="actions">
+          <a class="view-link"[routerLink]="['/produits/categorie', categorie.id_categorie]">Voir</a>
+          <a class="edit-link"[routerLink]="['/categories/modifier', categorie.id_categorie]">Modifier</a>
+          <a class="delete-link" [routerLink]="['/categories/supprimer', categorie.id_categorie]">Supprimer</a>
+        </div>
+      </article>
     }
-  </ul>
+    @empty {
+      <p>Aucune catégorie trouvée.</p>
+    }
+  </section>
 }

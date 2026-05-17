@@ -1,5 +1,17 @@
 <h1>Graines, plantes maraîchères et aromatiques</h1>
-<a class="add-link" routerLink="/produits/ajouter">Ajouter un produit</a>
+@if (categorie()) {
+  <a class="back-link" routerLink="/categories">
+    ← Retour aux catégories
+  </a>
+}
+
+<h1>{{ getTitrePage() }}</h1>
+
+@if (!categorie()) {
+  <a class="add-link" routerLink="/produits/ajouter">
+    Ajouter un produit
+  </a>
+}
 
 @if (isLoading()) {
   <p>Chargement des produits...</p>

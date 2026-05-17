@@ -1,10 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Categorie, ProduitCreateInput, Variete } from '../../types/electron';
-import { CategorieService } from '../../services/categorie.service';
-import { ProduitService } from '../../services/produit.service';
-import { VarieteService } from '../../services/variete.service';
+import { Categorie, ProduitCreateInput, Variete } from '../../../types/electron';
+import { CategorieService } from '../../../services/categorie.service';
+import { ProduitService } from '../../../services/produit.service';
+import { VarieteService } from '../../../services/variete.service';
 
 @Component({
   selector: 'app-produit-ajouter',

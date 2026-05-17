@@ -1,10 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Categorie } from '../../types/electron';
 import { CategorieService } from '../../services/categorie.service';
 
 @Component({
   selector: 'app-categories',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.css',
 })
@@ -33,4 +34,9 @@ export class CategoriesComponent {
       this.isLoading.set(false);
     }
   }
+
+  getNombreProduits(categorie: Categorie): number {
+    return categorie._count?.produit ?? 0;
+  }
+
 }

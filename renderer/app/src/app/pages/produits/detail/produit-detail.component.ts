@@ -1,7 +1,7 @@
 import { Component, inject, input, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { Produit } from '../../types/electron';
-import { ProduitService } from '../../services/produit.service';
+import { Produit } from '../../../types/electron';
+import { ProduitService } from '../../../services/produit.service';
 
 @Component({
   selector: 'app-produit-detail',

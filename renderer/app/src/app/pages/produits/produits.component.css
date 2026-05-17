@@ -3,6 +3,19 @@ h1 {
   color: #f2a65a;
 }
 
+.back-link {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: #f2a65a;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: #8fd694;
+  text-decoration: underline;
+}
+
 .add-link {
   display: inline-block;
   margin-bottom: 16px;

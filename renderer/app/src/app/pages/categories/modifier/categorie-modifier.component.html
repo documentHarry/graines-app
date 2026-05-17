@@ -1,0 +1,33 @@
+<a class="back-link" routerLink="/categories">← Retour aux catégories</a>
+
+<h1>Modifier une catégorie</h1>
+
+@if (isLoading()) {
+  <p>Chargement de la catégorie...</p>
+}
+@else if (message() && !categorie()) {
+  <p class="message">{{ message() }}</p>
+}
+@else {
+  @if (message()) {
+    <p class="message">{{ message() }}</p>
+  }
+
+  <form [formGroup]="categorieForm" (ngSubmit)="enregistrer()">
+    <div class="form-field">
+      <label for="nom_categorie">Nom de la catégorie</label>
+      <input id="nom_categorie" type="text" formControlName="nom_categorie">
+
+      @if (categorieForm.controls.nom_categorie.invalid && categorieForm.controls.nom_categorie.touched) {
+        <p class="error">Le nom de la catégorie est obligatoire.</p>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="descriptif">Descriptif</label>
+      <textarea id="descriptif" rows="4" formControlName="descriptif"></textarea>
+    </div>
+
+    <button type="submit">Enregistrer les modifications</button>
+  </form>
+}

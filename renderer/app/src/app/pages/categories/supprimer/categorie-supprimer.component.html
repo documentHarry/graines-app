@@ -1,0 +1,60 @@
+<a class="back-link" routerLink="/categories">← Retour aux catégories</a>
+
+<h1>Supprimer une catégorie</h1>
+
+@if (isLoading()) {
+  <p>Chargement de la catégorie...</p>
+}
+@else if (message() && !categorie()) {
+  <p class="message">{{ message() }}</p>
+}
+@else if (categorie()) {
+  <section class="delete-card">
+    <h2>{{ categorie()?.nom_categorie }}</h2>
+
+    @if (categorie()?.descriptif) {
+      <p>{{ categorie()?.descriptif }}</p>
+    }
+
+    <p><strong>Produits associés: </strong>{{ getNombreProduits() }}</p>
+
+    @if (message()) {
+      <p class="message-card">{{ message() }}</p>
+    }
+
+    @if (getNombreProduits() === 0) {
+      <p>Cette catégorie ne contient aucun produit. Elle peut être supprimée directement.</p>
+
+      <div class="actions">
+        <button type="button" class="delete-button" (click)="supprimerCategorie()">Supprimer</button>
+        <button type="button" class="cancel-button" (click)="annuler()">Annuler</button>
+      </div>
+    }
+    @else {
+      <p>Cette catégorie contient des produits. Vous devez choisir une autre catégorie pour les réaffecter avant la suppression.</p>
+
+      <form [formGroup]="reaffectationForm" (ngSubmit)="supprimerAvecReaffectation()">
+        <div class="form-field">
+          <label for="categorie_destination_id">Catégorie de réaffectation</label>
+
+          <select id="categorie_destination_id" formControlName="categorie_destination_id">
+            <option [value]="0">Sélectionner une catégorie</option>
+
+            @for (categorieItem of categories(); track categorieItem.id_categorie) {
+              <option [value]="categorieItem.id_categorie">{{ categorieItem.nom_categorie }}</option>
+            }
+          </select>
+
+          @if (reaffectationForm.controls.categorie_destination_id.invalid && reaffectationForm.controls.categorie_destination_id.touched) {
+            <p class="error">La catégorie de réaffectation est obligatoire.</p>
+          }
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="delete-button">Réaffecter et supprimer</button>
+          <button type="button" class="cancel-button" (click)="annuler()">Annuler</button>
+        </div>
+      </form>
+    }
+  </section>
+}

@@ -43,14 +43,116 @@ app.on('before-quit', async () => {
   await prisma.$disconnect();
 });
 
-// IPC : récupérer toutes les catégories.
 ipcMain.handle('categories:get-all', async () => {
-  return prisma.categorie.findMany({
-    orderBy: { nom_categorie: 'asc' },
-  });
-});
+    return prisma.categorie.findMany({
+      include: { _count: { select: { produit: true } } },
+      orderBy: { nom_categorie: 'asc' }
+    });
+  }
+);
 
-// IPC : récupérer toutes les variétés.
+ipcMain.handle('categories:get-by-id', async (_event, id: number) => {
+    return prisma.categorie.findUnique({
+      where: { id_categorie: id },
+      include: { _count: { select: { produit: true } } },
+    });
+  }
+);
+
+ipcMain.handle('categories:create', async (_event, categorie: {
+    nom_categorie: string;
+    descriptif: string | null;
+  }) => {
+    const doublon = await prisma.categorie.findFirst({
+      where: { nom_categorie: categorie.nom_categorie },
+    });
+
+    if (doublon) {
+      throw new Error('DUPLICATE_CATEGORY');
+    }
+
+    return prisma.categorie.create({
+      data: {
+        nom_categorie: categorie.nom_categorie,
+        descriptif: categorie.descriptif,
+      },
+      include: { _count: { select: { produit: true } } },
+    });
+  }
+);
+
+ipcMain.handle('categories:update', async (_event, 
+  categorie: {
+    id_categorie: number;
+    nom_categorie: string;
+    descriptif: string | null;
+  }) => {
+    const doublon = await prisma.categorie.findFirst({
+      where: { nom_categorie: categorie.nom_categorie,
+        NOT: { id_categorie: categorie.id_categorie }
+      },
+    });
+
+    if (doublon) {
+      throw new Error('DUPLICATE_CATEGORY');
+    }
+
+    return prisma.categorie.update({
+      where: { id_categorie: categorie.id_categorie },
+      data: {
+        nom_categorie: categorie.nom_categorie,
+        descriptif: categorie.descriptif,
+      },
+      include: { _count: { select: { produit: true } } },
+    });
+  }
+);
+
+// IPC : supprimer une catégorie sans produits associés.
+ipcMain.handle('categories:delete', async (_event, 
+  id: number) => {
+    const nombreProduits = await prisma.produit.count({
+      where: { categorie_id: id },
+    });
+
+    if (nombreProduits > 0) {
+      throw new Error('CATEGORY_HAS_PRODUCTS');
+    }
+
+    return prisma.categorie.delete({
+      where: { id_categorie: id },
+      include: { _count: { select: { produit: true } } }
+    });
+  }
+);
+
+// IPC : réaffecter les produits puis supprimer une catégorie.
+ipcMain.handle('categories:delete-with-reaffectation', async (_event,
+    idCategorieASupprimer: number, idCategorieDestination: number ) => {
+    if (idCategorieASupprimer === idCategorieDestination) {
+      throw new Error('SAME_CATEGORY');
+    }
+
+    const categorieDestination = await prisma.categorie.findUnique({
+      where: { id_categorie: idCategorieDestination },
+    });
+
+    if (!categorieDestination) {
+      throw new Error('DESTINATION_CATEGORY_NOT_FOUND');
+    }
+
+    await prisma.produit.updateMany({
+      where: { categorie_id: idCategorieASupprimer },
+      data: { categorie_id: idCategorieDestination },
+    });
+
+    return prisma.categorie.delete({
+      where: { id_categorie: idCategorieASupprimer },
+      include: { _count: { select: { produit: true } } },
+    });
+  }
+);
+
 ipcMain.handle('varietes:get-all', async () => {
   return prisma.variete.findMany({
     include: { espece: true },
@@ -58,7 +160,6 @@ ipcMain.handle('varietes:get-all', async () => {
   });
 });
 
-// IPC : récupérer tous les produits.
 ipcMain.handle('produits:get-all', async () => {
   return prisma.produit.findMany({
     include: { categorie: true, variete: { include: {  espece: true } } },
@@ -66,7 +167,16 @@ ipcMain.handle('produits:get-all', async () => {
   });
 });
 
-// IPC : récupérer un produit par son identifiant.
+ipcMain.handle('produits:get-by-categorie', async (_event, 
+  categorieId: number) => {
+    return prisma.produit.findMany({
+      where: { categorie_id: categorieId },
+      include: { categorie: true, variete: { include: { espece: true } } },
+      orderBy: { intitule: 'asc' },
+    });
+  }
+);
+
 ipcMain.handle('produits:get-by-id', async (_event,
   id: number) => {
     return prisma.produit.findUnique({
@@ -77,7 +187,6 @@ ipcMain.handle('produits:get-by-id', async (_event,
   }
 );
 
-// IPC : créer un produit.
 ipcMain.handle('produits:create', async (_event,
   produit: {
     intitule: string;
@@ -106,7 +215,6 @@ ipcMain.handle('produits:create', async (_event,
   }
 );
 
-// IPC : modifier un produit.
 ipcMain.handle('produits:update', async (_event,
   produit: {
     id_produit: number;
@@ -140,7 +248,6 @@ ipcMain.handle('produits:update', async (_event,
   }
 );
 
-// IPC : supprimer un produit.
 ipcMain.handle('produits:delete', async (_event,
   id: number) => {
     return prisma.produit.delete({
