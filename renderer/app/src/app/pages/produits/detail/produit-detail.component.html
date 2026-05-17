@@ -17,22 +17,40 @@
       <span class="statut" [class.inactif]="produit()?.quantite === 0">{{ getStatutProduit() }}</span>
     </header>
 
-    <p class="prix">{{ produit()?.prix_unitaire }} €</p>
-    <p><strong>Quantité: </strong>{{ produit()?.quantite }}</p>
+    <section class="top-section">
+      <div class="image-zone">
+        @if (getImageProduit()) {
+          <img [src]="getImageProduit()" [alt]="produit()?.intitule">
+        }
+        @else {
+          <div class="image-placeholder">Image non disponible</div>
+        }
+      </div>
 
-    <div class="actions">
-      <a class="edit-link" [routerLink]="['/produits/modifier', produit()?.id_produit]">Modifier le produit</a>
-      <button type="button" class="delete-button" (click)="supprimerProduit()">Supprimer le produit</button>
-    </div>
+      <div class="resume">
+        <p class="prix">{{ produit()?.prix_unitaire }} €</p>
+        <p><strong>Quantité: </strong>{{ produit()?.quantite }}</p>
+        <p><strong>Bio: </strong>{{ getLabelBio() }}</p>
 
+        <div class="actions">
+          <a class="edit-link" [routerLink]="['/produits/modifier', produit()?.id_produit]">Modifier le produit</a>
+          <button type="button" class="delete-button" (click)="supprimerProduit()">Supprimer le produit</button>
+        </div>
+      </div>
+    </section>
+      
     <section>
       <h2>Informations générales</h2>
 
       <div class="info-grid">
         <p><strong>Catégorie: </strong>{{ produit()?.categorie?.nom_categorie }}</p>
+        <p><strong>Variété: </strong>{{ produit()?.variete?.nom }}</p>
         <p><strong>Nom commun: </strong>{{ produit()?.variete?.espece?.nom_commun }}</p>
         <p><strong>Nom scientifique: </strong><span class="italic">{{ produit()?.variete?.espece?.nom_scientifique }}</span></p>
         <p><strong>Type de plante: </strong>{{ produit()?.variete?.espece?.type_plante }}</p>
+        @if (produit()?.variete?.couleur_legume) {
+          <p><strong>Couleur: </strong>{{ produit()?.variete?.couleur_legume }}</p>
+        }
       </div>
     </section>
 
@@ -40,14 +58,88 @@
       <h2>Culture</h2>
 
       <div class="info-grid">
-        <p><strong>Cycle de vie: </strong>{{ produit()?.variete?.cycle_de_vie || 'Non renseigné' }}</p>
-        <p><strong>Ensoleillement: </strong>{{ produit()?.variete?.type_ensoleillement || 'Non renseigné' }}</p>
-        <p><strong>Semis min: </strong>{{ produit()?.variete?.date_semis_min || 'Non renseigné' }}</p>
-        <p><strong>Semis max: </strong>{{ produit()?.variete?.date_semis_max || 'Non renseigné' }}</p>
-        <p><strong>Sol: </strong>{{ produit()?.variete?.type_de_sol || 'Non renseigné' }}</p>
-        <p><strong>Germination: </strong>{{ produit()?.variete?.duree_de_germination || 'Non renseigné' }}</p>
+        @if (produit()?.variete?.cycle_de_vie) {
+          <p><strong>Cycle de vie: </strong>{{ produit()?.variete?.cycle_de_vie }}</p>
+        }
+
+        @if (produit()?.variete?.cycle_jours != null) {
+          <p><strong>Cycle en jours: </strong>{{ produit()?.variete?.cycle_jours }}</p>
+        }
+
+        @if (produit()?.variete?.type_ensoleillement) {
+          <p><strong>Ensoleillement: </strong>{{ produit()?.variete?.type_ensoleillement }}</p>
+        }
+
+        @if (produit()?.variete?.date_semis_min) {
+          <p><strong>Semis min: </strong>{{ produit()?.variete?.date_semis_min }}</p>
+        }
+
+        @if (produit()?.variete?.date_semis_max) {
+          <p><strong>Semis max: </strong>{{ produit()?.variete?.date_semis_max }}</p>
+        }
+
+        @if (produit()?.variete?.duree_avant_recolte) {
+          <p><strong>Durée avant récolte: </strong>{{ produit()?.variete?.duree_avant_recolte }}</p>
+        }
+
+        @if (produit()?.variete?.type_de_sol) {
+          <p><strong>Sol: </strong>{{ produit()?.variete?.type_de_sol }}</p>
+        }
+
+        @if (produit()?.variete?.duree_de_germination) {
+          <p><strong>Germination: </strong>{{ produit()?.variete?.duree_de_germination }}</p>
+        }
+
+        @if (produit()?.variete?.temperature_min_de_germination != null) {
+          <p><strong>Température min. germination: </strong>{{ produit()?.variete?.temperature_min_de_germination }}°</p>
+        }
+
+        @if (produit()?.variete?.rusticite_plante) {
+          <p><strong>Rusticité: </strong>{{ produit()?.variete?.rusticite_plante }}</p>
+        }
       </div>
     </section>
+
+    <section>
+      <h2>Dimensions et distances</h2>
+
+      <div class="info-grid">
+        @if (produit()?.variete?.espacement_entre_les_plants != null) {
+          <p><strong>Espacement plants: </strong>{{ produit()?.variete?.espacement_entre_les_plants }} cm</p>
+        }
+
+        @if (produit()?.variete?.espacement_entre_les_lignes != null) {
+          <p><strong>Espacement lignes: </strong>{{ produit()?.variete?.espacement_entre_les_lignes }} cm</p>
+        }
+
+        @if (produit()?.variete?.hauteur_adulte_min != null) {
+          <p><strong>Hauteur adulte min: </strong>{{ produit()?.variete?.hauteur_adulte_min }} cm</p>
+        }
+
+        @if (produit()?.variete?.hauteur_adulte_max != null) {
+          <p><strong>Hauteur adulte max: </strong>{{ produit()?.variete?.hauteur_adulte_max }} cm</p>
+        }
+
+        @if (produit()?.variete?.taille_fixe_legume != null) {
+          <p><strong>Taille fixe légume: </strong>{{ produit()?.variete?.taille_fixe_legume }} cm</p>
+        }
+
+        @if (produit()?.variete?.taille_min_legume != null) {
+          <p><strong>Taille min. légume: </strong>{{ produit()?.variete?.taille_min_legume }} cm</p>
+        }
+
+        @if (produit()?.variete?.taille_max_legume != null) {
+          <p><strong>Taille max. légume: </strong>{{ produit()?.variete?.taille_max_legume }} cm</p>
+        }
+      </div>
+    </section>
+
+    @if (produit()?.variete?.descriptif) {
+      <section>
+        <h2>Descriptif de la variété</h2>
+        <p>{{ produit()?.variete?.descriptif }}</p>
+      </section>
+    }
 
     @if (getConseilsPlantation().length > 0) {
       <section>
@@ -59,4 +151,27 @@
       </section>
     }
   </article>
+
+  @if (produitsSimilaires().length > 0) {
+  <section>
+    <h2>Produits similaires</h2>
+
+    <div class="similar-products-grid">
+      @for (produitSimilaire of produitsSimilaires(); track produitSimilaire.id_produit) {
+        <a class="similar-product-card" [routerLink]="['/produits', produitSimilaire.id_produit]">
+          @if (produitSimilaire.image_produit) {
+            <img [src]="produitSimilaire.image_produit" [alt]="produitSimilaire.intitule">
+          }
+          @else {
+            <div class="similar-image-placeholder">Image non disponible</div>
+          }
+
+          <h3>{{ produitSimilaire.intitule }}</h3>
+          <p class="similar-price">{{ produitSimilaire.prix_unitaire }} €</p>
+          <p>{{ produitSimilaire.variete.nom }}</p>
+        </a>
+      }
+    </div>
+  </section>
+}
 }

@@ -1,4 +1,4 @@
-import { Component, inject, input, signal } from '@angular/core';
+import { Component, effect, inject, input, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Produit } from '../../../types/electron';
 import { ProduitService } from '../../../services/produit.service';
@@ -16,14 +16,25 @@ export class ProduitDetailComponent {
   id = input<string>();
 
   produit = signal<Produit | null>(null);
+  produitsSimilaires = signal<Produit[]>([]);
   isLoading = signal(true);
   message = signal('');
 
-  async ngOnInit(): Promise<void> {
-    await this.chargerProduit();
+  constructor() {
+    effect(() => {
+      const idProduit = this.id();
+
+      if (idProduit) {
+        void this.chargerProduit();
+      }
+    });
   }
 
   async chargerProduit(): Promise<void> {
+    this.isLoading.set(true);
+    this.message.set('');
+    this.produitsSimilaires.set([]);
+
     const idProduit = Number(this.id());
 
     if (!idProduit) {
@@ -37,9 +48,14 @@ export class ProduitDetailComponent {
 
       if (!result) {
         this.message.set('Produit introuvable.');
+        return;
       }
 
+      const produitsSimilaires = await this.produitService.getProduitsSimilaires(idProduit);
+
       this.produit.set(result);
+      this.produitsSimilaires.set(produitsSimilaires);
+      this.message.set('');
     }
     catch {
       this.message.set('Erreur pendant le chargement du produit.');
@@ -47,6 +63,18 @@ export class ProduitDetailComponent {
     finally {
       this.isLoading.set(false);
     }
+  }
+
+  getLabelBio(): string {
+    if (this.produit()?.variete?.bio === 1) {
+      return 'Oui';
+    }
+
+    return 'Non';
+  }
+
+  getImageProduit(): string | null {
+    return this.produit()?.image_produit ?? null;
   }
 
   getStatutProduit(): string {

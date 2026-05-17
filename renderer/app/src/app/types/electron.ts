@@ -99,6 +99,7 @@ export interface ElectronAPI {
   getProduits: () => Promise<Produit[]>;
   getProduitById: (id: number) => Promise<Produit | null>;
   getProduitsByCategorie: (categorieId: number) => Promise<Produit[]>;
+  getProduitsSimilaires: (id: number) => Promise<Produit[]>;
   createProduit: (produit: ProduitCreateInput) => Promise<Produit>;
   updateProduit: (produit: ProduitUpdateInput) => Promise<Produit>;
   deleteProduit: (id: number) => Promise<Produit>;

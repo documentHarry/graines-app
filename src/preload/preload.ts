@@ -42,6 +42,7 @@ contextBridge.exposeInMainWorld('api', {
   getProduits: () => ipcRenderer.invoke('produits:get-all'),
   getProduitById: (id: number) => ipcRenderer.invoke('produits:get-by-id', id),
   getProduitsByCategorie: (categorieId: number) => ipcRenderer.invoke('produits:get-by-categorie', categorieId),
+  getProduitsSimilaires: (id: number) => ipcRenderer.invoke('produits:get-similaires', id),
   createProduit: (produit: ProduitCreateInput) => ipcRenderer.invoke('produits:create', produit),
   updateProduit: (produit: ProduitUpdateInput) => ipcRenderer.invoke('produits:update', produit),
   deleteProduit: (id: number) => ipcRenderer.invoke('produits:delete', id)

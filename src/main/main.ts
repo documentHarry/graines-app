@@ -54,7 +54,34 @@ ipcMain.handle('categories:get-all', async () => {
 ipcMain.handle('categories:get-by-id', async (_event, id: number) => {
     return prisma.categorie.findUnique({
       where: { id_categorie: id },
-      include: { _count: { select: { produit: true } } },
+      include: { _count: { select: { produit: true } } }
+    });
+  }
+);
+
+ipcMain.handle('produits:get-similaires', async (_event,
+  id: number) => {
+    const produit = await prisma.produit.findUnique({
+      where: { id_produit: id },
+      include: { variete: { include: { espece: true } } }
+    });
+
+    if (!produit) {
+      return [];
+    }
+
+    return prisma.produit.findMany({
+      where: { id_produit: { not: produit.id_produit },
+        OR: [
+          { categorie_id: produit.categorie_id },
+          { variete: { espece_id: produit.variete.espece_id } },
+          { variete: { espece: { type_plante: produit.variete.espece.type_plante } } },
+          { variete: { cycle_de_vie: produit.variete.cycle_de_vie } },
+        ],
+      },
+      include: { categorie: true, variete: { include: { espece: true } } },
+      orderBy: { intitule: 'asc' },
+      take: 6,
     });
   }
 );

@@ -1,4 +1,9 @@
-<a class="back-link" routerLink="/produits">← Grille de produits</a>
+@if (produit()) {
+  <a class="back-link" [routerLink]="['/produits', produit()?.id_produit]">← Détail du produit</a>
+}
+@else {
+  <a class="back-link" routerLink="/produits">← Grille de produits</a>
+}
 
 <h1>Modifier un produit</h1>
 

@@ -19,6 +19,10 @@ export class ProduitService {
     return this.electronService.getApi().getProduitsByCategorie(categorieId);
   }
 
+  getProduitsSimilaires(id: number): Promise<Produit[]> {
+  return this.electronService.getApi().getProduitsSimilaires(id);
+}
+
   createProduit(produit: ProduitCreateInput): Promise<Produit> {
     return this.electronService.getApi().createProduit(produit);
   }
