@@ -1,0 +1,39 @@
+<a class="back-link" routerLink="/especes">← Retour aux espèces</a>
+
+<h1>Supprimer une espèce</h1>
+
+@if (isLoading()) {
+  <p>Chargement de l'espèce...</p>
+}
+@else if (message() && !espece()) {
+  <p class="message">{{ message() }}</p>
+}
+@else if (espece()) {
+  <section class="delete-card">
+    <h2>{{ espece()?.nom_commun }}</h2>
+
+    <p class="scientifique">{{ espece()?.nom_scientifique }}</p>
+    <p><strong>Type de plante: </strong>{{ espece()?.type_plante }}</p>
+    <p><strong>Variétés associées: </strong>{{ getNombreVarietes() }}</p>
+
+    @if (message()) {
+      <p class="message-card">{{ message() }}</p>
+    }
+
+    @if (getNombreVarietes() === 0) {
+      <p>Cette espèce ne possède aucune variété associée. Elle peut être supprimée.</p>
+
+      <div class="actions">
+        <button type="button" class="delete-button" (click)="supprimerEspece()">Supprimer</button>
+        <button type="button" class="cancel-button" (click)="annuler()">Annuler</button>
+      </div>
+    }
+    @else {
+      <p>Cette espèce possède des variétés associées. Elle ne peut pas être supprimée tant que ces variétés existent.</p>
+
+      <div class="actions">
+        <button type="button" class="cancel-button" (click)="annuler()">Retour aux espèces</button>
+      </div>
+    }
+  </section>
+}

@@ -1,0 +1,44 @@
+@if (variete()) {
+  <a class="back-link" [routerLink]="['/varietes', variete()?.id_variete]"> ← Détail de la variété</a>
+}
+@else {
+  <a class="back-link" routerLink="/varietes">← Retour aux variétés</a>
+}
+
+<h1>Supprimer une variété</h1>
+
+@if (isLoading()) {
+  <p>Chargement de la variété...</p>
+}
+@else if (message() && !variete()) {
+  <p class="message">{{ message() }}</p>
+}
+@else if (variete()) {
+  <section class="delete-card">
+    <h2>{{ variete()?.nom }}</h2>
+
+    <p class="scientifique">{{ variete()?.espece?.nom_scientifique }}</p>
+    <p><strong>Espèce: </strong>{{ variete()?.espece?.nom_commun }}</p>
+    <p><strong>Produits associés: </strong>{{ getNombreProduits() }}</p>
+
+    @if (message()) {
+      <p class="message-card">{{ message() }}</p>
+    }
+
+    @if (getNombreProduits() === 0) {
+      <p>Cette variété ne possède aucun produit associé. Elle peut être supprimée.</p>
+
+      <div class="actions">
+        <button type="button" class="delete-button" (click)="supprimerVariete()">Supprimer</button>
+        <button type="button" class="cancel-button" (click)="annuler()">Annuler</button>
+      </div>
+    }
+    @else {
+      <p>Cette variété possède des produits associés. Elle ne peut pas être supprimée tant que ces produits existent.</p>
+
+      <div class="actions">
+        <button type="button" class="cancel-button" (click)="annuler()">Retour au détail</button>
+      </div>
+    }
+  </section>
+}

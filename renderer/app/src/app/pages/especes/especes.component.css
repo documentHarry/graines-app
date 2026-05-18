@@ -1,0 +1,116 @@
+h1 {
+  margin-bottom: 16px;
+  color: #ffb86b;
+}
+
+.add-link {
+  display: inline-block;
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background-color: #f2a65a;
+  color: #2a1a10;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.add-link:hover {
+  background-color: #ffb86b;
+}
+
+.especes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  align-items: stretch;
+}
+
+.espece-card {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  border: 1px solid #8a5a36;
+  border-radius: 16px;
+  background-color: #f8ead8;
+  color: #2a1a10;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 18%);
+}
+
+.espece-card:hover {
+  transform: translateY(-1px);
+}
+
+.espece-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+h2 {
+  margin: 0;
+  color: #d9782d;
+  font-size: 17px;
+  line-height: 1.2;
+}
+
+.varietes-count {
+  flex-shrink: 0;
+  min-width: 24px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background-color: #b6e0a6;
+  color: #256029;
+  font-size: 13px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.varietes-count.empty {
+  background-color: #d8d0c8;
+  color: #6b5a4b;
+}
+
+.scientifique {
+  margin: 0 0 8px;
+  color: #5f4b3b;
+  font-style: italic;
+}
+
+p {
+  margin: 6px 0;
+  line-height: 1.35;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 14px;
+}
+
+.edit-link,
+.delete-link {
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.edit-link {
+  color: #7a3e13;
+}
+
+.edit-link:hover {
+  color: #3f7d20;
+  text-decoration: underline;
+}
+
+.delete-link {
+  color: #9b1c1c;
+}
+
+.delete-link:hover {
+  text-decoration: underline;
+}

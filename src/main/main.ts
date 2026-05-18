@@ -59,6 +59,101 @@ ipcMain.handle('categories:get-by-id', async (_event, id: number) => {
   }
 );
 
+ipcMain.handle('especes:get-all', async () => {
+    return prisma.espece.findMany({
+      include: { _count: { select: { variete: true } } },
+      orderBy: { nom_commun: 'asc' },
+    });
+  }
+);
+
+ipcMain.handle('especes:create', async (_event,
+  espece: {
+    nom_scientifique: string;
+    nom_commun: string;
+    type_plante: string;
+  }) => {
+    const doublon = await prisma.espece.findFirst({
+      where: {
+        OR: [ { nom_commun: espece.nom_commun }, { nom_scientifique: espece.nom_scientifique } ],
+      },
+    });
+
+    if (doublon) {
+      throw new Error('DUPLICATE_ESPECE');
+    }
+
+    return prisma.espece.create({
+      data: {
+        nom_scientifique: espece.nom_scientifique,
+        nom_commun: espece.nom_commun,
+        type_plante: espece.type_plante,
+      },
+      include: { _count: { select: { variete: true } } },
+    });
+  }
+);
+
+// IPC : récupérer une espèce par son identifiant.
+ipcMain.handle('especes:get-by-id', async (_event, 
+  id: number) => {
+    return prisma.espece.findUnique({
+      where: { id_espece: id },
+      include: { _count: { select: { variete: true } } },
+    });
+  }
+);
+
+// IPC : modifier une espèce.
+ipcMain.handle('especes:update', async (_event, 
+  espece: {
+    id_espece: number;
+    nom_scientifique: string;
+    nom_commun: string;
+    type_plante: string;
+  }) => {
+    const doublon = await prisma.espece.findFirst({
+      where: {
+        OR: [ { nom_commun: espece.nom_commun }, { nom_scientifique: espece.nom_scientifique } ],
+        NOT: { id_espece: espece.id_espece },
+      },
+    });
+
+    if (doublon) {
+      throw new Error('DUPLICATE_ESPECE');
+    }
+
+    return prisma.espece.update({
+      where: { id_espece: espece.id_espece },
+      data: {
+        nom_scientifique: espece.nom_scientifique,
+        nom_commun: espece.nom_commun,
+        type_plante: espece.type_plante,
+      },
+      include: { _count: { select: { variete: true } } }
+    });
+  }
+);
+
+// IPC : supprimer une espèce sans variétés associées.
+ipcMain.handle(
+  'especes:delete',
+  async (_event, id: number) => {
+    const nombreVarietes = await prisma.variete.count({
+      where: { espece_id: id },
+    });
+
+    if (nombreVarietes > 0) {
+      throw new Error('ESPECE_HAS_VARIETES');
+    }
+
+    return prisma.espece.delete({
+      where: { id_espece: id },
+      include: { _count: { select: { variete: true } } },
+    });
+  }
+);
+
 ipcMain.handle('produits:get-similaires', async (_event,
   id: number) => {
     const produit = await prisma.produit.findUnique({
@@ -180,12 +275,154 @@ ipcMain.handle('categories:delete-with-reaffectation', async (_event,
   }
 );
 
+// IPC : récupérer toutes les variétés.
 ipcMain.handle('varietes:get-all', async () => {
-  return prisma.variete.findMany({
-    include: { espece: true },
-    orderBy: { nom: 'asc' },
-  });
-});
+    return prisma.variete.findMany({
+      include: { espece: true, _count: { select: { produit: true } } },
+      orderBy: { nom: 'asc' },
+    });
+  }
+);
+
+ipcMain.handle('varietes:get-by-id', async (_event,
+  id: number) => {
+    return prisma.variete.findUnique({
+      where: { id_variete: id },
+      include: { espece: true, _count: { select: { produit: true } } }
+    });
+  }
+);
+
+// IPC : créer une variété.
+ipcMain.handle('varietes:create', async (_event, 
+  variete: {
+    espece_id: number;
+    nom: string;
+    descriptif: string | null;
+    bio: number;
+    cycle_jours: number | null;
+    couleur_legume: string | null;
+    taille_fixe_legume: number | null;
+    taille_min_legume: number | null;
+    taille_max_legume: number | null;
+    espacement_entre_les_plants: number | null;
+    espacement_entre_les_lignes: number | null;
+    type_ensoleillement: string | null;
+    type_feuillage: string | null;
+    hauteur_adulte_min: number | null;
+    hauteur_adulte_max: number | null;
+    duree_de_germination: string | null;
+    temperature_min_de_germination: number | null;
+    cycle_de_vie: string | null;
+    rusticite_plante: string | null;
+    date_semis_min: string | null;
+    date_semis_max: string | null;
+    duree_avant_recolte: string | null;
+    type_de_sol: string | null;
+    conseil_plantation: string | null;
+  }) => {
+    const doublon = await prisma.variete.findFirst({
+      where: { nom: variete.nom, espece_id: variete.espece_id }
+    });
+
+    if (doublon) {
+      throw new Error('DUPLICATE_VARIETE');
+    }
+
+    return prisma.variete.create({
+      data: variete,
+      include: { espece: true, _count: { select: { produit: true } } },
+    });
+  }
+);
+
+// IPC : modifier une variété.
+ipcMain.handle('varietes:update', async (_event, 
+  variete: {
+    id_variete: number;
+    espece_id: number;
+    nom: string;
+    descriptif: string | null;
+    bio: number;
+    cycle_jours: number | null;
+    couleur_legume: string | null;
+    taille_fixe_legume: number | null;
+    taille_min_legume: number | null;
+    taille_max_legume: number | null;
+    espacement_entre_les_plants: number | null;
+    espacement_entre_les_lignes: number | null;
+    type_ensoleillement: string | null;
+    type_feuillage: string | null;
+    hauteur_adulte_min: number | null;
+    hauteur_adulte_max: number | null;
+    duree_de_germination: string | null;
+    temperature_min_de_germination: number | null;
+    cycle_de_vie: string | null;
+    rusticite_plante: string | null;
+    date_semis_min: string | null;
+    date_semis_max: string | null;
+    duree_avant_recolte: string | null;
+    type_de_sol: string | null;
+    conseil_plantation: string | null;
+  }) => {
+    const doublon = await prisma.variete.findFirst({
+      where: { nom: variete.nom, espece_id: variete.espece_id,
+        NOT: { id_variete: variete.id_variete } }
+    });
+
+    if (doublon) {
+      throw new Error('DUPLICATE_VARIETE');
+    }
+
+    return prisma.variete.update({
+      where: { id_variete: variete.id_variete },
+      data: {
+        espece_id: variete.espece_id,
+        nom: variete.nom,
+        descriptif: variete.descriptif,
+        bio: variete.bio,
+        cycle_jours: variete.cycle_jours,
+        couleur_legume: variete.couleur_legume,
+        taille_fixe_legume: variete.taille_fixe_legume,
+        taille_min_legume: variete.taille_min_legume,
+        taille_max_legume: variete.taille_max_legume,
+        espacement_entre_les_plants: variete.espacement_entre_les_plants,
+        espacement_entre_les_lignes: variete.espacement_entre_les_lignes,
+        type_ensoleillement: variete.type_ensoleillement,
+        type_feuillage: variete.type_feuillage,
+        hauteur_adulte_min: variete.hauteur_adulte_min,
+        hauteur_adulte_max: variete.hauteur_adulte_max,
+        duree_de_germination: variete.duree_de_germination,
+        temperature_min_de_germination: variete.temperature_min_de_germination,
+        cycle_de_vie: variete.cycle_de_vie,
+        rusticite_plante: variete.rusticite_plante,
+        date_semis_min: variete.date_semis_min,
+        date_semis_max: variete.date_semis_max,
+        duree_avant_recolte: variete.duree_avant_recolte,
+        type_de_sol: variete.type_de_sol,
+        conseil_plantation: variete.conseil_plantation,
+      },
+      include: { espece: true, _count: { select: { produit: true } } },
+    });
+  }
+);
+
+// IPC : supprimer une variété sans produits associés.
+ipcMain.handle('varietes:delete', async (_event, 
+  id: number) => {
+    const nombreProduits = await prisma.produit.count({
+      where: { variete_id: id } });
+
+    if (nombreProduits > 0) {
+      throw new Error('VARIETE_HAS_PRODUCTS');
+    }
+
+    return prisma.variete.delete({
+      where: { id_variete: id },
+      include: { espece: true, _count: { select: { produit: true } } },
+    });
+  }
+);
 
 ipcMain.handle('produits:get-all', async () => {
   return prisma.produit.findMany({

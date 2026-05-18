@@ -1,0 +1,34 @@
+<h1>Espèces</h1>
+
+<a class="add-link" routerLink="/especes/ajouter">Ajouter une espèce</a>
+
+@if (isLoading()) {
+  <p>Chargement des espèces...</p>
+}
+@else if (message()) {
+  <p>{{ message() }}</p>
+}
+@else if (especes().length === 0) {
+  <p>Aucune espèce trouvée.</p>
+}
+@else {
+  <section class="especes-grid">
+    @for (espece of especes(); track espece.id_espece) {
+      <article class="espece-card">
+        <header class="espece-header">
+          <h2>{{ espece.nom_commun }}</h2>
+          <span class="varietes-count" [class.empty]="getNombreVarietes(espece) === 0">{{ getNombreVarietes(espece) }}</span>
+        </header>
+
+        <p class="scientifique">{{ espece.nom_scientifique }}</p>
+
+        <p><strong>Type de plante: </strong>{{ espece.type_plante }}</p>
+
+        <div class="actions">
+          <a class="edit-link" [routerLink]="['/especes/modifier', espece.id_espece]">Modifier</a>
+          <a class="delete-link" [routerLink]="['/especes/supprimer', espece.id_espece]">Supprimer</a>
+        </div>
+      </article>
+    }
+  </section>
+}

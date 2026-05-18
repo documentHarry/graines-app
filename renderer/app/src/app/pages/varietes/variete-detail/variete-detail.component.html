@@ -1,0 +1,142 @@
+<a class="back-link" routerLink="/varietes">← Retour aux variétés</a>
+
+@if (isLoading()) {
+  <p>Chargement de la variété...</p>
+}
+@else if (message()) {
+  <p>{{ message() }}</p>
+}
+@else if (variete()) {
+  <article class="detail-card">
+    <header class="detail-header">
+      <div>
+        <h1>{{ variete()?.nom }}</h1>
+        <p class="scientifique">{{ variete()?.espece?.nom_scientifique }}</p>
+      </div>
+
+      <span class="produits-count" [class.empty]="getNombreProduits() === 0">{{ getNombreProduits() }}</span>
+    </header>
+
+    <div class="actions">
+      <a class="edit-link" [routerLink]="['/varietes/modifier', variete()?.id_variete]">Modifier la variété</a>
+      <a class="delete-link" [routerLink]="['/varietes/supprimer', variete()?.id_variete]">Supprimer la variété</a>
+    </div>
+
+    <p><strong>Label: </strong>{{ getLabelBio() }}</p>
+
+    <section>
+      <h2>Espèce associée</h2>
+
+      <div class="info-grid">
+        <p><strong>Nom commun: </strong>{{ variete()?.espece?.nom_commun }}</p>
+        <p><strong>Nom scientifique: </strong><span class="italic">{{ variete()?.espece?.nom_scientifique }}</span></p>
+        <p><strong>Type de plante: </strong>{{ variete()?.espece?.type_plante }}</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Culture</h2>
+
+      <div class="info-grid">
+        @if (variete()?.cycle_de_vie) {
+          <p><strong>Cycle de vie: </strong>{{ variete()?.cycle_de_vie }}</p>
+        }
+
+        @if (variete()?.cycle_jours != null) {
+          <p><strong>Cycle en jours: </strong>{{ variete()?.cycle_jours }}</p>
+        }
+
+        @if (variete()?.type_ensoleillement) {
+          <p><strong>Ensoleillement: </strong>{{ variete()?.type_ensoleillement }}</p>
+        }
+
+        @if (variete()?.type_feuillage) {
+          <p><strong>Feuillage: </strong>{{ variete()?.type_feuillage }}</p>
+        }
+
+        @if (variete()?.date_semis_min) {
+          <p><strong>Semis min: </strong>{{ variete()?.date_semis_min }}</p>
+        }
+
+        @if (variete()?.date_semis_max) {
+          <p><strong>Semis max: </strong>{{ variete()?.date_semis_max }}</p>
+        }
+
+        @if (variete()?.duree_avant_recolte) {
+          <p><strong>Durée avant récolte: </strong>{{ variete()?.duree_avant_recolte }}</p>
+        }
+
+        @if (variete()?.type_de_sol) {
+          <p><strong>Sol: </strong>{{ variete()?.type_de_sol }}</p>
+        }
+
+        @if (variete()?.duree_de_germination) {
+          <p><strong>Germination: </strong>{{ variete()?.duree_de_germination }}</p>
+        }
+
+        @if (variete()?.temperature_min_de_germination != null) {
+          <p><strong>Température min. germination: </strong>{{ variete()?.temperature_min_de_germination }}</p>
+        }
+
+        @if (variete()?.rusticite_plante) {
+          <p><strong>Rusticité: </strong>{{ variete()?.rusticite_plante }}</p>
+        }
+      </div>
+    </section>
+
+    <section>
+      <h2>Dimensions et distances</h2>
+
+      <div class="info-grid">
+        @if (variete()?.couleur_legume) {
+          <p><strong>Couleur: </strong>{{ variete()?.couleur_legume }}</p>
+        }
+
+        @if (variete()?.espacement_entre_les_plants != null) {
+          <p><strong>Espacement plants: </strong>{{ variete()?.espacement_entre_les_plants }}</p>
+        }
+
+        @if (variete()?.espacement_entre_les_lignes != null) {
+          <p><strong>Espacement lignes: </strong>{{ variete()?.espacement_entre_les_lignes }}</p>
+        }
+
+        @if (variete()?.hauteur_adulte_min != null) {
+          <p><strong>Hauteur adulte min: </strong>{{ variete()?.hauteur_adulte_min }}</p>
+        }
+
+        @if (variete()?.hauteur_adulte_max != null) {
+          <p><strong>Hauteur adulte max: </strong>{{ variete()?.hauteur_adulte_max }}</p>
+        }
+
+        @if (variete()?.taille_fixe_legume != null) {
+          <p><strong>Taille fixe légume: </strong>{{ variete()?.taille_fixe_legume }}</p>
+        }
+
+        @if (variete()?.taille_min_legume != null) {
+          <p><strong>Taille min. légume: </strong>{{ variete()?.taille_min_legume }}</p>
+        }
+
+        @if (variete()?.taille_max_legume != null) {
+          <p><strong>Taille max. légume: </strong>{{ variete()?.taille_max_legume }}</p>
+        }
+      </div>
+    </section>
+
+    @if (variete()?.descriptif) {
+      <section>
+        <h2>Descriptif</h2>
+        <p>{{ variete()?.descriptif }}</p>
+      </section>
+    }
+
+    @if (getConseilsPlantation().length > 0) {
+      <section>
+        <h2>Conseil de plantation</h2>
+
+        @for (phrase of getConseilsPlantation(); track phrase) {
+          <p>{{ phrase }}</p>
+        }
+      </section>
+    }
+  </article>
+}

@@ -3,8 +3,6 @@ export interface Categorie {
   nom_categorie: string;
   descriptif: string | null;
   _count?: { produit: number; };
-  // J’ai mis _count? en optionnel pour éviter de casser du code
-  // si une catégorie est utilisée ailleurs sans compteur.
 }
 
 export interface CategorieCreateInput {
@@ -19,6 +17,20 @@ export interface CategorieUpdateInput {
 }
 
 export interface Espece {
+  id_espece: number;
+  nom_scientifique: string;
+  nom_commun: string;
+  type_plante: string;
+  _count?: { variete: number; };
+}
+
+export interface EspeceCreateInput {
+  nom_scientifique: string;
+  nom_commun: string;
+  type_plante: string;
+}
+
+export interface EspeceUpdateInput {
   id_espece: number;
   nom_scientifique: string;
   nom_commun: string;
@@ -52,6 +64,62 @@ export interface Variete {
   conseil_plantation: string | null;
   espece_id: number;
   espece: Espece;
+  _count?: { produit: number; };
+}
+
+export interface VarieteCreateInput {
+  espece_id: number;
+  nom: string;
+  descriptif: string | null;
+  bio: number;
+  cycle_jours: number | null;
+  couleur_legume: string | null;
+  taille_fixe_legume: number | null;
+  taille_min_legume: number | null;
+  taille_max_legume: number | null;
+  espacement_entre_les_plants: number | null;
+  espacement_entre_les_lignes: number | null;
+  type_ensoleillement: string | null;
+  type_feuillage: string | null;
+  hauteur_adulte_min: number | null;
+  hauteur_adulte_max: number | null;
+  duree_de_germination: string | null;
+  temperature_min_de_germination: number | null;
+  cycle_de_vie: string | null;
+  rusticite_plante: string | null;
+  date_semis_min: string | null;
+  date_semis_max: string | null;
+  duree_avant_recolte: string | null;
+  type_de_sol: string | null;
+  conseil_plantation: string | null;
+}
+
+export interface VarieteUpdateInput {
+  id_variete: number;
+  espece_id: number;
+  nom: string;
+  descriptif: string | null;
+  bio: number;
+  cycle_jours: number | null;
+  couleur_legume: string | null;
+  taille_fixe_legume: number | null;
+  taille_min_legume: number | null;
+  taille_max_legume: number | null;
+  espacement_entre_les_plants: number | null;
+  espacement_entre_les_lignes: number | null;
+  type_ensoleillement: string | null;
+  type_feuillage: string | null;
+  hauteur_adulte_min: number | null;
+  hauteur_adulte_max: number | null;
+  duree_de_germination: string | null;
+  temperature_min_de_germination: number | null;
+  cycle_de_vie: string | null;
+  rusticite_plante: string | null;
+  date_semis_min: string | null;
+  date_semis_max: string | null;
+  duree_avant_recolte: string | null;
+  type_de_sol: string | null;
+  conseil_plantation: string | null;
 }
 
 export interface Produit {
@@ -89,13 +157,23 @@ export interface ElectronAPI {
   getCategorieById: (id: number) => Promise<Categorie | null>;
   createCategorie: (categorie: CategorieCreateInput) => Promise<Categorie>;
   updateCategorie: (categorie: CategorieUpdateInput) => Promise<Categorie>;
-
   deleteCategorie: (id: number) => Promise<Categorie>;
     deleteCategorieWithReaffectation: (
       idCategorieASupprimer: number,
       idCategorieDestination: number) => Promise<Categorie>;
 
+  getEspeces: () => Promise<Espece[]>;
+  getEspeceById: (id: number) => Promise<Espece | null>;
+  createEspece: (espece: EspeceCreateInput) => Promise<Espece>;
+  updateEspece: (espece: EspeceUpdateInput) => Promise<Espece>;
+  deleteEspece: (id: number) => Promise<Espece>;
+
   getVarietes: () => Promise<Variete[]>;
+  getVarieteById: (id: number) => Promise<Variete | null>;
+  createVariete: (variete: VarieteCreateInput) => Promise<Variete>;
+  updateVariete: (variete: VarieteUpdateInput) => Promise<Variete>;
+  deleteVariete: (id: number) => Promise<Variete>;
+
   getProduits: () => Promise<Produit[]>;
   getProduitById: (id: number) => Promise<Produit | null>;
   getProduitsByCategorie: (categorieId: number) => Promise<Produit[]>;
