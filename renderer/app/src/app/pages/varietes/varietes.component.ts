@@ -47,4 +47,9 @@ export class VarietesComponent {
 
     return 'Non bio';
   }
+
+  estAromate(variete: Variete): boolean {
+    return (variete.aromate?.length ?? 0) > 0;
+  }
+
 }

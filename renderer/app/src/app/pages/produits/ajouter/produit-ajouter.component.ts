@@ -28,9 +28,9 @@ export class ProduitAjouterComponent {
   produitForm = this.formBuilder.group({
     intitule: ['', Validators.required],
     prix_unitaire: [0, [Validators.required, Validators.min(0.01)]],
+    quantite: [0, [Validators.required, Validators.min(0)]],
     categorie_id: [0, [Validators.required, Validators.min(1)]],
     variete_id: [0, [Validators.required, Validators.min(1)]],
-    quantite: [0, [Validators.required, Validators.min(0)]],
   });
 
   constructor() {
@@ -64,7 +64,7 @@ export class ProduitAjouterComponent {
     const valeurFormulaire = this.produitForm.getRawValue();
 
     const produit: ProduitCreateInput = {
-      intitule: valeurFormulaire.intitule ?? '',
+      intitule: valeurFormulaire.intitule?.trim() ?? '',
       prix_unitaire: Number(valeurFormulaire.prix_unitaire),
       quantite: Number(valeurFormulaire.quantite),
       categorie_id: Number(valeurFormulaire.categorie_id),
@@ -73,7 +73,6 @@ export class ProduitAjouterComponent {
 
     try {
       await this.produitService.createProduit(produit);
-
       await this.router.navigate(['/produits']);
     }
     catch (error) {

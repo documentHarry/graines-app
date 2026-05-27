@@ -1,23 +1,19 @@
 <h1>Graines, plantes maraîchères et aromatiques</h1>
 @if (categorie()) {
-  <a class="back-link" routerLink="/categories">
-    ← Retour aux catégories
-  </a>
+  <a class="back-link" routerLink="/categories">← Catégories</a>
 }
 
-<h1>{{ getTitrePage() }}</h1>
+<h2>{{ getTitrePage() }}</h2>
 
 @if (!categorie()) {
-  <a class="add-link" routerLink="/produits/ajouter">
-    Ajouter un produit
-  </a>
+  <a class="add-link" routerLink="/produits/ajouter">Ajouter un produit</a>
 }
 
 @if (isLoading()) {
   <p>Chargement des produits...</p>
 }
 @else if (message()) {
-  <p>{{ message() }}</p>
+  <p class="message">{{ message() }}</p>
 }
 @else if (produits().length === 0) {
   <p>Aucun produit trouvé.</p>
@@ -26,7 +22,7 @@
   <section class="produits-grid">
     @for (produit of produits(); track produit.id_produit) {
       <article class="produit-card">
-        <h2>{{ produit.intitule }}</h2>
+        <h3>{{ produit.intitule }}</h3>
 
         <div class="infos">
           <p><strong>Catégorie: </strong>{{ produit.categorie.nom_categorie }}</p>

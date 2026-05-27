@@ -1,6 +1,6 @@
 import { Component, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Variete } from '../../../types/electron';
+import { Aromate, Variete } from '../../../types/electron';
 import { VarieteService } from '../../../services/variete.service';
 
 @Component({
@@ -60,6 +60,20 @@ export class VarieteDetailComponent {
 
   getNombreProduits(): number {
     return this.variete()?._count?.produit ?? 0;
+  }
+
+  estAromate(): boolean {
+    return this.getAromates().length > 0;
+  }
+
+  getAromates(): Aromate[] {
+    return this.variete()?.aromate ?? [];
+  }
+
+  getProprietesMedicinales(aromate: Aromate): string[] {
+    return aromate.aromate_propriete
+      ?.map(item => item.propriete_medicinale.nom_propriete)
+      ?? [];
   }
 
   getConseilsPlantation(): string[] {

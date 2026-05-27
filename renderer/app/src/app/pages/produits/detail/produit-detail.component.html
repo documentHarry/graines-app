@@ -1,10 +1,10 @@
-<a class="back-link" routerLink="/produits">← Retour aux produits</a>
+<a class="back-link" routerLink="/produits">← Produits</a>
 
 @if (isLoading()) {
   <p>Chargement du produit...</p>
 }
 @else if (message()) {
-  <p>{{ message() }}</p>
+  <p class="message">{{ message() }}</p>
 }
 @else if (produit()) {
   <article class="detail-card">
@@ -47,7 +47,6 @@
         <p><strong>Variété: </strong>{{ produit()?.variete?.nom }}</p>
         <p><strong>Nom commun: </strong>{{ produit()?.variete?.espece?.nom_commun }}</p>
         <p><strong>Nom scientifique: </strong><span class="italic">{{ produit()?.variete?.espece?.nom_scientifique }}</span></p>
-        <p><strong>Type de plante: </strong>{{ produit()?.variete?.espece?.type_plante }}</p>
         @if (produit()?.variete?.couleur_legume) {
           <p><strong>Couleur: </strong>{{ produit()?.variete?.couleur_legume }}</p>
         }
@@ -153,25 +152,25 @@
   </article>
 
   @if (produitsSimilaires().length > 0) {
-  <section>
-    <h2>Produits similaires</h2>
+    <section>
+      <h2>Produits similaires</h2>
 
-    <div class="similar-products-grid">
-      @for (produitSimilaire of produitsSimilaires(); track produitSimilaire.id_produit) {
-        <a class="similar-product-card" [routerLink]="['/produits', produitSimilaire.id_produit]">
-          @if (produitSimilaire.image_produit) {
-            <img [src]="produitSimilaire.image_produit" [alt]="produitSimilaire.intitule">
-          }
-          @else {
-            <div class="similar-image-placeholder">Image non disponible</div>
-          }
+      <div class="similar-products-grid">
+        @for (produitSimilaire of produitsSimilaires(); track produitSimilaire.id_produit) {
+          <a class="similar-product-card" [routerLink]="['/produits', produitSimilaire.id_produit]">
+            @if (produitSimilaire.image_produit) {
+              <img [src]="produitSimilaire.image_produit" [alt]="produitSimilaire.intitule">
+            }
+            @else {
+              <div class="similar-image-placeholder">Image non disponible</div>
+            }
 
-          <h3>{{ produitSimilaire.intitule }}</h3>
-          <p class="similar-price">{{ produitSimilaire.prix_unitaire }} €</p>
-          <p>{{ produitSimilaire.variete.nom }}</p>
-        </a>
-      }
-    </div>
-  </section>
+            <h3>{{ produitSimilaire.intitule }}</h3>
+            <p class="similar-price">{{ produitSimilaire.prix_unitaire }} €</p>
+            <p>{{ produitSimilaire.variete.nom }}</p>
+          </a>
+        }
+      </div>
+    </section>
 }
 }

@@ -96,3 +96,22 @@ h2 {
   color: #3f7d20;
   text-decoration: underline;
 }
+
+.aromate-badge,
+.non-aromate-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.aromate-badge {
+  background-color: #dff2d8;
+  color: #256029;
+}
+
+.non-aromate-badge {
+  background-color: #ffc294;
+  color: #cc5b05;
+}

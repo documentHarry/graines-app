@@ -8,8 +8,8 @@
 
 <form [formGroup]="especeForm" (ngSubmit)="enregistrer()">
   <div class="form-field">
-    <label for="nom_commun">Nom commun *</label>
-    <input id="nom_commun" type="text" formControlName="nom_commun">
+    <label for="nom_commun">Nom commun</label>
+    <input id="nom_commun" type="text" formControlName="nom_commun" required>
 
     @if (especeForm.controls.nom_commun.invalid && especeForm.controls.nom_commun.touched) {
       <p class="error">Le nom commun est obligatoire.</p>
@@ -17,20 +17,11 @@
   </div>
 
   <div class="form-field">
-    <label for="nom_scientifique">Nom scientifique *</label>
-    <input id="nom_scientifique" type="text" formControlName="nom_scientifique">
+    <label for="nom_scientifique">Nom scientifique</label>
+    <input id="nom_scientifique" type="text" formControlName="nom_scientifique" required>
 
     @if (especeForm.controls.nom_scientifique.invalid && especeForm.controls.nom_scientifique.touched) {
       <p class="error">Le nom scientifique est obligatoire.</p>
-    }
-  </div>
-
-  <div class="form-field">
-    <label for="type_plante">Type de plante *</label>
-    <input id="type_plante" type="text" formControlName="type_plante">
-
-    @if (especeForm.controls.type_plante.invalid && especeForm.controls.type_plante.touched) {
-      <p class="error">Le type de plante est obligatoire.</p>
     }
   </div>
 

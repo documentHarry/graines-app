@@ -1,0 +1,56 @@
+@if (utilisateur()) {
+  <a class="back-link" [routerLink]="['/utilisateurs', utilisateur()?.id_utilisateur]">← Détail de l'utilisateur</a>
+}
+@else {
+  <a class="back-link" routerLink="/utilisateurs">← Retour aux utilisateurs</a>
+}
+
+<h1>Modifier un utilisateur</h1>
+
+@if (isLoading()) {
+  <p>Chargement de l'utilisateur...</p>
+}
+@else {
+  @if (message()) {
+    <p class="message">{{ message() }}</p>
+  }
+
+  <form [formGroup]="utilisateurForm" (ngSubmit)="enregistrer()">
+    <section>
+      <h2>Informations générales</h2>
+      <p class="form-help">Les champs nom, prénom, email sont obligatoires.</p>
+
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="prenom">Prénom</label>
+          <input id="prenom" type="text" formControlName="prenom" required>
+
+          @if (utilisateurForm.controls.prenom.invalid && utilisateurForm.controls.prenom.touched) {
+            <p class="error">Le prénom est obligatoire.</p>
+          }
+        </div>
+
+        <div class="form-field">
+          <label for="nom">Nom</label>
+          <input id="nom" type="text" formControlName="nom" required>
+
+          @if (utilisateurForm.controls.nom.invalid && utilisateurForm.controls.nom.touched) {
+            <p class="error">Le nom est obligatoire.</p>
+          }
+        </div>
+
+        <div class="form-field">
+          <label for="email">Email</label>
+          <input id="email" type="email" formControlName="email" required>
+
+          @if (utilisateurForm.controls.email.invalid && utilisateurForm.controls.email.touched) {
+            <p class="error">L'email est obligatoire et doit être valide.</p>
+          }
+        </div>
+
+      </div>
+    </section>
+
+    <button type="submit">Enregistrer les modifications</button>
+  </form>
+}

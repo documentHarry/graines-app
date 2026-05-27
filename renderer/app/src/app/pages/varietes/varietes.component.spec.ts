@@ -40,7 +40,6 @@ describe('VarietesComponent', () => {
         id_espece: 1,
         nom_scientifique: 'Solanum lycopersicum',
         nom_commun: 'Tomate',
-        type_plante: 'Légume fruit',
       },
       _count: {
         produit: 3,
@@ -76,7 +75,6 @@ describe('VarietesComponent', () => {
         id_espece: 2,
         nom_scientifique: 'Chamaemelum nobile',
         nom_commun: 'Camomille',
-        type_plante: 'Plante aromatique',
       },
       _count: {
         produit: 0,
@@ -166,7 +164,6 @@ describe('VarietesComponent', () => {
         id_espece: 3,
         nom_scientifique: 'Ocimum basilicum',
         nom_commun: 'Basilic',
-        type_plante: 'Plante aromatique',
       },
     };
 

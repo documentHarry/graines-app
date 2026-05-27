@@ -132,6 +132,11 @@ export class CategorieSupprimerComponent {
         return;
       }
 
+      if (message.includes('DESTINATION_CATEGORY_NOT_FOUND')) {
+        this.message.set('La catégorie de destination est introuvable.');
+        return;
+      }
+
       console.error(error);
       this.message.set('Une erreur est survenue pendant la réaffectation.');
     }

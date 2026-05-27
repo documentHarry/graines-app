@@ -37,7 +37,7 @@
         <div class="form-field">
           <label for="categorie_destination_id">Catégorie de réaffectation</label>
 
-          <select id="categorie_destination_id" formControlName="categorie_destination_id">
+          <select id="categorie_destination_id" formControlName="categorie_destination_id" required>
             <option [value]="0">Sélectionner une catégorie</option>
 
             @for (categorieItem of categories(); track categorieItem.id_categorie) {

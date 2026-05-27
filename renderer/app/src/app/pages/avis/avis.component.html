@@ -1,0 +1,44 @@
+<h1>Avis</h1>
+
+<a class="add-link" routerLink="/avis/ajouter">Ajouter un avis</a>
+
+@if (isLoading()) {
+  <p>Chargement des avis...</p>
+}
+@else if (message()) {
+  <p class="message">{{ message() }}</p>
+}
+@else if (avis().length === 0) {
+  <p>Aucun avis trouvé.</p>
+}
+@else {
+  <section class="avis-grid">
+    @for (unAvis of avis(); track unAvis.id_avis) {
+      <article class="avis-card">
+        <header>
+          <h2>{{ unAvis.titre || 'Avis sans titre' }}</h2>
+          <p>Note : {{ unAvis.note }}/10</p>
+        </header>
+
+        <div class="infos">
+          <p><strong>Produit : </strong>{{ unAvis.produit.intitule }}</p>
+          <p><strong>Auteur : </strong>{{ getAuteur(unAvis) }}</p>
+
+          @if (unAvis.commentaire) {
+            <p>{{ unAvis.commentaire }}</p>
+          }
+
+          <p><strong>Statut : </strong>{{ unAvis.statut }}</p>
+          <p><strong>J’aime : </strong>{{ unAvis.nombre_jaime }}</p>
+        </div>
+
+        <div class="avis-actions">
+          <button type="button" (click)="aimerAvis(unAvis.id_avis)">J’aime</button>
+
+          <a [routerLink]="['/avis/modifier', unAvis.id_avis]">Modifier</a>
+          <a [routerLink]="['/avis/supprimer', unAvis.id_avis]">Supprimer</a>
+        </div>
+      </article>
+    }
+  </section>
+}

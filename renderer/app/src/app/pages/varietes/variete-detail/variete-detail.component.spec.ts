@@ -55,7 +55,6 @@ describe('VarieteDetailComponent', () => {
         id_espece: 1,
         nom_scientifique: 'Solanum lycopersicum',
         nom_commun: 'Tomate',
-        type_plante: 'Légume fruit',
       },
       _count: {
         produit: 0,
@@ -96,7 +95,6 @@ describe('VarieteDetailComponent', () => {
         id_espece: 1,
         nom_scientifique: 'Solanum lycopersicum',
         nom_commun: 'Tomate',
-        type_plante: 'Légume fruit',
       },
       _count: {
         produit: 0,
@@ -137,7 +135,6 @@ describe('VarieteDetailComponent', () => {
         id_espece: 1,
         nom_scientifique: 'Solanum lycopersicum',
         nom_commun: 'Tomate',
-        type_plante: 'Légume fruit',
       },
       _count: {
         produit: 4,
@@ -182,7 +179,6 @@ describe('VarieteDetailComponent', () => {
         id_espece: 1,
         nom_scientifique: 'Solanum lycopersicum',
         nom_commun: 'Tomate',
-        type_plante: 'Légume fruit',
       },
       _count: {
         produit: 0,
@@ -197,5 +193,107 @@ describe('VarieteDetailComponent', () => {
 
   it('devrait retourner une liste vide quand aucun conseil de plantation n’est renseigné', () => {
     expect(component.getConseilsPlantation()).toEqual([]);
+  });
+
+  it('devrait retourner une liste vide quand aucune information aromatique n’est disponible', () => {
+    expect(component.getAromates()).toEqual([]);
+    expect(component.estAromate()).toBe(false);
+  });
+
+  it('devrait détecter une variété aromate', () => {
+    component.variete.set({
+      id_variete: 1,
+      nom: 'Basilic grand vert',
+      descriptif: null,
+      bio: 1,
+      cycle_jours: null,
+      couleur_legume: null,
+      taille_fixe_legume: null,
+      taille_min_legume: null,
+      taille_max_legume: null,
+      espacement_entre_les_plants: null,
+      espacement_entre_les_lignes: null,
+      type_ensoleillement: null,
+      type_feuillage: null,
+      hauteur_adulte_min: null,
+      hauteur_adulte_max: null,
+      duree_de_germination: null,
+      temperature_min_de_germination: null,
+      cycle_de_vie: null,
+      rusticite_plante: null,
+      date_semis_min: null,
+      date_semis_max: null,
+      duree_avant_recolte: null,
+      type_de_sol: null,
+      conseil_plantation: null,
+      espece_id: 1,
+      espece: {
+        id_espece: 1,
+        nom_scientifique: 'Ocimum basilicum',
+        nom_commun: 'Basilic',
+      },
+      _count: {
+        produit: 0,
+      },
+      aromate: [
+        {
+          id_aromate: 1,
+          partie_utilisee: 'Feuilles',
+          propriete: 'Parfumée',
+          usage_culinaire: 'Sauces et salades',
+          variete_id: 1,
+          aromate_propriete: [],
+        },
+      ],
+    });
+
+    expect(component.getAromates().length).toBe(1);
+    expect(component.estAromate()).toBe(true);
+  });
+
+  it('devrait retourner les propriétés médicinales d’un aromate', () => {
+    const aromate = {
+      id_aromate: 1,
+      partie_utilisee: 'Feuilles',
+      propriete: 'Parfumée',
+      usage_culinaire: 'Sauces et salades',
+      variete_id: 1,
+      aromate_propriete: [
+        {
+          aromate_id: 1,
+          propriete_id: 1,
+          propriete_medicinale: {
+            id_propriete: 1,
+            nom_propriete: 'Digestive',
+          },
+        },
+        {
+          aromate_id: 1,
+          propriete_id: 2,
+          propriete_medicinale: {
+            id_propriete: 2,
+            nom_propriete: 'Antioxydante',
+          },
+        },
+      ],
+    };
+
+    expect(component.getProprietesMedicinales(aromate)).toEqual([
+      'Digestive',
+      'Antioxydante',
+    ]);
+  });
+
+  it('devrait retourner une liste vide si un aromate n’a aucune propriété médicinale', () => {
+    const aromate = {
+      id_aromate: 1,
+      partie_utilisee: 'Feuilles',
+      propriete: 'Parfumée',
+      usage_culinaire: 'Sauces et salades',
+      variete_id: 1,
+      aromate_propriete: [],
+    };
+
+    expect(component.getProprietesMedicinales(aromate)).toEqual([]);
   });
 });

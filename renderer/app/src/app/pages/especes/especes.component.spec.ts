@@ -14,7 +14,6 @@ describe('EspecesComponent', () => {
       id_espece: 1,
       nom_scientifique: 'Matricaria chamomilla',
       nom_commun: 'Camomille',
-      type_plante: 'Plante aromatique',
       _count: {
         variete: 2,
       },
@@ -23,7 +22,6 @@ describe('EspecesComponent', () => {
       id_espece: 2,
       nom_scientifique: 'Solanum lycopersicum',
       nom_commun: 'Tomate',
-      type_plante: 'Légume fruit',
       _count: {
         variete: 5,
       },
@@ -86,7 +84,6 @@ describe('EspecesComponent', () => {
       id_espece: 3,
       nom_scientifique: 'Ocimum basilicum',
       nom_commun: 'Basilic',
-      type_plante: 'Plante aromatique',
     };
 
     const nombreVarietes = component.getNombreVarietes(especeSansCompteur);

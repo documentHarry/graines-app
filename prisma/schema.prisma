@@ -107,7 +107,6 @@ model espece {
   id_espece        Int       @id @default(autoincrement())
   nom_scientifique String
   nom_commun       String
-  type_plante      String
   variete          variete[]
 
   @@unique([nom_scientifique, nom_commun], map: "sqlite_autoindex_espece_1")
@@ -151,18 +150,18 @@ model panier {
 
 model produit {
   id_produit       Int                @id @default(autoincrement())
-  variete_id       Int
-  categorie_id     Int
   intitule         String
   prix_unitaire    Float
   quantite         Int                @default(0)
-  date_ajout       String?            @default("CURRENT_TIMESTAMP")
   image_produit    String?
+  date_ajout       String?            @default("CURRENT_TIMESTAMP")
+  variete_id       Int
+  categorie_id     Int
   article_commande article_commande[]
   avis             avis[]
   panier           panier[]
-  categorie        categorie          @relation(fields: [categorie_id], references: [id_categorie], onDelete: Cascade, onUpdate: NoAction)
-  variete          variete            @relation(fields: [variete_id], references: [id_variete], onDelete: Cascade, onUpdate: NoAction)
+  categorie        categorie          @relation(fields: [categorie_id], references: [id_categorie], onUpdate: NoAction)
+  variete          variete            @relation(fields: [variete_id], references: [id_variete], onUpdate: NoAction)
 }
 
 model propriete_medicinale {
@@ -182,7 +181,7 @@ model utilisateur {
   nom               String
   prenom            String
   email             String              @unique(map: "sqlite_autoindex_utilisateur_1")
-  mot_de_passe      String
+  mot_de_passe_hash String
   mot_de_passe_salt Bytes
   date_inscription  String?             @default("CURRENT_TIMESTAMP")
   actif             Int?                @default(1)

@@ -1,7 +1,8 @@
 import { Component, inject, input, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Espece, Variete, VarieteUpdateInput } from '../../../types/electron';
+import { Aromate, AromateInput, ProprieteMedicinale, Espece, Variete, VarieteUpdateInput } from '../../../types/electron';
+import { ProprieteMedicinaleService } from '../../../services/propriete-medicinale.service';
 import { EspeceService } from '../../../services/espece.service';
 import { VarieteService } from '../../../services/variete.service';
 
@@ -14,12 +15,15 @@ import { VarieteService } from '../../../services/variete.service';
 
 export class VarieteModifierComponent {
   private readonly formBuilder = inject(FormBuilder);
+  private readonly proprieteMedicinaleService = inject(ProprieteMedicinaleService);
   private readonly especeService = inject(EspeceService);
   private readonly varieteService = inject(VarieteService);
   private readonly router = inject(Router);
 
   id = input<string>();
 
+  proprietesMedicinales = signal<ProprieteMedicinale[]>([]);
+  proprietesSelectionnees = signal<number[]>([]);
   variete = signal<Variete | null>(null);
   especes = signal<Espece[]>([]);
   isLoading = signal(true);
@@ -50,6 +54,9 @@ export class VarieteModifierComponent {
     duree_avant_recolte: [''],
     type_de_sol: [''],
     conseil_plantation: [''],
+    partie_utilisee: [''],
+    propriete_aromate: [''],
+    usage_culinaire: [''],
   });
 
   async ngOnInit(): Promise<void> {
@@ -68,6 +75,7 @@ export class VarieteModifierComponent {
     try {
       const variete = await this.varieteService.getVarieteById(idVariete);
       const especes = await this.especeService.getEspeces();
+      const proprietesMedicinales = await this.proprieteMedicinaleService.getProprietesMedicinales();
 
       if (!variete) {
         this.message.set('Variété introuvable.');
@@ -76,6 +84,7 @@ export class VarieteModifierComponent {
 
       this.variete.set(variete);
       this.especes.set(especes);
+      this.proprietesMedicinales.set(proprietesMedicinales);
 
       this.varieteForm.patchValue({
         espece_id: variete.espece_id,
@@ -104,6 +113,20 @@ export class VarieteModifierComponent {
         conseil_plantation: variete.conseil_plantation ?? '',
       });
 
+      const aromate = this.getPremierAromate(variete);
+
+      if (aromate) {
+        this.varieteForm.patchValue({
+          partie_utilisee: aromate.partie_utilisee ?? '',
+          propriete_aromate: aromate.propriete ?? '',
+          usage_culinaire: aromate.usage_culinaire ?? '',
+        });
+
+      this.proprietesSelectionnees.set(
+        aromate.aromate_propriete?.map(item => item.propriete_id) ?? []
+      );
+    }
+
       this.message.set('');
     }
     catch {
@@ -112,6 +135,58 @@ export class VarieteModifierComponent {
     finally {
       this.isLoading.set(false);
     }
+  }
+
+  getPremierAromate(variete: Variete): Aromate | null {
+    return variete.aromate?.[0] ?? null;
+  }
+
+  estProprieteSelectionnee(proprieteId: number): boolean {
+    return this.proprietesSelectionnees().includes(proprieteId);
+  }
+
+  changerPropriete(event: Event, proprieteId: number): void {
+    const input = event.target as HTMLInputElement;
+    const proprietes = this.proprietesSelectionnees();
+
+    if (input.checked) {
+      this.proprietesSelectionnees.set([...proprietes, proprieteId]);
+      return;
+    }
+
+    this.proprietesSelectionnees.set(
+      proprietes.filter(id => id !== proprieteId)
+    );
+  }
+
+  getAromateInput(): AromateInput | null {
+    const valeurFormulaire = this.varieteForm.getRawValue();
+
+    const partieUtilisee = valeurFormulaire.partie_utilisee?.trim() || null;
+    const propriete = valeurFormulaire.propriete_aromate?.trim() || null;
+    const usageCulinaire = valeurFormulaire.usage_culinaire?.trim() || null;
+    const proprietesIds = this.proprietesSelectionnees();
+
+    if (!partieUtilisee && !propriete && !usageCulinaire && proprietesIds.length === 0) {
+      return null;
+    }
+
+    return {
+      partie_utilisee: partieUtilisee,
+      propriete: propriete,
+      usage_culinaire: usageCulinaire,
+      proprietes_ids: proprietesIds,
+    };
+  }
+
+  supprimerAromate(): void {
+    this.varieteForm.patchValue({
+      partie_utilisee: '',
+      propriete_aromate: '',
+      usage_culinaire: '',
+    });
+
+    this.proprietesSelectionnees.set([]);
   }
 
   async enregistrer(): Promise<void> {
@@ -149,6 +224,7 @@ export class VarieteModifierComponent {
       duree_avant_recolte: valeurFormulaire.duree_avant_recolte?.trim() || null,
       type_de_sol: valeurFormulaire.type_de_sol?.trim() || null,
       conseil_plantation: valeurFormulaire.conseil_plantation?.trim() || null,
+      aromate: this.getAromateInput(),
     };
 
     try {

@@ -1,0 +1,35 @@
+@if (utilisateur()) {
+  <a class="back-link" [routerLink]="['/utilisateurs', utilisateur()?.id_utilisateur]">← Détail de l'utilisateur</a>
+}
+@else {
+  <a class="back-link" routerLink="/utilisateurs">← Retour aux utilisateurs</a>
+}
+
+<h1>Supprimer un utilisateur</h1>
+
+@if (isLoading()) {
+  <p>Chargement de l'utilisateur...</p>
+}
+@else if (message() && !utilisateur()) {
+  <p class="message">{{ message() }}</p>
+}
+@else if (utilisateur()) {
+  <section class="delete-card">
+    <h2>{{ getNomComplet() }}</h2>
+
+    <p class="email">{{ utilisateur()?.email }}</p>
+    <p><strong>Statut: </strong>{{ utilisateur()?.actif === 1 ? 'Actif' : 'Inactif' }}</p>
+    <p><strong>Adresses associées: </strong>{{ getNombreAdresses() }}</p>
+
+    @if (message()) {
+      <p class="message-card">{{ message() }}</p>
+    }
+
+    <p>Cet utilisateur ne sera pas supprimé définitivement. Il sera simplement passé en inactif.</p>
+
+    <div class="actions">
+      <button type="button" class="delete-button" (click)="supprimerUtilisateur()">Désactiver</button>
+      <button type="button" class="cancel-button" (click)="annuler()">Annuler</button>
+    </div>
+  </section>
+}

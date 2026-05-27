@@ -189,8 +189,7 @@ export type Demande_retourScalarFieldEnum = (typeof Demande_retourScalarFieldEnu
 export const EspeceScalarFieldEnum = {
   id_espece: 'id_espece',
   nom_scientifique: 'nom_scientifique',
-  nom_commun: 'nom_commun',
-  type_plante: 'type_plante'
+  nom_commun: 'nom_commun'
 } as const
 
 export type EspeceScalarFieldEnum = (typeof EspeceScalarFieldEnum)[keyof typeof EspeceScalarFieldEnum]
@@ -234,13 +233,13 @@ export type PanierScalarFieldEnum = (typeof PanierScalarFieldEnum)[keyof typeof 
 
 export const ProduitScalarFieldEnum = {
   id_produit: 'id_produit',
-  variete_id: 'variete_id',
-  categorie_id: 'categorie_id',
   intitule: 'intitule',
   prix_unitaire: 'prix_unitaire',
   quantite: 'quantite',
+  image_produit: 'image_produit',
   date_ajout: 'date_ajout',
-  image_produit: 'image_produit'
+  variete_id: 'variete_id',
+  categorie_id: 'categorie_id'
 } as const
 
 export type ProduitScalarFieldEnum = (typeof ProduitScalarFieldEnum)[keyof typeof ProduitScalarFieldEnum]
@@ -267,7 +266,7 @@ export const UtilisateurScalarFieldEnum = {
   nom: 'nom',
   prenom: 'prenom',
   email: 'email',
-  mot_de_passe: 'mot_de_passe',
+  mot_de_passe_hash: 'mot_de_passe_hash',
   mot_de_passe_salt: 'mot_de_passe_salt',
   date_inscription: 'date_inscription',
   actif: 'actif'

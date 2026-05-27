@@ -20,7 +20,6 @@ export class EspeceAjouterComponent {
   especeForm = this.formBuilder.group({
     nom_commun: ['', Validators.required],
     nom_scientifique: ['', Validators.required],
-    type_plante: ['', Validators.required],
   });
 
   async enregistrer(): Promise<void> {
@@ -35,7 +34,6 @@ export class EspeceAjouterComponent {
     const espece: EspeceCreateInput = {
       nom_commun: valeurFormulaire.nom_commun?.trim() ?? '',
       nom_scientifique: valeurFormulaire.nom_scientifique?.trim() ?? '',
-      type_plante: valeurFormulaire.type_plante?.trim() ?? '',
     };
 
     try {

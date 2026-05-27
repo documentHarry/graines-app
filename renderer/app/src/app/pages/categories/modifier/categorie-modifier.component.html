@@ -14,6 +14,8 @@
   }
 
   <form [formGroup]="categorieForm" (ngSubmit)="enregistrer()">
+    <p class="form-help">Le nom de la catégorie est obligatoire.</p>
+
     <div class="form-field">
       <label for="nom_categorie">Nom de la catégorie</label>
       <input id="nom_categorie" type="text" formControlName="nom_categorie">

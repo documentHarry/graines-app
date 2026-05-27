@@ -1,0 +1,85 @@
+.back-link {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: #f2a65a;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: #8fd694;
+  text-decoration: underline;
+}
+
+h1 {
+  margin-bottom: 16px;
+  color: #ffb86b;
+}
+
+.delete-card {
+  max-width: 720px;
+  padding: 20px;
+  border: 1px solid #8a5a36;
+  border-radius: 12px;
+  background-color: #f8ead8;
+  color: #2a1a10;
+}
+
+h2 {
+  margin: 0 0 8px;
+  color: #d9782d;
+}
+
+.email {
+  margin: 0 0 12px;
+  color: #5f4b3b;
+  font-style: italic;
+}
+
+p {
+  margin: 8px 0;
+  line-height: 1.4;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.delete-button {
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 10px;
+  background-color: #9b1c1c;
+  color: #ffffff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: #b32626;
+}
+
+.cancel-button {
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 10px;
+  background-color: #d8d0c8;
+  color: #2a1a10;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  background-color: #e6ded6;
+}
+
+.message {
+  color: #f8ead8;
+}
+
+.message-card {
+  color: #9b1c1c;
+  font-weight: bold;
+}

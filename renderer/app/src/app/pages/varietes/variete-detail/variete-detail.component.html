@@ -4,7 +4,7 @@
   <p>Chargement de la variété...</p>
 }
 @else if (message()) {
-  <p>{{ message() }}</p>
+  <p class="message">{{ message() }}</p>
 }
 @else if (variete()) {
   <article class="detail-card">
@@ -24,13 +24,19 @@
 
     <p><strong>Label: </strong>{{ getLabelBio() }}</p>
 
+    @if (estAromate()) {
+      <p><strong>Usage: </strong><span class="aromate-badge">Aromate</span></p>
+    }
+    @else {
+      <p><strong>Usage: </strong><span class="non-aromate-badge">Non aromate</span></p>
+    }
+
     <section>
       <h2>Espèce associée</h2>
 
       <div class="info-grid">
         <p><strong>Nom commun: </strong>{{ variete()?.espece?.nom_commun }}</p>
         <p><strong>Nom scientifique: </strong><span class="italic">{{ variete()?.espece?.nom_scientifique }}</span></p>
-        <p><strong>Type de plante: </strong>{{ variete()?.espece?.type_plante }}</p>
       </div>
     </section>
 
@@ -126,6 +132,40 @@
       <section>
         <h2>Descriptif</h2>
         <p>{{ variete()?.descriptif }}</p>
+      </section>
+    }
+
+    @if (getAromates().length > 0) {
+      <section>
+        <h2>Aromate</h2>
+
+        @for (aromate of getAromates(); track aromate.id_aromate) {
+          <div class="aromate-card">
+            @if (aromate.partie_utilisee) {
+              <p><strong>Partie utilisée: </strong>{{ aromate.partie_utilisee }}</p>
+            }
+
+            @if (aromate.propriete) {
+              <p><strong>Propriété: </strong>{{ aromate.propriete }}</p>
+            }
+
+            @if (aromate.usage_culinaire) {
+              <p><strong>Usage culinaire: </strong>{{ aromate.usage_culinaire }}</p>
+            }
+
+            @if (getProprietesMedicinales(aromate).length > 0) {
+              <div>
+                <strong>Propriétés médicinales: </strong>
+
+                <ul>
+                  @for (propriete of getProprietesMedicinales(aromate); track propriete) {
+                    <li>{{ propriete }}</li>
+                  }
+                </ul>
+              </div>
+            }
+          </div>
+        }
       </section>
     }
 

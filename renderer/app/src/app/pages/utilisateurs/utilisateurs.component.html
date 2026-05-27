@@ -1,0 +1,49 @@
+<h1>Utilisateurs</h1>
+<a class="add-link" routerLink="/utilisateurs/ajouter">Ajouter un utilisateur</a>
+
+@if (isLoading()) {
+  <p>Chargement des utilisateurs...</p>
+}
+@else if (message()) {
+  <p class="message">{{ message() }}</p>
+}
+@else if (utilisateurs().length === 0) {
+  <p>Aucun utilisateur trouvé.</p>
+}
+@else {
+  <section class="utilisateurs-grid">
+    @for (utilisateur of utilisateurs(); track utilisateur.id_utilisateur) {
+      <article class="utilisateur-card">
+        <header class="utilisateur-header">
+          <div>
+            <h2>{{ getNomComplet(utilisateur) }}</h2>
+            <p class="email">{{ utilisateur.email }}</p>
+          </div>
+
+          <span
+            class="adresses-count"
+            [class.empty]="getNombreAdresses(utilisateur) === 0">
+            {{ getNombreAdresses(utilisateur) }}
+          </span>
+        </header>
+
+        <div class="infos">
+          <p><strong>Statut: </strong>{{ getStatutUtilisateur(utilisateur) }}</p>
+
+          @if (utilisateur.date_inscription) {
+            <p><strong>Date d'inscription: </strong>{{ utilisateur.date_inscription }}</p>
+          }
+
+          @if (getNombreAdresses(utilisateur) > 0) {
+            <p><strong>Adresses: </strong>{{ getNombreAdresses(utilisateur) }}</p>
+          }
+          @else {
+            <p><strong>Adresses: </strong>Aucune adresse enregistrée</p>
+          }
+        </div>
+
+        <a class="details-link" [routerLink]="['/utilisateurs', utilisateur.id_utilisateur]">Voir en détail</a>
+      </article>
+    }
+  </section>
+}

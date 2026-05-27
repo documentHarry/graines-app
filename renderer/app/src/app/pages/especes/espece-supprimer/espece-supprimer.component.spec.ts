@@ -33,7 +33,6 @@ describe('EspeceSupprimerComponent', () => {
       id_espece: 1,
       nom_scientifique: 'Matricaria chamomilla',
       nom_commun: 'Camomille',
-      type_plante: 'Plante aromatique',
       _count: {
         variete: 3,
       },
@@ -47,7 +46,6 @@ describe('EspeceSupprimerComponent', () => {
       id_espece: 1,
       nom_scientifique: 'Matricaria chamomilla',
       nom_commun: 'Camomille',
-      type_plante: 'Plante aromatique',
       _count: {
         variete: 0,
       },

@@ -38,21 +38,18 @@ export type EspeceMinAggregateOutputType = {
   id_espece: number | null
   nom_scientifique: string | null
   nom_commun: string | null
-  type_plante: string | null
 }
 
 export type EspeceMaxAggregateOutputType = {
   id_espece: number | null
   nom_scientifique: string | null
   nom_commun: string | null
-  type_plante: string | null
 }
 
 export type EspeceCountAggregateOutputType = {
   id_espece: number
   nom_scientifique: number
   nom_commun: number
-  type_plante: number
   _all: number
 }
 
@@ -69,21 +66,18 @@ export type EspeceMinAggregateInputType = {
   id_espece?: true
   nom_scientifique?: true
   nom_commun?: true
-  type_plante?: true
 }
 
 export type EspeceMaxAggregateInputType = {
   id_espece?: true
   nom_scientifique?: true
   nom_commun?: true
-  type_plante?: true
 }
 
 export type EspeceCountAggregateInputType = {
   id_espece?: true
   nom_scientifique?: true
   nom_commun?: true
-  type_plante?: true
   _all?: true
 }
 
@@ -177,7 +171,6 @@ export type EspeceGroupByOutputType = {
   id_espece: number
   nom_scientifique: string
   nom_commun: string
-  type_plante: string
   _count: EspeceCountAggregateOutputType | null
   _avg: EspeceAvgAggregateOutputType | null
   _sum: EspeceSumAggregateOutputType | null
@@ -207,7 +200,6 @@ export type especeWhereInput = {
   id_espece?: Prisma.IntFilter<"espece"> | number
   nom_scientifique?: Prisma.StringFilter<"espece"> | string
   nom_commun?: Prisma.StringFilter<"espece"> | string
-  type_plante?: Prisma.StringFilter<"espece"> | string
   variete?: Prisma.VarieteListRelationFilter
 }
 
@@ -215,7 +207,6 @@ export type especeOrderByWithRelationInput = {
   id_espece?: Prisma.SortOrder
   nom_scientifique?: Prisma.SortOrder
   nom_commun?: Prisma.SortOrder
-  type_plante?: Prisma.SortOrder
   variete?: Prisma.varieteOrderByRelationAggregateInput
 }
 
@@ -227,7 +218,6 @@ export type especeWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.especeWhereInput | Prisma.especeWhereInput[]
   nom_scientifique?: Prisma.StringFilter<"espece"> | string
   nom_commun?: Prisma.StringFilter<"espece"> | string
-  type_plante?: Prisma.StringFilter<"espece"> | string
   variete?: Prisma.VarieteListRelationFilter
 }, "id_espece" | "nom_scientifique_nom_commun">
 
@@ -235,7 +225,6 @@ export type especeOrderByWithAggregationInput = {
   id_espece?: Prisma.SortOrder
   nom_scientifique?: Prisma.SortOrder
   nom_commun?: Prisma.SortOrder
-  type_plante?: Prisma.SortOrder
   _count?: Prisma.especeCountOrderByAggregateInput
   _avg?: Prisma.especeAvgOrderByAggregateInput
   _max?: Prisma.especeMaxOrderByAggregateInput
@@ -250,13 +239,11 @@ export type especeScalarWhereWithAggregatesInput = {
   id_espece?: Prisma.IntWithAggregatesFilter<"espece"> | number
   nom_scientifique?: Prisma.StringWithAggregatesFilter<"espece"> | string
   nom_commun?: Prisma.StringWithAggregatesFilter<"espece"> | string
-  type_plante?: Prisma.StringWithAggregatesFilter<"espece"> | string
 }
 
 export type especeCreateInput = {
   nom_scientifique: string
   nom_commun: string
-  type_plante: string
   variete?: Prisma.varieteCreateNestedManyWithoutEspeceInput
 }
 
@@ -264,14 +251,12 @@ export type especeUncheckedCreateInput = {
   id_espece?: number
   nom_scientifique: string
   nom_commun: string
-  type_plante: string
   variete?: Prisma.varieteUncheckedCreateNestedManyWithoutEspeceInput
 }
 
 export type especeUpdateInput = {
   nom_scientifique?: Prisma.StringFieldUpdateOperationsInput | string
   nom_commun?: Prisma.StringFieldUpdateOperationsInput | string
-  type_plante?: Prisma.StringFieldUpdateOperationsInput | string
   variete?: Prisma.varieteUpdateManyWithoutEspeceNestedInput
 }
 
@@ -279,7 +264,6 @@ export type especeUncheckedUpdateInput = {
   id_espece?: Prisma.IntFieldUpdateOperationsInput | number
   nom_scientifique?: Prisma.StringFieldUpdateOperationsInput | string
   nom_commun?: Prisma.StringFieldUpdateOperationsInput | string
-  type_plante?: Prisma.StringFieldUpdateOperationsInput | string
   variete?: Prisma.varieteUncheckedUpdateManyWithoutEspeceNestedInput
 }
 
@@ -287,20 +271,17 @@ export type especeCreateManyInput = {
   id_espece?: number
   nom_scientifique: string
   nom_commun: string
-  type_plante: string
 }
 
 export type especeUpdateManyMutationInput = {
   nom_scientifique?: Prisma.StringFieldUpdateOperationsInput | string
   nom_commun?: Prisma.StringFieldUpdateOperationsInput | string
-  type_plante?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type especeUncheckedUpdateManyInput = {
   id_espece?: Prisma.IntFieldUpdateOperationsInput | number
   nom_scientifique?: Prisma.StringFieldUpdateOperationsInput | string
   nom_commun?: Prisma.StringFieldUpdateOperationsInput | string
-  type_plante?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type especeNom_scientifiqueNom_communCompoundUniqueInput = {
@@ -312,7 +293,6 @@ export type especeCountOrderByAggregateInput = {
   id_espece?: Prisma.SortOrder
   nom_scientifique?: Prisma.SortOrder
   nom_commun?: Prisma.SortOrder
-  type_plante?: Prisma.SortOrder
 }
 
 export type especeAvgOrderByAggregateInput = {
@@ -323,14 +303,12 @@ export type especeMaxOrderByAggregateInput = {
   id_espece?: Prisma.SortOrder
   nom_scientifique?: Prisma.SortOrder
   nom_commun?: Prisma.SortOrder
-  type_plante?: Prisma.SortOrder
 }
 
 export type especeMinOrderByAggregateInput = {
   id_espece?: Prisma.SortOrder
   nom_scientifique?: Prisma.SortOrder
   nom_commun?: Prisma.SortOrder
-  type_plante?: Prisma.SortOrder
 }
 
 export type especeSumOrderByAggregateInput = {
@@ -359,14 +337,12 @@ export type especeUpdateOneRequiredWithoutVarieteNestedInput = {
 export type especeCreateWithoutVarieteInput = {
   nom_scientifique: string
   nom_commun: string
-  type_plante: string
 }
 
 export type especeUncheckedCreateWithoutVarieteInput = {
   id_espece?: number
   nom_scientifique: string
   nom_commun: string
-  type_plante: string
 }
 
 export type especeCreateOrConnectWithoutVarieteInput = {
@@ -388,14 +364,12 @@ export type especeUpdateToOneWithWhereWithoutVarieteInput = {
 export type especeUpdateWithoutVarieteInput = {
   nom_scientifique?: Prisma.StringFieldUpdateOperationsInput | string
   nom_commun?: Prisma.StringFieldUpdateOperationsInput | string
-  type_plante?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type especeUncheckedUpdateWithoutVarieteInput = {
   id_espece?: Prisma.IntFieldUpdateOperationsInput | number
   nom_scientifique?: Prisma.StringFieldUpdateOperationsInput | string
   nom_commun?: Prisma.StringFieldUpdateOperationsInput | string
-  type_plante?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
@@ -433,7 +407,6 @@ export type especeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   id_espece?: boolean
   nom_scientifique?: boolean
   nom_commun?: boolean
-  type_plante?: boolean
   variete?: boolean | Prisma.espece$varieteArgs<ExtArgs>
   _count?: boolean | Prisma.EspeceCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["espece"]>
@@ -442,24 +415,21 @@ export type especeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   id_espece?: boolean
   nom_scientifique?: boolean
   nom_commun?: boolean
-  type_plante?: boolean
 }, ExtArgs["result"]["espece"]>
 
 export type especeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id_espece?: boolean
   nom_scientifique?: boolean
   nom_commun?: boolean
-  type_plante?: boolean
 }, ExtArgs["result"]["espece"]>
 
 export type especeSelectScalar = {
   id_espece?: boolean
   nom_scientifique?: boolean
   nom_commun?: boolean
-  type_plante?: boolean
 }
 
-export type especeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id_espece" | "nom_scientifique" | "nom_commun" | "type_plante", ExtArgs["result"]["espece"]>
+export type especeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id_espece" | "nom_scientifique" | "nom_commun", ExtArgs["result"]["espece"]>
 export type especeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   variete?: boolean | Prisma.espece$varieteArgs<ExtArgs>
   _count?: boolean | Prisma.EspeceCountOutputTypeDefaultArgs<ExtArgs>
@@ -476,7 +446,6 @@ export type $especePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     id_espece: number
     nom_scientifique: string
     nom_commun: string
-    type_plante: string
   }, ExtArgs["result"]["espece"]>
   composites: {}
 }
@@ -904,7 +873,6 @@ export interface especeFieldRefs {
   readonly id_espece: Prisma.FieldRef<"espece", 'Int'>
   readonly nom_scientifique: Prisma.FieldRef<"espece", 'String'>
   readonly nom_commun: Prisma.FieldRef<"espece", 'String'>
-  readonly type_plante: Prisma.FieldRef<"espece", 'String'>
 }
     
 

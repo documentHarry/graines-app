@@ -28,7 +28,6 @@ describe('EspeceModifierComponent', () => {
     component.especeForm.patchValue({
       nom_commun: '',
       nom_scientifique: '',
-      type_plante: '',
     });
 
     expect(component.especeForm.invalid).toBe(true);
@@ -38,7 +37,6 @@ describe('EspeceModifierComponent', () => {
     component.especeForm.patchValue({
       nom_commun: '',
       nom_scientifique: 'Matricaria chamomilla',
-      type_plante: 'Plante aromatique',
     });
 
     expect(component.especeForm.invalid).toBe(true);
@@ -48,17 +46,6 @@ describe('EspeceModifierComponent', () => {
     component.especeForm.patchValue({
       nom_commun: 'Camomille',
       nom_scientifique: '',
-      type_plante: 'Plante aromatique',
-    });
-
-    expect(component.especeForm.invalid).toBe(true);
-  });
-
-  it('devrait avoir un formulaire invalide quand le type de plante est vide', () => {
-    component.especeForm.patchValue({
-      nom_commun: 'Camomille',
-      nom_scientifique: 'Matricaria chamomilla',
-      type_plante: '',
     });
 
     expect(component.especeForm.invalid).toBe(true);
@@ -68,7 +55,6 @@ describe('EspeceModifierComponent', () => {
     component.especeForm.patchValue({
       nom_commun: 'Camomille',
       nom_scientifique: 'Matricaria chamomilla',
-      type_plante: 'Plante aromatique',
     });
 
     expect(component.especeForm.valid).toBe(true);

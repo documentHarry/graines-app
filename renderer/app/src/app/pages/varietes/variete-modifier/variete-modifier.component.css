@@ -62,6 +62,38 @@ textarea {
   font-family: Arial, sans-serif;
 }
 
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px 16px;
+}
+
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: normal;
+}
+
+.checkbox-field input {
+  width: auto;
+}
+
+.delete-aromate-button {
+  margin-top: 8px;
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 10px;
+  background-color: #9b1c1c;
+  color: #ffffff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.delete-aromate-button:hover {
+  background-color: #b32626;
+}
+
 button {
   padding: 9px 14px;
   border: 0;

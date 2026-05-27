@@ -1,9 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Espece, VarieteCreateInput } from '../../../types/electron';
+import { AromateInput, Espece, ProprieteMedicinale, VarieteCreateInput } from '../../../types/electron';
 import { EspeceService } from '../../../services/espece.service';
 import { VarieteService } from '../../../services/variete.service';
+import { ProprieteMedicinaleService } from '../../../services/propriete-medicinale.service';
 
 @Component({
   selector: 'app-variete-ajouter',
@@ -11,13 +12,17 @@ import { VarieteService } from '../../../services/variete.service';
   templateUrl: './variete-ajouter.component.html',
   styleUrl: './variete-ajouter.component.css',
 })
+
 export class VarieteAjouterComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly especeService = inject(EspeceService);
   private readonly varieteService = inject(VarieteService);
+  private readonly proprieteMedicinaleService = inject(ProprieteMedicinaleService);
   private readonly router = inject(Router);
 
   especes = signal<Espece[]>([]);
+  proprietesMedicinales = signal<ProprieteMedicinale[]>([]);
+  proprietesSelectionnees = signal<number[]>([]);
   isLoading = signal(true);
   message = signal('');
 
@@ -46,25 +51,64 @@ export class VarieteAjouterComponent {
     duree_avant_recolte: [''],
     type_de_sol: [''],
     conseil_plantation: [''],
+    partie_utilisee: [''],
+    propriete_aromate: [''],
+    usage_culinaire: [''],
   });
 
   async ngOnInit(): Promise<void> {
-    await this.chargerEspeces();
+    await this.chargerDonnees();
   }
 
-  async chargerEspeces(): Promise<void> {
+  async chargerDonnees(): Promise<void> {
     try {
       const especes = await this.especeService.getEspeces();
+      const proprietesMedicinales = await this.proprieteMedicinaleService.getProprietesMedicinales();
 
       this.especes.set(especes);
+      this.proprietesMedicinales.set(proprietesMedicinales);
       this.message.set('');
     }
     catch {
-      this.message.set('Erreur pendant le chargement des espèces.');
+      this.message.set('Erreur pendant le chargement des données.');
     }
     finally {
       this.isLoading.set(false);
     }
+  }
+
+  changerPropriete(event: Event, proprieteId: number): void {
+    const input = event.target as HTMLInputElement;
+    const proprietes = this.proprietesSelectionnees();
+
+    if (input.checked) {
+      this.proprietesSelectionnees.set([...proprietes, proprieteId]);
+      return;
+    }
+
+    this.proprietesSelectionnees.set(
+      proprietes.filter(id => id !== proprieteId)
+    );
+  }
+
+  getAromateInput(): AromateInput | null {
+    const valeurFormulaire = this.varieteForm.getRawValue();
+
+    const partieUtilisee = valeurFormulaire.partie_utilisee?.trim() || null;
+    const propriete = valeurFormulaire.propriete_aromate?.trim() || null;
+    const usageCulinaire = valeurFormulaire.usage_culinaire?.trim() || null;
+    const proprietesIds = this.proprietesSelectionnees();
+
+    if (!partieUtilisee && !propriete && !usageCulinaire && proprietesIds.length === 0) {
+      return null;
+    }
+
+    return {
+      partie_utilisee: partieUtilisee,
+      propriete: propriete,
+      usage_culinaire: usageCulinaire,
+      proprietes_ids: proprietesIds,
+    };
   }
 
   async enregistrer(): Promise<void> {
@@ -101,6 +145,7 @@ export class VarieteAjouterComponent {
       duree_avant_recolte: valeurFormulaire.duree_avant_recolte?.trim() || null,
       type_de_sol: valeurFormulaire.type_de_sol?.trim() || null,
       conseil_plantation: valeurFormulaire.conseil_plantation?.trim() || null,
+      aromate: this.getAromateInput(),
     };
 
     try {
@@ -119,4 +164,5 @@ export class VarieteAjouterComponent {
       this.message.set('Une erreur technique est survenue pendant la création de la variété.');
     }
   }
+
 }

@@ -1,7 +1,15 @@
 <nav>
+  @if (!authService.isLoggedIn()) {
+    <a routerLink="/connexion" routerLinkActive="active">Connexion</a>
+  }
+  @else {
+    <span class="badge-utilisateur">{{ getInitiales() }}</span>
+    <button type="button" (click)="deconnexion()">Déconnexion</button>
+  }
   <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Accueil</a>
   <a routerLink="/categories" routerLinkActive="active">Catégories</a>
   <a routerLink="/especes" routerLinkActive="active">Espèces</a>
   <a routerLink="/varietes" routerLinkActive="active">Variétés</a>
   <a routerLink="/produits" routerLinkActive="active">Produits</a>
+  <a routerLink="/utilisateurs" routerLinkActive="active">Utilisateurs</a>
 </nav>

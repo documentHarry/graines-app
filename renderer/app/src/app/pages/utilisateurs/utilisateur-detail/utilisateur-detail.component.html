@@ -1,0 +1,62 @@
+<a class="back-link" routerLink="/utilisateurs">← Retour aux utilisateurs</a>
+
+@if (isLoading()) {
+  <p>Chargement de l'utilisateur...</p>
+}
+@else if (message()) {
+  <p class="message">{{ message() }}</p>
+}
+@else if (utilisateur()) {
+  <article class="detail-card">
+    <header class="detail-header">
+      <div>
+        <h1>{{ getNomComplet() }}</h1>
+        <p class="email">{{ utilisateur()?.email }}</p>
+      </div>
+
+      <span class="statut" [class.inactif]="utilisateur()?.actif === 0">{{ getStatutUtilisateur() }}</span>
+    </header>
+
+    <div class="actions">
+      <a class="edit-link" [routerLink]="['/utilisateurs/modifier', utilisateur()?.id_utilisateur]">Modifier l'utilisateur</a>
+      <a class="edit-link" [routerLink]="['/utilisateurs/roles', utilisateur()?.id_utilisateur]">Modifier les rôles</a>
+      <a class="delete-link" [routerLink]="['/utilisateurs/supprimer', utilisateur()?.id_utilisateur]">Supprimer l'utilisateur</a>
+    </div>
+
+    <section>
+      <h2>Informations générales</h2>
+
+      <div class="info-grid">
+        <p><strong>Prénom: </strong>{{ utilisateur()?.prenom }}</p>
+        <p><strong>Nom: </strong>{{ utilisateur()?.nom }}</p>
+        <p><strong>Email: </strong>{{ utilisateur()?.email }}</p>
+
+        @if (utilisateur()?.date_inscription) {
+          <p><strong>Date d'inscription: </strong>{{ utilisateur()?.date_inscription }}</p>
+        }
+
+        <p><strong>Statut: </strong>{{ getStatutUtilisateur() }}</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Adresses de livraison</h2>
+
+      @if (getAdresses().length === 0) {
+        <p>Aucune adresse enregistrée.</p>
+      }
+      @else {
+        @for (adresse of getAdresses(); track adresse.id_adresse) {
+          <div class="adresse-card">
+            <p><strong>{{ getAdresseComplete(adresse) }}</strong></p>
+            <p>{{ getLabelAdresseParDefaut(adresse) }}</p>
+
+            <button type="button" class="delete-address-button" (click)="supprimerAdresse(adresse)">
+              Supprimer l'adresse
+            </button>
+          </div>
+        }
+      }
+    </section>
+  </article>
+}

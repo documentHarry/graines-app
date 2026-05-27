@@ -5,7 +5,7 @@
   <p>Chargement des catégories...</p>
 }
 @else if (message()) {
-  <p>{{ message() }}</p>
+  <p class="message">{{ message() }}</p>
 }
 @else if (categories().length === 0) {
   <p>Aucune catégorie trouvée.</p>
@@ -16,7 +16,7 @@
       <article class="categorie-card">
         <header class="categorie-header">
           <h2>{{ categorie.nom_categorie }}</h2>
-          <span class="produits-count"[class.empty]="getNombreProduits(categorie) === 0">
+          <span class="produits-count" [class.empty]="getNombreProduits(categorie) === 0">
             {{ getNombreProduits(categorie) }}
           </span>
         </header>
@@ -26,8 +26,8 @@
         }
 
         <div class="actions">
-          <a class="view-link"[routerLink]="['/produits/categorie', categorie.id_categorie]">Voir</a>
-          <a class="edit-link"[routerLink]="['/categories/modifier', categorie.id_categorie]">Modifier</a>
+          <a class="view-link" [routerLink]="['/produits/categorie', categorie.id_categorie]">Voir</a>
+          <a class="edit-link" [routerLink]="['/categories/modifier', categorie.id_categorie]">Modifier</a>
           <a class="delete-link" [routerLink]="['/categories/supprimer', categorie.id_categorie]">Supprimer</a>
         </div>
       </article>

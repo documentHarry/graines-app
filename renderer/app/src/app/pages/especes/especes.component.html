@@ -6,7 +6,7 @@
   <p>Chargement des espèces...</p>
 }
 @else if (message()) {
-  <p>{{ message() }}</p>
+  <p class="message">{{ message() }}</p>
 }
 @else if (especes().length === 0) {
   <p>Aucune espèce trouvée.</p>
@@ -21,8 +21,6 @@
         </header>
 
         <p class="scientifique">{{ espece.nom_scientifique }}</p>
-
-        <p><strong>Type de plante: </strong>{{ espece.type_plante }}</p>
 
         <div class="actions">
           <a class="edit-link" [routerLink]="['/especes/modifier', espece.id_espece]">Modifier</a>

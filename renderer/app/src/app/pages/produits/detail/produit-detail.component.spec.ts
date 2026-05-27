@@ -68,7 +68,6 @@ describe('ProduitDetailComponent', () => {
           id_espece: 1,
           nom_scientifique: 'Solanum lycopersicum',
           nom_commun: 'Tomate',
-          type_plante: 'Légume fruit',
         },
       },
     });
@@ -121,7 +120,6 @@ describe('ProduitDetailComponent', () => {
           id_espece: 1,
           nom_scientifique: 'Solanum lycopersicum',
           nom_commun: 'Tomate',
-          type_plante: 'Légume fruit',
         },
       },
     });
@@ -174,7 +172,6 @@ describe('ProduitDetailComponent', () => {
           id_espece: 1,
           nom_scientifique: 'Solanum lycopersicum',
           nom_commun: 'Tomate',
-          type_plante: 'Légume fruit',
         },
       },
     });
@@ -227,7 +224,6 @@ describe('ProduitDetailComponent', () => {
           id_espece: 1,
           nom_scientifique: 'Solanum lycopersicum',
           nom_commun: 'Tomate',
-          type_plante: 'Légume fruit',
         },
       },
     });
@@ -283,7 +279,6 @@ describe('ProduitDetailComponent', () => {
           id_espece: 1,
           nom_scientifique: 'Solanum lycopersicum',
           nom_commun: 'Tomate',
-          type_plante: 'Légume fruit',
         },
       },
     });

@@ -24,7 +24,6 @@ export class EspeceModifierComponent {
   especeForm = this.formBuilder.group({
     nom_commun: ['', Validators.required],
     nom_scientifique: ['', Validators.required],
-    type_plante: ['', Validators.required],
   });
 
   async ngOnInit(): Promise<void> {
@@ -53,7 +52,6 @@ export class EspeceModifierComponent {
       this.especeForm.patchValue({
         nom_commun: espece.nom_commun,
         nom_scientifique: espece.nom_scientifique,
-        type_plante: espece.type_plante,
       });
 
       this.message.set('');
@@ -79,7 +77,6 @@ export class EspeceModifierComponent {
       id_espece: this.espece()!.id_espece,
       nom_commun: valeurFormulaire.nom_commun?.trim() ?? '',
       nom_scientifique: valeurFormulaire.nom_scientifique?.trim() ?? '',
-      type_plante: valeurFormulaire.type_plante?.trim() ?? '',
     };
 
     try {

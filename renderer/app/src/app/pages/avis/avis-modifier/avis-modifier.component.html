@@ -1,0 +1,40 @@
+<a class="back-link" routerLink="/avis">← Avis</a>
+
+<h1>Modifier un avis</h1>
+
+@if (isLoading()) {
+  <p>Chargement de l’avis...</p>
+}
+@else if (message() && !avis()) {
+  <p class="message">{{ message() }}</p>
+}
+@else {
+  @if (message()) {
+    <p class="message">{{ message() }}</p>
+  }
+
+  <form [formGroup]="avisForm" (ngSubmit)="enregistrer()">
+    <p class="form-help">La note est obligatoire.</p>
+
+    <div class="form-field">
+      <label for="note">Note</label>
+      <input id="note" type="number" min="1" max="10" formControlName="note" required>
+
+      @if (avisForm.controls.note.invalid && avisForm.controls.note.touched) {
+        <p class="error">La note doit être comprise entre 1 et 10.</p>
+      }
+    </div>
+
+    <div class="form-field">
+      <label for="titre">Titre</label>
+      <input id="titre" type="text" formControlName="titre">
+    </div>
+
+    <div class="form-field">
+      <label for="commentaire">Commentaire</label>
+      <textarea id="commentaire" formControlName="commentaire"></textarea>
+    </div>
+
+    <button type="submit">Enregistrer les modifications</button>
+  </form>
+}

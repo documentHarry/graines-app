@@ -5,7 +5,7 @@
   <p>Chargement des variétés...</p>
 }
 @else if (message()) {
-  <p>{{ message() }}</p>
+  <p class="message">{{ message() }}</p>
 }
 @else if (varietes().length === 0) {
   <p>Aucune variété trouvée.</p>
@@ -29,8 +29,14 @@
 
         <div class="infos">
           <p><strong>Espèce: </strong>{{ variete.espece.nom_commun }}</p>
-          <p><strong>Type: </strong>{{ variete.espece.type_plante }}</p>
           <p><strong>Label: </strong>{{ getLabelBio(variete) }}</p>
+
+          @if (estAromate(variete)) {
+            <p><strong>Type: </strong><span class="aromate-badge">Aromate</span></p>
+          }
+          @else {
+            <p><strong>Type: </strong><span class="non-aromate-badge">Légume</span></p>
+          }
 
           @if (variete.cycle_de_vie) {
             <p><strong>Cycle de vie: </strong>{{ variete.cycle_de_vie }}</p>
@@ -40,7 +46,9 @@
             <p><strong>Ensoleillement: </strong>{{ variete.type_ensoleillement }}</p>
           }
         </div>
+
         <a class="details-link" [routerLink]="['/varietes', variete.id_variete]">Voir en détail</a>
+
       </article>
     }
   </section>

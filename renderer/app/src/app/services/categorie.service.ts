@@ -33,6 +33,6 @@ export class CategorieService {
     return this.electronService.getApi().deleteCategorieWithReaffectation(
       idCategorieASupprimer, idCategorieDestination
     );
-}
+  }
 
 }

@@ -27,8 +27,13 @@ describe('App', () => {
   it('devrait afficher la navigation principale', () => {
     const element: HTMLElement = fixture.nativeElement;
 
+    expect(element.textContent).toContain('Connexion');
     expect(element.textContent).toContain('Accueil');
     expect(element.textContent).toContain('Catégories');
     expect(element.textContent).toContain('Produits');
+    expect(element.textContent).toContain('Espèces');
+    expect(element.textContent).toContain('Variétés');
+    expect(element.textContent).toContain('Utilisateurs');
+    //expect(element.textContent).toContain('Déconnexion');
   });
 });

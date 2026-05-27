@@ -59,11 +59,40 @@ button:hover {
 }
 
 .message {
-  color: #f8ead8;
+  margin-bottom: 16px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background-color: #fff3cd;
+  color: #5a3a24;
 }
 
 .error {
   margin: 6px 0 0;
   color: #9b1c1c;
   font-size: 14px;
+}
+
+.form-help {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: #5a3a24;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button:disabled:hover {
+  background-color: #f2a65a;
+}
+
+input.ng-invalid.ng-touched,
+select.ng-invalid.ng-touched {
+  border-color: #9b1c1c;
+}
+
+input.ng-valid.ng-touched,
+select.ng-valid.ng-touched {
+  border-color: #4f7f52;
 }

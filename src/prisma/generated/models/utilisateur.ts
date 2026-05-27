@@ -41,7 +41,7 @@ export type UtilisateurMinAggregateOutputType = {
   nom: string | null
   prenom: string | null
   email: string | null
-  mot_de_passe: string | null
+  mot_de_passe_hash: string | null
   mot_de_passe_salt: runtime.Bytes | null
   date_inscription: string | null
   actif: number | null
@@ -52,7 +52,7 @@ export type UtilisateurMaxAggregateOutputType = {
   nom: string | null
   prenom: string | null
   email: string | null
-  mot_de_passe: string | null
+  mot_de_passe_hash: string | null
   mot_de_passe_salt: runtime.Bytes | null
   date_inscription: string | null
   actif: number | null
@@ -63,7 +63,7 @@ export type UtilisateurCountAggregateOutputType = {
   nom: number
   prenom: number
   email: number
-  mot_de_passe: number
+  mot_de_passe_hash: number
   mot_de_passe_salt: number
   date_inscription: number
   actif: number
@@ -86,7 +86,7 @@ export type UtilisateurMinAggregateInputType = {
   nom?: true
   prenom?: true
   email?: true
-  mot_de_passe?: true
+  mot_de_passe_hash?: true
   mot_de_passe_salt?: true
   date_inscription?: true
   actif?: true
@@ -97,7 +97,7 @@ export type UtilisateurMaxAggregateInputType = {
   nom?: true
   prenom?: true
   email?: true
-  mot_de_passe?: true
+  mot_de_passe_hash?: true
   mot_de_passe_salt?: true
   date_inscription?: true
   actif?: true
@@ -108,7 +108,7 @@ export type UtilisateurCountAggregateInputType = {
   nom?: true
   prenom?: true
   email?: true
-  mot_de_passe?: true
+  mot_de_passe_hash?: true
   mot_de_passe_salt?: true
   date_inscription?: true
   actif?: true
@@ -206,7 +206,7 @@ export type UtilisateurGroupByOutputType = {
   nom: string
   prenom: string
   email: string
-  mot_de_passe: string
+  mot_de_passe_hash: string
   mot_de_passe_salt: runtime.Bytes
   date_inscription: string | null
   actif: number | null
@@ -240,7 +240,7 @@ export type utilisateurWhereInput = {
   nom?: Prisma.StringFilter<"utilisateur"> | string
   prenom?: Prisma.StringFilter<"utilisateur"> | string
   email?: Prisma.StringFilter<"utilisateur"> | string
-  mot_de_passe?: Prisma.StringFilter<"utilisateur"> | string
+  mot_de_passe_hash?: Prisma.StringFilter<"utilisateur"> | string
   mot_de_passe_salt?: Prisma.BytesFilter<"utilisateur"> | runtime.Bytes
   date_inscription?: Prisma.StringNullableFilter<"utilisateur"> | string | null
   actif?: Prisma.IntNullableFilter<"utilisateur"> | number | null
@@ -257,7 +257,7 @@ export type utilisateurOrderByWithRelationInput = {
   nom?: Prisma.SortOrder
   prenom?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  mot_de_passe?: Prisma.SortOrder
+  mot_de_passe_hash?: Prisma.SortOrder
   mot_de_passe_salt?: Prisma.SortOrder
   date_inscription?: Prisma.SortOrderInput | Prisma.SortOrder
   actif?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -277,7 +277,7 @@ export type utilisateurWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.utilisateurWhereInput | Prisma.utilisateurWhereInput[]
   nom?: Prisma.StringFilter<"utilisateur"> | string
   prenom?: Prisma.StringFilter<"utilisateur"> | string
-  mot_de_passe?: Prisma.StringFilter<"utilisateur"> | string
+  mot_de_passe_hash?: Prisma.StringFilter<"utilisateur"> | string
   mot_de_passe_salt?: Prisma.BytesFilter<"utilisateur"> | runtime.Bytes
   date_inscription?: Prisma.StringNullableFilter<"utilisateur"> | string | null
   actif?: Prisma.IntNullableFilter<"utilisateur"> | number | null
@@ -294,7 +294,7 @@ export type utilisateurOrderByWithAggregationInput = {
   nom?: Prisma.SortOrder
   prenom?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  mot_de_passe?: Prisma.SortOrder
+  mot_de_passe_hash?: Prisma.SortOrder
   mot_de_passe_salt?: Prisma.SortOrder
   date_inscription?: Prisma.SortOrderInput | Prisma.SortOrder
   actif?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -313,7 +313,7 @@ export type utilisateurScalarWhereWithAggregatesInput = {
   nom?: Prisma.StringWithAggregatesFilter<"utilisateur"> | string
   prenom?: Prisma.StringWithAggregatesFilter<"utilisateur"> | string
   email?: Prisma.StringWithAggregatesFilter<"utilisateur"> | string
-  mot_de_passe?: Prisma.StringWithAggregatesFilter<"utilisateur"> | string
+  mot_de_passe_hash?: Prisma.StringWithAggregatesFilter<"utilisateur"> | string
   mot_de_passe_salt?: Prisma.BytesWithAggregatesFilter<"utilisateur"> | runtime.Bytes
   date_inscription?: Prisma.StringNullableWithAggregatesFilter<"utilisateur"> | string | null
   actif?: Prisma.IntNullableWithAggregatesFilter<"utilisateur"> | number | null
@@ -323,7 +323,7 @@ export type utilisateurCreateInput = {
   nom: string
   prenom: string
   email: string
-  mot_de_passe: string
+  mot_de_passe_hash: string
   mot_de_passe_salt: runtime.Bytes
   date_inscription?: string | null
   actif?: number | null
@@ -340,7 +340,7 @@ export type utilisateurUncheckedCreateInput = {
   nom: string
   prenom: string
   email: string
-  mot_de_passe: string
+  mot_de_passe_hash: string
   mot_de_passe_salt: runtime.Bytes
   date_inscription?: string | null
   actif?: number | null
@@ -356,7 +356,7 @@ export type utilisateurUpdateInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   prenom?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe?: Prisma.StringFieldUpdateOperationsInput | string
+  mot_de_passe_hash?: Prisma.StringFieldUpdateOperationsInput | string
   mot_de_passe_salt?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
   date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -373,7 +373,7 @@ export type utilisateurUncheckedUpdateInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   prenom?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe?: Prisma.StringFieldUpdateOperationsInput | string
+  mot_de_passe_hash?: Prisma.StringFieldUpdateOperationsInput | string
   mot_de_passe_salt?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
   date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -390,7 +390,7 @@ export type utilisateurCreateManyInput = {
   nom: string
   prenom: string
   email: string
-  mot_de_passe: string
+  mot_de_passe_hash: string
   mot_de_passe_salt: runtime.Bytes
   date_inscription?: string | null
   actif?: number | null
@@ -400,7 +400,7 @@ export type utilisateurUpdateManyMutationInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   prenom?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe?: Prisma.StringFieldUpdateOperationsInput | string
+  mot_de_passe_hash?: Prisma.StringFieldUpdateOperationsInput | string
   mot_de_passe_salt?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
   date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -411,7 +411,7 @@ export type utilisateurUncheckedUpdateManyInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   prenom?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe?: Prisma.StringFieldUpdateOperationsInput | string
+  mot_de_passe_hash?: Prisma.StringFieldUpdateOperationsInput | string
   mot_de_passe_salt?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
   date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -427,7 +427,7 @@ export type utilisateurCountOrderByAggregateInput = {
   nom?: Prisma.SortOrder
   prenom?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  mot_de_passe?: Prisma.SortOrder
+  mot_de_passe_hash?: Prisma.SortOrder
   mot_de_passe_salt?: Prisma.SortOrder
   date_inscription?: Prisma.SortOrder
   actif?: Prisma.SortOrder
@@ -443,7 +443,7 @@ export type utilisateurMaxOrderByAggregateInput = {
   nom?: Prisma.SortOrder
   prenom?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  mot_de_passe?: Prisma.SortOrder
+  mot_de_passe_hash?: Prisma.SortOrder
   mot_de_passe_salt?: Prisma.SortOrder
   date_inscription?: Prisma.SortOrder
   actif?: Prisma.SortOrder
@@ -454,7 +454,7 @@ export type utilisateurMinOrderByAggregateInput = {
   nom?: Prisma.SortOrder
   prenom?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  mot_de_passe?: Prisma.SortOrder
+  mot_de_passe_hash?: Prisma.SortOrder
   mot_de_passe_salt?: Prisma.SortOrder
   date_inscription?: Prisma.SortOrder
   actif?: Prisma.SortOrder
@@ -557,7 +557,7 @@ export type utilisateurCreateWithoutAdresse_livraisonInput = {
   nom: string
   prenom: string
   email: string
-  mot_de_passe: string
+  mot_de_passe_hash: string
   mot_de_passe_salt: runtime.Bytes
   date_inscription?: string | null
   actif?: number | null
@@ -573,7 +573,7 @@ export type utilisateurUncheckedCreateWithoutAdresse_livraisonInput = {
   nom: string
   prenom: string
   email: string
-  mot_de_passe: string
+  mot_de_passe_hash: string
   mot_de_passe_salt: runtime.Bytes
   date_inscription?: string | null
   actif?: number | null
@@ -604,7 +604,7 @@ export type utilisateurUpdateWithoutAdresse_livraisonInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   prenom?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe?: Prisma.StringFieldUpdateOperationsInput | string
+  mot_de_passe_hash?: Prisma.StringFieldUpdateOperationsInput | string
   mot_de_passe_salt?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
   date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -620,7 +620,7 @@ export type utilisateurUncheckedUpdateWithoutAdresse_livraisonInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   prenom?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe?: Prisma.StringFieldUpdateOperationsInput | string
+  mot_de_passe_hash?: Prisma.StringFieldUpdateOperationsInput | string
   mot_de_passe_salt?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
   date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -635,7 +635,7 @@ export type utilisateurCreateWithoutAvisInput = {
   nom: string
   prenom: string
   email: string
-  mot_de_passe: string
+  mot_de_passe_hash: string
   mot_de_passe_salt: runtime.Bytes
   date_inscription?: string | null
   actif?: number | null
@@ -651,7 +651,7 @@ export type utilisateurUncheckedCreateWithoutAvisInput = {
   nom: string
   prenom: string
   email: string
-  mot_de_passe: string
+  mot_de_passe_hash: string
   mot_de_passe_salt: runtime.Bytes
   date_inscription?: string | null
   actif?: number | null
@@ -682,7 +682,7 @@ export type utilisateurUpdateWithoutAvisInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   prenom?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe?: Prisma.StringFieldUpdateOperationsInput | string
+  mot_de_passe_hash?: Prisma.StringFieldUpdateOperationsInput | string
   mot_de_passe_salt?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
   date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -698,7 +698,7 @@ export type utilisateurUncheckedUpdateWithoutAvisInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   prenom?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe?: Prisma.StringFieldUpdateOperationsInput | string
+  mot_de_passe_hash?: Prisma.StringFieldUpdateOperationsInput | string
   mot_de_passe_salt?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
   date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -713,7 +713,7 @@ export type utilisateurCreateWithoutCommandeInput = {
   nom: string
   prenom: string
   email: string
-  mot_de_passe: string
+  mot_de_passe_hash: string
   mot_de_passe_salt: runtime.Bytes
   date_inscription?: string | null
   actif?: number | null
@@ -729,7 +729,7 @@ export type utilisateurUncheckedCreateWithoutCommandeInput = {
   nom: string
   prenom: string
   email: string
-  mot_de_passe: string
+  mot_de_passe_hash: string
   mot_de_passe_salt: runtime.Bytes
   date_inscription?: string | null
   actif?: number | null
@@ -760,7 +760,7 @@ export type utilisateurUpdateWithoutCommandeInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   prenom?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe?: Prisma.StringFieldUpdateOperationsInput | string
+  mot_de_passe_hash?: Prisma.StringFieldUpdateOperationsInput | string
   mot_de_passe_salt?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
   date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -776,7 +776,7 @@ export type utilisateurUncheckedUpdateWithoutCommandeInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   prenom?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe?: Prisma.StringFieldUpdateOperationsInput | string
+  mot_de_passe_hash?: Prisma.StringFieldUpdateOperationsInput | string
   mot_de_passe_salt?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
   date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -791,7 +791,7 @@ export type utilisateurCreateWithoutDemande_retourInput = {
   nom: string
   prenom: string
   email: string
-  mot_de_passe: string
+  mot_de_passe_hash: string
   mot_de_passe_salt: runtime.Bytes
   date_inscription?: string | null
   actif?: number | null
@@ -807,7 +807,7 @@ export type utilisateurUncheckedCreateWithoutDemande_retourInput = {
   nom: string
   prenom: string
   email: string
-  mot_de_passe: string
+  mot_de_passe_hash: string
   mot_de_passe_salt: runtime.Bytes
   date_inscription?: string | null
   actif?: number | null
@@ -838,7 +838,7 @@ export type utilisateurUpdateWithoutDemande_retourInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   prenom?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe?: Prisma.StringFieldUpdateOperationsInput | string
+  mot_de_passe_hash?: Prisma.StringFieldUpdateOperationsInput | string
   mot_de_passe_salt?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
   date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -854,7 +854,7 @@ export type utilisateurUncheckedUpdateWithoutDemande_retourInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   prenom?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe?: Prisma.StringFieldUpdateOperationsInput | string
+  mot_de_passe_hash?: Prisma.StringFieldUpdateOperationsInput | string
   mot_de_passe_salt?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
   date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -869,7 +869,7 @@ export type utilisateurCreateWithoutPanierInput = {
   nom: string
   prenom: string
   email: string
-  mot_de_passe: string
+  mot_de_passe_hash: string
   mot_de_passe_salt: runtime.Bytes
   date_inscription?: string | null
   actif?: number | null
@@ -885,7 +885,7 @@ export type utilisateurUncheckedCreateWithoutPanierInput = {
   nom: string
   prenom: string
   email: string
-  mot_de_passe: string
+  mot_de_passe_hash: string
   mot_de_passe_salt: runtime.Bytes
   date_inscription?: string | null
   actif?: number | null
@@ -916,7 +916,7 @@ export type utilisateurUpdateWithoutPanierInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   prenom?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe?: Prisma.StringFieldUpdateOperationsInput | string
+  mot_de_passe_hash?: Prisma.StringFieldUpdateOperationsInput | string
   mot_de_passe_salt?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
   date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -932,7 +932,7 @@ export type utilisateurUncheckedUpdateWithoutPanierInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   prenom?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe?: Prisma.StringFieldUpdateOperationsInput | string
+  mot_de_passe_hash?: Prisma.StringFieldUpdateOperationsInput | string
   mot_de_passe_salt?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
   date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -947,7 +947,7 @@ export type utilisateurCreateWithoutUtilisateur_roleInput = {
   nom: string
   prenom: string
   email: string
-  mot_de_passe: string
+  mot_de_passe_hash: string
   mot_de_passe_salt: runtime.Bytes
   date_inscription?: string | null
   actif?: number | null
@@ -963,7 +963,7 @@ export type utilisateurUncheckedCreateWithoutUtilisateur_roleInput = {
   nom: string
   prenom: string
   email: string
-  mot_de_passe: string
+  mot_de_passe_hash: string
   mot_de_passe_salt: runtime.Bytes
   date_inscription?: string | null
   actif?: number | null
@@ -994,7 +994,7 @@ export type utilisateurUpdateWithoutUtilisateur_roleInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   prenom?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe?: Prisma.StringFieldUpdateOperationsInput | string
+  mot_de_passe_hash?: Prisma.StringFieldUpdateOperationsInput | string
   mot_de_passe_salt?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
   date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1010,7 +1010,7 @@ export type utilisateurUncheckedUpdateWithoutUtilisateur_roleInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   prenom?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe?: Prisma.StringFieldUpdateOperationsInput | string
+  mot_de_passe_hash?: Prisma.StringFieldUpdateOperationsInput | string
   mot_de_passe_salt?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
   date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1102,7 +1102,7 @@ export type utilisateurSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   nom?: boolean
   prenom?: boolean
   email?: boolean
-  mot_de_passe?: boolean
+  mot_de_passe_hash?: boolean
   mot_de_passe_salt?: boolean
   date_inscription?: boolean
   actif?: boolean
@@ -1120,7 +1120,7 @@ export type utilisateurSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   nom?: boolean
   prenom?: boolean
   email?: boolean
-  mot_de_passe?: boolean
+  mot_de_passe_hash?: boolean
   mot_de_passe_salt?: boolean
   date_inscription?: boolean
   actif?: boolean
@@ -1131,7 +1131,7 @@ export type utilisateurSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   nom?: boolean
   prenom?: boolean
   email?: boolean
-  mot_de_passe?: boolean
+  mot_de_passe_hash?: boolean
   mot_de_passe_salt?: boolean
   date_inscription?: boolean
   actif?: boolean
@@ -1142,13 +1142,13 @@ export type utilisateurSelectScalar = {
   nom?: boolean
   prenom?: boolean
   email?: boolean
-  mot_de_passe?: boolean
+  mot_de_passe_hash?: boolean
   mot_de_passe_salt?: boolean
   date_inscription?: boolean
   actif?: boolean
 }
 
-export type utilisateurOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id_utilisateur" | "nom" | "prenom" | "email" | "mot_de_passe" | "mot_de_passe_salt" | "date_inscription" | "actif", ExtArgs["result"]["utilisateur"]>
+export type utilisateurOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id_utilisateur" | "nom" | "prenom" | "email" | "mot_de_passe_hash" | "mot_de_passe_salt" | "date_inscription" | "actif", ExtArgs["result"]["utilisateur"]>
 export type utilisateurInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   adresse_livraison?: boolean | Prisma.utilisateur$adresse_livraisonArgs<ExtArgs>
   avis?: boolean | Prisma.utilisateur$avisArgs<ExtArgs>
@@ -1176,7 +1176,7 @@ export type $utilisateurPayload<ExtArgs extends runtime.Types.Extensions.Interna
     nom: string
     prenom: string
     email: string
-    mot_de_passe: string
+    mot_de_passe_hash: string
     mot_de_passe_salt: runtime.Bytes
     date_inscription: string | null
     actif: number | null
@@ -1613,7 +1613,7 @@ export interface utilisateurFieldRefs {
   readonly nom: Prisma.FieldRef<"utilisateur", 'String'>
   readonly prenom: Prisma.FieldRef<"utilisateur", 'String'>
   readonly email: Prisma.FieldRef<"utilisateur", 'String'>
-  readonly mot_de_passe: Prisma.FieldRef<"utilisateur", 'String'>
+  readonly mot_de_passe_hash: Prisma.FieldRef<"utilisateur", 'String'>
   readonly mot_de_passe_salt: Prisma.FieldRef<"utilisateur", 'Bytes'>
   readonly date_inscription: Prisma.FieldRef<"utilisateur", 'String'>
   readonly actif: Prisma.FieldRef<"utilisateur", 'Int'>

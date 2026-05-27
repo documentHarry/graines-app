@@ -1,0 +1,39 @@
+@if (utilisateur()) {
+  <a class="back-link" [routerLink]="['/utilisateurs', utilisateur()?.id_utilisateur]">← Détail de l'utilisateur</a>
+}
+@else {
+  <a class="back-link" routerLink="/utilisateurs">← Retour aux utilisateurs</a>
+}
+
+<h1>Modifier les rôles</h1>
+
+@if (isLoading()) {
+  <p>Chargement des rôles...</p>
+}
+@else if (message() && !utilisateur()) {
+  <p class="message">{{ message() }}</p>
+}
+@else {
+  @if (message()) {
+    <p class="message">{{ message() }}</p>
+  }
+
+  <form [formGroup]="rolesForm" (ngSubmit)="enregistrer()">
+    <section>
+      <h2>{{ getNomComplet() }}</h2>
+      <p class="form-help">Sélectionnez les rôles attribués à cet utilisateur.</p>
+
+      <div class="form-grid">
+        @for (role of roles(); track role.id_role) {
+          <div class="form-field">
+            <label>
+              <input type="checkbox" [checked]="isRoleCoche(role)" (change)="modifierRole(role, $event)">{{ role.nom_role }}
+            </label>
+          </div>
+        }
+      </div>
+    </section>
+
+    <button type="submit">Enregistrer les rôles</button>
+  </form>
+}
