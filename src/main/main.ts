@@ -40,12 +40,15 @@ if (started) {
   app.quit();
 }
 
-const dbPath = path.join( __dirname, '..', '..', 'database', 'graines.db');
+const dbPath = path.join(app.getPath('userData'), 'graines.db');
 const databaseExiste = fs.existsSync(dbPath);
+console.log('USER DATA =', app.getPath('userData'));
+console.log('DB PATH =', dbPath);
+console.log('DATABASE EXISTE =', databaseExiste);
 
 if (!databaseExiste) {
-  const utilisateursSourcePath = path.join( __dirname, '..', '..', 'database', 'seed', '07_insert_utilisateurs.sql');
-  const utilisateursHashesPath = path.join( __dirname, '..', '..', 'database', 'seed', '07_insert_utilisateurs_hashes.sql');
+  const utilisateursSourcePath = path.join(app.getAppPath(), 'database', 'seed', '07_insert_utilisateurs.sql');
+  const utilisateursHashesPath = path.join(app.getAppPath(), 'database', 'seed', '07_insert_utilisateurs_hashes.sql');
   genererUtilisateursHashes( utilisateursSourcePath, utilisateursHashesPath);
 }
 

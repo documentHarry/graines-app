@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Categorie } from '../../types/electron';
 import { CategorieService } from '../../services/categorie.service';
@@ -15,6 +15,8 @@ export class CategoriesComponent {
   categories = signal<Categorie[]>([]);
   isLoading = signal(true);
   message = signal('');
+  rechercheNom = signal('');
+  rechercheDescriptif = signal('');
 
   constructor() {
     this.chargerCategories();
@@ -33,6 +35,28 @@ export class CategoriesComponent {
     finally {
       this.isLoading.set(false);
     }
+  }
+
+  categoriesFiltrees = computed(() => {
+    const rechercheNom = this.rechercheNom().toLowerCase().trim();
+    const rechercheDescriptif = this.rechercheDescriptif().toLowerCase().trim();
+
+    return this.categories().filter(categorie => {
+      const correspondNom = rechercheNom === '' ||  categorie.nom_categorie.toLowerCase().includes(rechercheNom);
+      const correspondDescriptif = rechercheDescriptif === '' || (categorie.descriptif ?? '').toLowerCase().includes(rechercheDescriptif);
+
+      return correspondNom && correspondDescriptif;
+    });
+  });
+
+  changerRechercheNom(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.rechercheNom.set(input.value);
+  }
+
+  changerRechercheDescriptif(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.rechercheDescriptif.set(input.value);
   }
 
   getNombreProduits(categorie: Categorie): number {

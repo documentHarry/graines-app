@@ -246,9 +246,6 @@ export type utilisateurWhereInput = {
   actif?: Prisma.IntNullableFilter<"utilisateur"> | number | null
   adresse_livraison?: Prisma.Adresse_livraisonListRelationFilter
   avis?: Prisma.AvisListRelationFilter
-  commande?: Prisma.CommandeListRelationFilter
-  demande_retour?: Prisma.Demande_retourListRelationFilter
-  panier?: Prisma.PanierListRelationFilter
   utilisateur_role?: Prisma.Utilisateur_roleListRelationFilter
 }
 
@@ -263,9 +260,6 @@ export type utilisateurOrderByWithRelationInput = {
   actif?: Prisma.SortOrderInput | Prisma.SortOrder
   adresse_livraison?: Prisma.adresse_livraisonOrderByRelationAggregateInput
   avis?: Prisma.avisOrderByRelationAggregateInput
-  commande?: Prisma.commandeOrderByRelationAggregateInput
-  demande_retour?: Prisma.demande_retourOrderByRelationAggregateInput
-  panier?: Prisma.panierOrderByRelationAggregateInput
   utilisateur_role?: Prisma.utilisateur_roleOrderByRelationAggregateInput
 }
 
@@ -283,9 +277,6 @@ export type utilisateurWhereUniqueInput = Prisma.AtLeast<{
   actif?: Prisma.IntNullableFilter<"utilisateur"> | number | null
   adresse_livraison?: Prisma.Adresse_livraisonListRelationFilter
   avis?: Prisma.AvisListRelationFilter
-  commande?: Prisma.CommandeListRelationFilter
-  demande_retour?: Prisma.Demande_retourListRelationFilter
-  panier?: Prisma.PanierListRelationFilter
   utilisateur_role?: Prisma.Utilisateur_roleListRelationFilter
 }, "id_utilisateur" | "email">
 
@@ -329,9 +320,6 @@ export type utilisateurCreateInput = {
   actif?: number | null
   adresse_livraison?: Prisma.adresse_livraisonCreateNestedManyWithoutUtilisateurInput
   avis?: Prisma.avisCreateNestedManyWithoutUtilisateurInput
-  commande?: Prisma.commandeCreateNestedManyWithoutUtilisateurInput
-  demande_retour?: Prisma.demande_retourCreateNestedManyWithoutUtilisateurInput
-  panier?: Prisma.panierCreateNestedManyWithoutUtilisateurInput
   utilisateur_role?: Prisma.utilisateur_roleCreateNestedManyWithoutUtilisateurInput
 }
 
@@ -346,9 +334,6 @@ export type utilisateurUncheckedCreateInput = {
   actif?: number | null
   adresse_livraison?: Prisma.adresse_livraisonUncheckedCreateNestedManyWithoutUtilisateurInput
   avis?: Prisma.avisUncheckedCreateNestedManyWithoutUtilisateurInput
-  commande?: Prisma.commandeUncheckedCreateNestedManyWithoutUtilisateurInput
-  demande_retour?: Prisma.demande_retourUncheckedCreateNestedManyWithoutUtilisateurInput
-  panier?: Prisma.panierUncheckedCreateNestedManyWithoutUtilisateurInput
   utilisateur_role?: Prisma.utilisateur_roleUncheckedCreateNestedManyWithoutUtilisateurInput
 }
 
@@ -362,9 +347,6 @@ export type utilisateurUpdateInput = {
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   adresse_livraison?: Prisma.adresse_livraisonUpdateManyWithoutUtilisateurNestedInput
   avis?: Prisma.avisUpdateManyWithoutUtilisateurNestedInput
-  commande?: Prisma.commandeUpdateManyWithoutUtilisateurNestedInput
-  demande_retour?: Prisma.demande_retourUpdateManyWithoutUtilisateurNestedInput
-  panier?: Prisma.panierUpdateManyWithoutUtilisateurNestedInput
   utilisateur_role?: Prisma.utilisateur_roleUpdateManyWithoutUtilisateurNestedInput
 }
 
@@ -379,9 +361,6 @@ export type utilisateurUncheckedUpdateInput = {
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   adresse_livraison?: Prisma.adresse_livraisonUncheckedUpdateManyWithoutUtilisateurNestedInput
   avis?: Prisma.avisUncheckedUpdateManyWithoutUtilisateurNestedInput
-  commande?: Prisma.commandeUncheckedUpdateManyWithoutUtilisateurNestedInput
-  demande_retour?: Prisma.demande_retourUncheckedUpdateManyWithoutUtilisateurNestedInput
-  panier?: Prisma.panierUncheckedUpdateManyWithoutUtilisateurNestedInput
   utilisateur_role?: Prisma.utilisateur_roleUncheckedUpdateManyWithoutUtilisateurNestedInput
 }
 
@@ -493,48 +472,6 @@ export type utilisateurUpdateOneRequiredWithoutAvisNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.utilisateurUpdateToOneWithWhereWithoutAvisInput, Prisma.utilisateurUpdateWithoutAvisInput>, Prisma.utilisateurUncheckedUpdateWithoutAvisInput>
 }
 
-export type utilisateurCreateNestedOneWithoutCommandeInput = {
-  create?: Prisma.XOR<Prisma.utilisateurCreateWithoutCommandeInput, Prisma.utilisateurUncheckedCreateWithoutCommandeInput>
-  connectOrCreate?: Prisma.utilisateurCreateOrConnectWithoutCommandeInput
-  connect?: Prisma.utilisateurWhereUniqueInput
-}
-
-export type utilisateurUpdateOneRequiredWithoutCommandeNestedInput = {
-  create?: Prisma.XOR<Prisma.utilisateurCreateWithoutCommandeInput, Prisma.utilisateurUncheckedCreateWithoutCommandeInput>
-  connectOrCreate?: Prisma.utilisateurCreateOrConnectWithoutCommandeInput
-  upsert?: Prisma.utilisateurUpsertWithoutCommandeInput
-  connect?: Prisma.utilisateurWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.utilisateurUpdateToOneWithWhereWithoutCommandeInput, Prisma.utilisateurUpdateWithoutCommandeInput>, Prisma.utilisateurUncheckedUpdateWithoutCommandeInput>
-}
-
-export type utilisateurCreateNestedOneWithoutDemande_retourInput = {
-  create?: Prisma.XOR<Prisma.utilisateurCreateWithoutDemande_retourInput, Prisma.utilisateurUncheckedCreateWithoutDemande_retourInput>
-  connectOrCreate?: Prisma.utilisateurCreateOrConnectWithoutDemande_retourInput
-  connect?: Prisma.utilisateurWhereUniqueInput
-}
-
-export type utilisateurUpdateOneRequiredWithoutDemande_retourNestedInput = {
-  create?: Prisma.XOR<Prisma.utilisateurCreateWithoutDemande_retourInput, Prisma.utilisateurUncheckedCreateWithoutDemande_retourInput>
-  connectOrCreate?: Prisma.utilisateurCreateOrConnectWithoutDemande_retourInput
-  upsert?: Prisma.utilisateurUpsertWithoutDemande_retourInput
-  connect?: Prisma.utilisateurWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.utilisateurUpdateToOneWithWhereWithoutDemande_retourInput, Prisma.utilisateurUpdateWithoutDemande_retourInput>, Prisma.utilisateurUncheckedUpdateWithoutDemande_retourInput>
-}
-
-export type utilisateurCreateNestedOneWithoutPanierInput = {
-  create?: Prisma.XOR<Prisma.utilisateurCreateWithoutPanierInput, Prisma.utilisateurUncheckedCreateWithoutPanierInput>
-  connectOrCreate?: Prisma.utilisateurCreateOrConnectWithoutPanierInput
-  connect?: Prisma.utilisateurWhereUniqueInput
-}
-
-export type utilisateurUpdateOneRequiredWithoutPanierNestedInput = {
-  create?: Prisma.XOR<Prisma.utilisateurCreateWithoutPanierInput, Prisma.utilisateurUncheckedCreateWithoutPanierInput>
-  connectOrCreate?: Prisma.utilisateurCreateOrConnectWithoutPanierInput
-  upsert?: Prisma.utilisateurUpsertWithoutPanierInput
-  connect?: Prisma.utilisateurWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.utilisateurUpdateToOneWithWhereWithoutPanierInput, Prisma.utilisateurUpdateWithoutPanierInput>, Prisma.utilisateurUncheckedUpdateWithoutPanierInput>
-}
-
 export type BytesFieldUpdateOperationsInput = {
   set?: runtime.Bytes
 }
@@ -562,9 +499,6 @@ export type utilisateurCreateWithoutAdresse_livraisonInput = {
   date_inscription?: string | null
   actif?: number | null
   avis?: Prisma.avisCreateNestedManyWithoutUtilisateurInput
-  commande?: Prisma.commandeCreateNestedManyWithoutUtilisateurInput
-  demande_retour?: Prisma.demande_retourCreateNestedManyWithoutUtilisateurInput
-  panier?: Prisma.panierCreateNestedManyWithoutUtilisateurInput
   utilisateur_role?: Prisma.utilisateur_roleCreateNestedManyWithoutUtilisateurInput
 }
 
@@ -578,9 +512,6 @@ export type utilisateurUncheckedCreateWithoutAdresse_livraisonInput = {
   date_inscription?: string | null
   actif?: number | null
   avis?: Prisma.avisUncheckedCreateNestedManyWithoutUtilisateurInput
-  commande?: Prisma.commandeUncheckedCreateNestedManyWithoutUtilisateurInput
-  demande_retour?: Prisma.demande_retourUncheckedCreateNestedManyWithoutUtilisateurInput
-  panier?: Prisma.panierUncheckedCreateNestedManyWithoutUtilisateurInput
   utilisateur_role?: Prisma.utilisateur_roleUncheckedCreateNestedManyWithoutUtilisateurInput
 }
 
@@ -609,9 +540,6 @@ export type utilisateurUpdateWithoutAdresse_livraisonInput = {
   date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   avis?: Prisma.avisUpdateManyWithoutUtilisateurNestedInput
-  commande?: Prisma.commandeUpdateManyWithoutUtilisateurNestedInput
-  demande_retour?: Prisma.demande_retourUpdateManyWithoutUtilisateurNestedInput
-  panier?: Prisma.panierUpdateManyWithoutUtilisateurNestedInput
   utilisateur_role?: Prisma.utilisateur_roleUpdateManyWithoutUtilisateurNestedInput
 }
 
@@ -625,9 +553,6 @@ export type utilisateurUncheckedUpdateWithoutAdresse_livraisonInput = {
   date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   avis?: Prisma.avisUncheckedUpdateManyWithoutUtilisateurNestedInput
-  commande?: Prisma.commandeUncheckedUpdateManyWithoutUtilisateurNestedInput
-  demande_retour?: Prisma.demande_retourUncheckedUpdateManyWithoutUtilisateurNestedInput
-  panier?: Prisma.panierUncheckedUpdateManyWithoutUtilisateurNestedInput
   utilisateur_role?: Prisma.utilisateur_roleUncheckedUpdateManyWithoutUtilisateurNestedInput
 }
 
@@ -640,9 +565,6 @@ export type utilisateurCreateWithoutAvisInput = {
   date_inscription?: string | null
   actif?: number | null
   adresse_livraison?: Prisma.adresse_livraisonCreateNestedManyWithoutUtilisateurInput
-  commande?: Prisma.commandeCreateNestedManyWithoutUtilisateurInput
-  demande_retour?: Prisma.demande_retourCreateNestedManyWithoutUtilisateurInput
-  panier?: Prisma.panierCreateNestedManyWithoutUtilisateurInput
   utilisateur_role?: Prisma.utilisateur_roleCreateNestedManyWithoutUtilisateurInput
 }
 
@@ -656,9 +578,6 @@ export type utilisateurUncheckedCreateWithoutAvisInput = {
   date_inscription?: string | null
   actif?: number | null
   adresse_livraison?: Prisma.adresse_livraisonUncheckedCreateNestedManyWithoutUtilisateurInput
-  commande?: Prisma.commandeUncheckedCreateNestedManyWithoutUtilisateurInput
-  demande_retour?: Prisma.demande_retourUncheckedCreateNestedManyWithoutUtilisateurInput
-  panier?: Prisma.panierUncheckedCreateNestedManyWithoutUtilisateurInput
   utilisateur_role?: Prisma.utilisateur_roleUncheckedCreateNestedManyWithoutUtilisateurInput
 }
 
@@ -687,9 +606,6 @@ export type utilisateurUpdateWithoutAvisInput = {
   date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   adresse_livraison?: Prisma.adresse_livraisonUpdateManyWithoutUtilisateurNestedInput
-  commande?: Prisma.commandeUpdateManyWithoutUtilisateurNestedInput
-  demande_retour?: Prisma.demande_retourUpdateManyWithoutUtilisateurNestedInput
-  panier?: Prisma.panierUpdateManyWithoutUtilisateurNestedInput
   utilisateur_role?: Prisma.utilisateur_roleUpdateManyWithoutUtilisateurNestedInput
 }
 
@@ -703,243 +619,6 @@ export type utilisateurUncheckedUpdateWithoutAvisInput = {
   date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   adresse_livraison?: Prisma.adresse_livraisonUncheckedUpdateManyWithoutUtilisateurNestedInput
-  commande?: Prisma.commandeUncheckedUpdateManyWithoutUtilisateurNestedInput
-  demande_retour?: Prisma.demande_retourUncheckedUpdateManyWithoutUtilisateurNestedInput
-  panier?: Prisma.panierUncheckedUpdateManyWithoutUtilisateurNestedInput
-  utilisateur_role?: Prisma.utilisateur_roleUncheckedUpdateManyWithoutUtilisateurNestedInput
-}
-
-export type utilisateurCreateWithoutCommandeInput = {
-  nom: string
-  prenom: string
-  email: string
-  mot_de_passe_hash: string
-  mot_de_passe_salt: runtime.Bytes
-  date_inscription?: string | null
-  actif?: number | null
-  adresse_livraison?: Prisma.adresse_livraisonCreateNestedManyWithoutUtilisateurInput
-  avis?: Prisma.avisCreateNestedManyWithoutUtilisateurInput
-  demande_retour?: Prisma.demande_retourCreateNestedManyWithoutUtilisateurInput
-  panier?: Prisma.panierCreateNestedManyWithoutUtilisateurInput
-  utilisateur_role?: Prisma.utilisateur_roleCreateNestedManyWithoutUtilisateurInput
-}
-
-export type utilisateurUncheckedCreateWithoutCommandeInput = {
-  id_utilisateur?: number
-  nom: string
-  prenom: string
-  email: string
-  mot_de_passe_hash: string
-  mot_de_passe_salt: runtime.Bytes
-  date_inscription?: string | null
-  actif?: number | null
-  adresse_livraison?: Prisma.adresse_livraisonUncheckedCreateNestedManyWithoutUtilisateurInput
-  avis?: Prisma.avisUncheckedCreateNestedManyWithoutUtilisateurInput
-  demande_retour?: Prisma.demande_retourUncheckedCreateNestedManyWithoutUtilisateurInput
-  panier?: Prisma.panierUncheckedCreateNestedManyWithoutUtilisateurInput
-  utilisateur_role?: Prisma.utilisateur_roleUncheckedCreateNestedManyWithoutUtilisateurInput
-}
-
-export type utilisateurCreateOrConnectWithoutCommandeInput = {
-  where: Prisma.utilisateurWhereUniqueInput
-  create: Prisma.XOR<Prisma.utilisateurCreateWithoutCommandeInput, Prisma.utilisateurUncheckedCreateWithoutCommandeInput>
-}
-
-export type utilisateurUpsertWithoutCommandeInput = {
-  update: Prisma.XOR<Prisma.utilisateurUpdateWithoutCommandeInput, Prisma.utilisateurUncheckedUpdateWithoutCommandeInput>
-  create: Prisma.XOR<Prisma.utilisateurCreateWithoutCommandeInput, Prisma.utilisateurUncheckedCreateWithoutCommandeInput>
-  where?: Prisma.utilisateurWhereInput
-}
-
-export type utilisateurUpdateToOneWithWhereWithoutCommandeInput = {
-  where?: Prisma.utilisateurWhereInput
-  data: Prisma.XOR<Prisma.utilisateurUpdateWithoutCommandeInput, Prisma.utilisateurUncheckedUpdateWithoutCommandeInput>
-}
-
-export type utilisateurUpdateWithoutCommandeInput = {
-  nom?: Prisma.StringFieldUpdateOperationsInput | string
-  prenom?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe_hash?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe_salt?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
-  date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  adresse_livraison?: Prisma.adresse_livraisonUpdateManyWithoutUtilisateurNestedInput
-  avis?: Prisma.avisUpdateManyWithoutUtilisateurNestedInput
-  demande_retour?: Prisma.demande_retourUpdateManyWithoutUtilisateurNestedInput
-  panier?: Prisma.panierUpdateManyWithoutUtilisateurNestedInput
-  utilisateur_role?: Prisma.utilisateur_roleUpdateManyWithoutUtilisateurNestedInput
-}
-
-export type utilisateurUncheckedUpdateWithoutCommandeInput = {
-  id_utilisateur?: Prisma.IntFieldUpdateOperationsInput | number
-  nom?: Prisma.StringFieldUpdateOperationsInput | string
-  prenom?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe_hash?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe_salt?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
-  date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  adresse_livraison?: Prisma.adresse_livraisonUncheckedUpdateManyWithoutUtilisateurNestedInput
-  avis?: Prisma.avisUncheckedUpdateManyWithoutUtilisateurNestedInput
-  demande_retour?: Prisma.demande_retourUncheckedUpdateManyWithoutUtilisateurNestedInput
-  panier?: Prisma.panierUncheckedUpdateManyWithoutUtilisateurNestedInput
-  utilisateur_role?: Prisma.utilisateur_roleUncheckedUpdateManyWithoutUtilisateurNestedInput
-}
-
-export type utilisateurCreateWithoutDemande_retourInput = {
-  nom: string
-  prenom: string
-  email: string
-  mot_de_passe_hash: string
-  mot_de_passe_salt: runtime.Bytes
-  date_inscription?: string | null
-  actif?: number | null
-  adresse_livraison?: Prisma.adresse_livraisonCreateNestedManyWithoutUtilisateurInput
-  avis?: Prisma.avisCreateNestedManyWithoutUtilisateurInput
-  commande?: Prisma.commandeCreateNestedManyWithoutUtilisateurInput
-  panier?: Prisma.panierCreateNestedManyWithoutUtilisateurInput
-  utilisateur_role?: Prisma.utilisateur_roleCreateNestedManyWithoutUtilisateurInput
-}
-
-export type utilisateurUncheckedCreateWithoutDemande_retourInput = {
-  id_utilisateur?: number
-  nom: string
-  prenom: string
-  email: string
-  mot_de_passe_hash: string
-  mot_de_passe_salt: runtime.Bytes
-  date_inscription?: string | null
-  actif?: number | null
-  adresse_livraison?: Prisma.adresse_livraisonUncheckedCreateNestedManyWithoutUtilisateurInput
-  avis?: Prisma.avisUncheckedCreateNestedManyWithoutUtilisateurInput
-  commande?: Prisma.commandeUncheckedCreateNestedManyWithoutUtilisateurInput
-  panier?: Prisma.panierUncheckedCreateNestedManyWithoutUtilisateurInput
-  utilisateur_role?: Prisma.utilisateur_roleUncheckedCreateNestedManyWithoutUtilisateurInput
-}
-
-export type utilisateurCreateOrConnectWithoutDemande_retourInput = {
-  where: Prisma.utilisateurWhereUniqueInput
-  create: Prisma.XOR<Prisma.utilisateurCreateWithoutDemande_retourInput, Prisma.utilisateurUncheckedCreateWithoutDemande_retourInput>
-}
-
-export type utilisateurUpsertWithoutDemande_retourInput = {
-  update: Prisma.XOR<Prisma.utilisateurUpdateWithoutDemande_retourInput, Prisma.utilisateurUncheckedUpdateWithoutDemande_retourInput>
-  create: Prisma.XOR<Prisma.utilisateurCreateWithoutDemande_retourInput, Prisma.utilisateurUncheckedCreateWithoutDemande_retourInput>
-  where?: Prisma.utilisateurWhereInput
-}
-
-export type utilisateurUpdateToOneWithWhereWithoutDemande_retourInput = {
-  where?: Prisma.utilisateurWhereInput
-  data: Prisma.XOR<Prisma.utilisateurUpdateWithoutDemande_retourInput, Prisma.utilisateurUncheckedUpdateWithoutDemande_retourInput>
-}
-
-export type utilisateurUpdateWithoutDemande_retourInput = {
-  nom?: Prisma.StringFieldUpdateOperationsInput | string
-  prenom?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe_hash?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe_salt?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
-  date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  adresse_livraison?: Prisma.adresse_livraisonUpdateManyWithoutUtilisateurNestedInput
-  avis?: Prisma.avisUpdateManyWithoutUtilisateurNestedInput
-  commande?: Prisma.commandeUpdateManyWithoutUtilisateurNestedInput
-  panier?: Prisma.panierUpdateManyWithoutUtilisateurNestedInput
-  utilisateur_role?: Prisma.utilisateur_roleUpdateManyWithoutUtilisateurNestedInput
-}
-
-export type utilisateurUncheckedUpdateWithoutDemande_retourInput = {
-  id_utilisateur?: Prisma.IntFieldUpdateOperationsInput | number
-  nom?: Prisma.StringFieldUpdateOperationsInput | string
-  prenom?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe_hash?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe_salt?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
-  date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  adresse_livraison?: Prisma.adresse_livraisonUncheckedUpdateManyWithoutUtilisateurNestedInput
-  avis?: Prisma.avisUncheckedUpdateManyWithoutUtilisateurNestedInput
-  commande?: Prisma.commandeUncheckedUpdateManyWithoutUtilisateurNestedInput
-  panier?: Prisma.panierUncheckedUpdateManyWithoutUtilisateurNestedInput
-  utilisateur_role?: Prisma.utilisateur_roleUncheckedUpdateManyWithoutUtilisateurNestedInput
-}
-
-export type utilisateurCreateWithoutPanierInput = {
-  nom: string
-  prenom: string
-  email: string
-  mot_de_passe_hash: string
-  mot_de_passe_salt: runtime.Bytes
-  date_inscription?: string | null
-  actif?: number | null
-  adresse_livraison?: Prisma.adresse_livraisonCreateNestedManyWithoutUtilisateurInput
-  avis?: Prisma.avisCreateNestedManyWithoutUtilisateurInput
-  commande?: Prisma.commandeCreateNestedManyWithoutUtilisateurInput
-  demande_retour?: Prisma.demande_retourCreateNestedManyWithoutUtilisateurInput
-  utilisateur_role?: Prisma.utilisateur_roleCreateNestedManyWithoutUtilisateurInput
-}
-
-export type utilisateurUncheckedCreateWithoutPanierInput = {
-  id_utilisateur?: number
-  nom: string
-  prenom: string
-  email: string
-  mot_de_passe_hash: string
-  mot_de_passe_salt: runtime.Bytes
-  date_inscription?: string | null
-  actif?: number | null
-  adresse_livraison?: Prisma.adresse_livraisonUncheckedCreateNestedManyWithoutUtilisateurInput
-  avis?: Prisma.avisUncheckedCreateNestedManyWithoutUtilisateurInput
-  commande?: Prisma.commandeUncheckedCreateNestedManyWithoutUtilisateurInput
-  demande_retour?: Prisma.demande_retourUncheckedCreateNestedManyWithoutUtilisateurInput
-  utilisateur_role?: Prisma.utilisateur_roleUncheckedCreateNestedManyWithoutUtilisateurInput
-}
-
-export type utilisateurCreateOrConnectWithoutPanierInput = {
-  where: Prisma.utilisateurWhereUniqueInput
-  create: Prisma.XOR<Prisma.utilisateurCreateWithoutPanierInput, Prisma.utilisateurUncheckedCreateWithoutPanierInput>
-}
-
-export type utilisateurUpsertWithoutPanierInput = {
-  update: Prisma.XOR<Prisma.utilisateurUpdateWithoutPanierInput, Prisma.utilisateurUncheckedUpdateWithoutPanierInput>
-  create: Prisma.XOR<Prisma.utilisateurCreateWithoutPanierInput, Prisma.utilisateurUncheckedCreateWithoutPanierInput>
-  where?: Prisma.utilisateurWhereInput
-}
-
-export type utilisateurUpdateToOneWithWhereWithoutPanierInput = {
-  where?: Prisma.utilisateurWhereInput
-  data: Prisma.XOR<Prisma.utilisateurUpdateWithoutPanierInput, Prisma.utilisateurUncheckedUpdateWithoutPanierInput>
-}
-
-export type utilisateurUpdateWithoutPanierInput = {
-  nom?: Prisma.StringFieldUpdateOperationsInput | string
-  prenom?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe_hash?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe_salt?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
-  date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  adresse_livraison?: Prisma.adresse_livraisonUpdateManyWithoutUtilisateurNestedInput
-  avis?: Prisma.avisUpdateManyWithoutUtilisateurNestedInput
-  commande?: Prisma.commandeUpdateManyWithoutUtilisateurNestedInput
-  demande_retour?: Prisma.demande_retourUpdateManyWithoutUtilisateurNestedInput
-  utilisateur_role?: Prisma.utilisateur_roleUpdateManyWithoutUtilisateurNestedInput
-}
-
-export type utilisateurUncheckedUpdateWithoutPanierInput = {
-  id_utilisateur?: Prisma.IntFieldUpdateOperationsInput | number
-  nom?: Prisma.StringFieldUpdateOperationsInput | string
-  prenom?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe_hash?: Prisma.StringFieldUpdateOperationsInput | string
-  mot_de_passe_salt?: Prisma.BytesFieldUpdateOperationsInput | runtime.Bytes
-  date_inscription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  adresse_livraison?: Prisma.adresse_livraisonUncheckedUpdateManyWithoutUtilisateurNestedInput
-  avis?: Prisma.avisUncheckedUpdateManyWithoutUtilisateurNestedInput
-  commande?: Prisma.commandeUncheckedUpdateManyWithoutUtilisateurNestedInput
-  demande_retour?: Prisma.demande_retourUncheckedUpdateManyWithoutUtilisateurNestedInput
   utilisateur_role?: Prisma.utilisateur_roleUncheckedUpdateManyWithoutUtilisateurNestedInput
 }
 
@@ -953,9 +632,6 @@ export type utilisateurCreateWithoutUtilisateur_roleInput = {
   actif?: number | null
   adresse_livraison?: Prisma.adresse_livraisonCreateNestedManyWithoutUtilisateurInput
   avis?: Prisma.avisCreateNestedManyWithoutUtilisateurInput
-  commande?: Prisma.commandeCreateNestedManyWithoutUtilisateurInput
-  demande_retour?: Prisma.demande_retourCreateNestedManyWithoutUtilisateurInput
-  panier?: Prisma.panierCreateNestedManyWithoutUtilisateurInput
 }
 
 export type utilisateurUncheckedCreateWithoutUtilisateur_roleInput = {
@@ -969,9 +645,6 @@ export type utilisateurUncheckedCreateWithoutUtilisateur_roleInput = {
   actif?: number | null
   adresse_livraison?: Prisma.adresse_livraisonUncheckedCreateNestedManyWithoutUtilisateurInput
   avis?: Prisma.avisUncheckedCreateNestedManyWithoutUtilisateurInput
-  commande?: Prisma.commandeUncheckedCreateNestedManyWithoutUtilisateurInput
-  demande_retour?: Prisma.demande_retourUncheckedCreateNestedManyWithoutUtilisateurInput
-  panier?: Prisma.panierUncheckedCreateNestedManyWithoutUtilisateurInput
 }
 
 export type utilisateurCreateOrConnectWithoutUtilisateur_roleInput = {
@@ -1000,9 +673,6 @@ export type utilisateurUpdateWithoutUtilisateur_roleInput = {
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   adresse_livraison?: Prisma.adresse_livraisonUpdateManyWithoutUtilisateurNestedInput
   avis?: Prisma.avisUpdateManyWithoutUtilisateurNestedInput
-  commande?: Prisma.commandeUpdateManyWithoutUtilisateurNestedInput
-  demande_retour?: Prisma.demande_retourUpdateManyWithoutUtilisateurNestedInput
-  panier?: Prisma.panierUpdateManyWithoutUtilisateurNestedInput
 }
 
 export type utilisateurUncheckedUpdateWithoutUtilisateur_roleInput = {
@@ -1016,9 +686,6 @@ export type utilisateurUncheckedUpdateWithoutUtilisateur_roleInput = {
   actif?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   adresse_livraison?: Prisma.adresse_livraisonUncheckedUpdateManyWithoutUtilisateurNestedInput
   avis?: Prisma.avisUncheckedUpdateManyWithoutUtilisateurNestedInput
-  commande?: Prisma.commandeUncheckedUpdateManyWithoutUtilisateurNestedInput
-  demande_retour?: Prisma.demande_retourUncheckedUpdateManyWithoutUtilisateurNestedInput
-  panier?: Prisma.panierUncheckedUpdateManyWithoutUtilisateurNestedInput
 }
 
 
@@ -1029,18 +696,12 @@ export type utilisateurUncheckedUpdateWithoutUtilisateur_roleInput = {
 export type UtilisateurCountOutputType = {
   adresse_livraison: number
   avis: number
-  commande: number
-  demande_retour: number
-  panier: number
   utilisateur_role: number
 }
 
 export type UtilisateurCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   adresse_livraison?: boolean | UtilisateurCountOutputTypeCountAdresse_livraisonArgs
   avis?: boolean | UtilisateurCountOutputTypeCountAvisArgs
-  commande?: boolean | UtilisateurCountOutputTypeCountCommandeArgs
-  demande_retour?: boolean | UtilisateurCountOutputTypeCountDemande_retourArgs
-  panier?: boolean | UtilisateurCountOutputTypeCountPanierArgs
   utilisateur_role?: boolean | UtilisateurCountOutputTypeCountUtilisateur_roleArgs
 }
 
@@ -1071,27 +732,6 @@ export type UtilisateurCountOutputTypeCountAvisArgs<ExtArgs extends runtime.Type
 /**
  * UtilisateurCountOutputType without action
  */
-export type UtilisateurCountOutputTypeCountCommandeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.commandeWhereInput
-}
-
-/**
- * UtilisateurCountOutputType without action
- */
-export type UtilisateurCountOutputTypeCountDemande_retourArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.demande_retourWhereInput
-}
-
-/**
- * UtilisateurCountOutputType without action
- */
-export type UtilisateurCountOutputTypeCountPanierArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.panierWhereInput
-}
-
-/**
- * UtilisateurCountOutputType without action
- */
 export type UtilisateurCountOutputTypeCountUtilisateur_roleArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.utilisateur_roleWhereInput
 }
@@ -1108,9 +748,6 @@ export type utilisateurSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   actif?: boolean
   adresse_livraison?: boolean | Prisma.utilisateur$adresse_livraisonArgs<ExtArgs>
   avis?: boolean | Prisma.utilisateur$avisArgs<ExtArgs>
-  commande?: boolean | Prisma.utilisateur$commandeArgs<ExtArgs>
-  demande_retour?: boolean | Prisma.utilisateur$demande_retourArgs<ExtArgs>
-  panier?: boolean | Prisma.utilisateur$panierArgs<ExtArgs>
   utilisateur_role?: boolean | Prisma.utilisateur$utilisateur_roleArgs<ExtArgs>
   _count?: boolean | Prisma.UtilisateurCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["utilisateur"]>
@@ -1152,9 +789,6 @@ export type utilisateurOmit<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type utilisateurInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   adresse_livraison?: boolean | Prisma.utilisateur$adresse_livraisonArgs<ExtArgs>
   avis?: boolean | Prisma.utilisateur$avisArgs<ExtArgs>
-  commande?: boolean | Prisma.utilisateur$commandeArgs<ExtArgs>
-  demande_retour?: boolean | Prisma.utilisateur$demande_retourArgs<ExtArgs>
-  panier?: boolean | Prisma.utilisateur$panierArgs<ExtArgs>
   utilisateur_role?: boolean | Prisma.utilisateur$utilisateur_roleArgs<ExtArgs>
   _count?: boolean | Prisma.UtilisateurCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1166,9 +800,6 @@ export type $utilisateurPayload<ExtArgs extends runtime.Types.Extensions.Interna
   objects: {
     adresse_livraison: Prisma.$adresse_livraisonPayload<ExtArgs>[]
     avis: Prisma.$avisPayload<ExtArgs>[]
-    commande: Prisma.$commandePayload<ExtArgs>[]
-    demande_retour: Prisma.$demande_retourPayload<ExtArgs>[]
-    panier: Prisma.$panierPayload<ExtArgs>[]
     utilisateur_role: Prisma.$utilisateur_rolePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1576,9 +1207,6 @@ export interface Prisma__utilisateurClient<T, Null = never, ExtArgs extends runt
   readonly [Symbol.toStringTag]: "PrismaPromise"
   adresse_livraison<T extends Prisma.utilisateur$adresse_livraisonArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.utilisateur$adresse_livraisonArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$adresse_livraisonPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   avis<T extends Prisma.utilisateur$avisArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.utilisateur$avisArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$avisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  commande<T extends Prisma.utilisateur$commandeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.utilisateur$commandeArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$commandePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  demande_retour<T extends Prisma.utilisateur$demande_retourArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.utilisateur$demande_retourArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$demande_retourPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  panier<T extends Prisma.utilisateur$panierArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.utilisateur$panierArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$panierPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   utilisateur_role<T extends Prisma.utilisateur$utilisateur_roleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.utilisateur$utilisateur_roleArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$utilisateur_rolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2053,78 +1681,6 @@ export type utilisateur$avisArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.AvisScalarFieldEnum | Prisma.AvisScalarFieldEnum[]
-}
-
-/**
- * utilisateur.commande
- */
-export type utilisateur$commandeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the commande
-   */
-  select?: Prisma.commandeSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the commande
-   */
-  omit?: Prisma.commandeOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.commandeInclude<ExtArgs> | null
-  where?: Prisma.commandeWhereInput
-  orderBy?: Prisma.commandeOrderByWithRelationInput | Prisma.commandeOrderByWithRelationInput[]
-  cursor?: Prisma.commandeWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.CommandeScalarFieldEnum | Prisma.CommandeScalarFieldEnum[]
-}
-
-/**
- * utilisateur.demande_retour
- */
-export type utilisateur$demande_retourArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the demande_retour
-   */
-  select?: Prisma.demande_retourSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the demande_retour
-   */
-  omit?: Prisma.demande_retourOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.demande_retourInclude<ExtArgs> | null
-  where?: Prisma.demande_retourWhereInput
-  orderBy?: Prisma.demande_retourOrderByWithRelationInput | Prisma.demande_retourOrderByWithRelationInput[]
-  cursor?: Prisma.demande_retourWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.Demande_retourScalarFieldEnum | Prisma.Demande_retourScalarFieldEnum[]
-}
-
-/**
- * utilisateur.panier
- */
-export type utilisateur$panierArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the panier
-   */
-  select?: Prisma.panierSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the panier
-   */
-  omit?: Prisma.panierOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.panierInclude<ExtArgs> | null
-  where?: Prisma.panierWhereInput
-  orderBy?: Prisma.panierOrderByWithRelationInput | Prisma.panierOrderByWithRelationInput[]
-  cursor?: Prisma.panierWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.PanierScalarFieldEnum | Prisma.PanierScalarFieldEnum[]
 }
 
 /**

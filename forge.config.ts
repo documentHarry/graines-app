@@ -4,15 +4,67 @@ import { MakerZIP } from '@electron-forge/maker-zip';
 import { MakerDeb } from '@electron-forge/maker-deb';
 import { MakerRpm } from '@electron-forge/maker-rpm';
 import { VitePlugin } from '@electron-forge/plugin-vite';
-import { AutoUnpackNativesPlugin } from '@electron-forge/plugin-auto-unpack-natives';
-import { FusesPlugin } from '@electron-forge/plugin-fuses';
-import { FuseV1Options, FuseVersion } from '@electron/fuses';
+import path from 'node:path';
+import fs from 'node:fs';
+
+function copyDir(src: string, dest: string) {
+  if (!fs.existsSync(src)) {
+    throw new Error(`Missing dependency folder: ${src}`);
+  }
+
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  fs.cpSync(src, dest, { recursive: true });
+}
+
+const nativeDeps = [
+  'better-sqlite3',
+  'bindings',
+  'file-uri-to-path'
+];
+
+const prismaDeps = [
+  '@prisma/client',
+  '@prisma/adapter-better-sqlite3',
+  '@prisma/driver-adapter-utils'
+];
 
 const config: ForgeConfig = {
   packagerConfig: {
-    asar: true,
+    asar: false,
   },
+
   rebuildConfig: {},
+
+  hooks: {
+    packageAfterCopy: async (_config, buildPath) => {
+      const projectRoot = process.cwd();
+
+      copyDir(
+        path.join(projectRoot, 'database'),
+        path.join(buildPath, 'database')
+      );
+
+      copyDir(
+        path.join(projectRoot, 'node_modules', 'better-sqlite3'),
+        path.join(buildPath, 'node_modules', 'better-sqlite3')
+      );
+
+      copyDir(
+        path.join(projectRoot, 'node_modules', 'bindings'),
+        path.join(buildPath, 'node_modules', 'bindings')
+      );
+
+      copyDir(
+        path.join(projectRoot, 'node_modules', 'file-uri-to-path'),
+        path.join(buildPath, 'node_modules', 'file-uri-to-path')
+      );
+
+      copyDir(
+        path.join(projectRoot, 'node_modules', '@prisma'),
+        path.join(buildPath, 'node_modules', '@prisma')
+      );
+    },
+  },
   makers: [
     new MakerSquirrel({}),
     new MakerZIP({}, ['darwin']),
@@ -44,20 +96,7 @@ const config: ForgeConfig = {
       ],
     }),
 
-    new AutoUnpackNativesPlugin({}),
-
-    // Fuses are used to enable/disable various Electron functionality
-    // at package time, before code signing the application
-    new FusesPlugin({
-      version: FuseVersion.V1,
-      [FuseV1Options.RunAsNode]: false,
-      [FuseV1Options.EnableCookieEncryption]: true,
-      [FuseV1Options.EnableNodeOptionsEnvironmentVariable]: false,
-      [FuseV1Options.EnableNodeCliInspectArguments]: false,
-      [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
-      [FuseV1Options.OnlyLoadAppFromAsar]: true,
-    }),
-  ],
+ ],
 };
 
 export default config;

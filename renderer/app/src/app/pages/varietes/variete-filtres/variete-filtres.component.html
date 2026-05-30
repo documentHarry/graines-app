@@ -1,0 +1,48 @@
+<aside class="filtres-panel">
+  <div class="filtres-header">
+    <h3>Filtres</h3>
+
+    <button type="button" class="reset-filtres-button" title="Réinitialiser les filtres" (click)="resetFiltres()"> ✕ </button>
+  </div>
+
+  <label for="rechercheNom">Nom</label>
+  <input id="rechercheNom" type="text" placeholder="Rechercher par nom" [value]="rechercheNom()" (input)="changerRechercheNom($event)">
+
+  <label for="filtreBio">Bio</label>
+  <select id="filtreBio" [value]="bioRecherche()" (change)="changerBioRecherche($event)">
+    <option value="">Tous</option>
+    <option value="bio">Bio</option>
+    <option value="non-bio">Non bio</option>
+  </select>
+
+  <label for="filtreType">Type</label>
+  <select id="filtreType" [value]="typeRecherche()" (change)="changerTypeRecherche($event)">
+    <option value="">Tous</option>
+    <option value="aromate">Aromate</option>
+    <option value="legume">Légume</option>
+  </select>
+
+  <label for="filtreEspece">Espèce</label>
+  <select id="filtreEspece" [value]="especeRecherche()" (change)="changerEspeceRecherche($event)">
+    <option value="">Toutes</option>
+    @for (espece of especes(); track espece) {
+      <option [value]="espece">{{ espece }}</option>
+    }
+  </select>
+
+  <label for="filtreEnsoleillement">Ensoleillement</label>
+  <select id="filtreEnsoleillement" [value]="ensoleillementRecherche()" (change)="changerEnsoleillementRecherche($event)">
+    <option value="">Tous</option>
+    @for (ensoleillement of ensoleillements(); track ensoleillement) {
+      <option [value]="ensoleillement">{{ ensoleillement }}</option>
+    }
+  </select>
+
+  <label for="filtreCycleVie">Cycle de vie</label>
+  <select id="filtreCycleVie" [value]="cycleVieRecherche()" (change)="changerCycleVieRecherche($event)">
+    <option value="">Tous</option>
+    @for (cycle of cyclesVie(); track cycle) {
+      <option [value]="cycle">{{ cycle }}</option>
+    }
+  </select>
+</aside>

@@ -1,13 +1,14 @@
-<h1>Graines, plantes maraîchères et aromatiques</h1>
 @if (categorie()) {
   <a class="back-link" routerLink="/categories">← Catégories</a>
 }
 
-<h2>{{ getTitrePage() }}</h2>
+<div class="page-header">
+  <h2>{{ getTitrePage() }}</h2>
 
-@if (!categorie()) {
-  <a class="add-link" routerLink="/produits/ajouter">Ajouter un produit</a>
-}
+  @if (!categorie()) {
+    <a class="add-link" routerLink="/produits/ajouter">Ajouter un produit</a>
+  }
+</div>
 
 @if (isLoading()) {
   <p>Chargement des produits...</p>
@@ -15,29 +16,56 @@
 @else if (message()) {
   <p class="message">{{ message() }}</p>
 }
-@else if (produits().length === 0) {
-  <p>Aucun produit trouvé.</p>
-}
 @else {
-  <section class="produits-grid">
-    @for (produit of produits(); track produit.id_produit) {
-      <article class="produit-card">
-        <h3>{{ produit.intitule }}</h3>
+  <div class="produits-layout">
 
-        <div class="infos">
-          <p><strong>Catégorie: </strong>{{ produit.categorie.nom_categorie }}</p>
-          <p><strong>Variété: </strong>{{ produit.variete.nom }}</p>
-          <p><strong>Espèce: </strong>{{ produit.variete.espece.nom_commun }}</p>
-          <p class="nom-scientifique">{{ produit.variete.espece.nom_scientifique }}</p>
-        </div>
+    <app-produit-filtres 
+      [(recherche)]="recherche"
+      [(stockRecherche)]="stockRecherche"
+      [(aromateRecherche)]="aromateRecherche"
+      [(prixMinRecherche)]="prixMinRecherche"
+      [(prixMaxRecherche)]="prixMaxRecherche"
+      [(categorieRecherche)]="categorieRecherche"
+      [(varieteRecherche)]="varieteRecherche"
+      [(especeRecherche)]="especeRecherche"
+      [categories]="categoriesDisponibles()"
+      [varietes]="varietesDisponibles()"
+      [especes]="especesDisponibles()"
+      [prixMinimumDisponible]="prixMinimumDisponible()"
+      [prixMaximumDisponible]="prixMaximumDisponible()">
+    </app-produit-filtres>
 
-        <div class="produit-footer">
-          <a class="details-link" [routerLink]="['/produits', produit.id_produit]">Voir le détail</a>
-          <span class="prix">{{ produit.prix_unitaire }} €</span>
-          <span class="quantite">Quantité: {{ produit.quantite }}</span>
-          <span class="statut" [class.inactif]="produit.quantite === 0">{{ getStatutProduit(produit) }}</span>
-        </div>
-      </article>
+    <section class="produits-zone">
+      @if (produitsFiltres().length === 0) {
+        <p>Aucun produit trouvé. Cliquez sur la croix pour réinitialiser les filtres</p>
+      }
+      @else {
+        <section class="produits-grid">
+        @for (produit of produitsFiltres(); track produit.id_produit) {
+          <article class="produit-card">
+            <h3>{{ produit.intitule }}</h3>
+
+            <div class="infos">
+              <p><strong>Catégorie: </strong>{{ produit.categorie.nom_categorie }}</p>
+              <p><strong>Variété: </strong>{{ produit.variete.nom }}</p>
+              <p><strong>Espèce: </strong>{{ produit.variete.espece.nom_commun }}</p>
+              <p class="nom-scientifique">{{ produit.variete.espece.nom_scientifique }}</p>
+
+              @if (produit.variete.aromate) {
+                <p><strong>Aromate: </strong>Oui</p>
+              }
+            </div>
+
+            <div class="produit-footer">
+              <a class="details-link" [routerLink]="['/produits', produit.id_produit]">Voir en détail</a>
+              <span class="prix">{{ produit.prix_unitaire }} €</span>
+              <span class="quantite">Quantité: {{ produit.quantite }}</span>
+              <span class="statut" [class.inactif]="produit.quantite === 0">{{ getStatutProduit(produit) }}</span>
+            </div>
+          </article>
+        }
+      </section>
     }
-  </section>
+    </section>
+  </div>
 }

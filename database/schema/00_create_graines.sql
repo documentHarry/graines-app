@@ -133,66 +133,10 @@ CREATE TABLE IF NOT EXISTS produit (
     categorie_id INTEGER NOT NULL,
     FOREIGN KEY (variete_id) REFERENCES variete(id_variete) 
         ON DELETE RESTRICT
-        ON UPDATE NO ACTION
+        ON UPDATE NO ACTION,
     FOREIGN KEY (categorie_id) REFERENCES categorie(id_categorie) 
         ON DELETE RESTRICT
         ON UPDATE NO ACTION
-);
-
-CREATE TABLE IF NOT EXISTS code_promotionnel (
-    id_code_promo INTEGER PRIMARY KEY AUTOINCREMENT,
-    code_texte TEXT UNIQUE NOT NULL,
-    type_remise TEXT NOT NULL CHECK(type_remise IN ('pourcentage', 'montant fixe')),
-    remise REAL NOT NULL CHECK(
-        (type_remise = 'pourcentage' AND remise > 0 AND remise <= 100) OR
-        (type_remise = 'montant fixe' AND remise > 0 AND remise <= 2000)
-    ),
-    date_expiration TEXT,
-    actif INTEGER DEFAULT 1 CHECK(actif IN (0,1))
-);
-
-CREATE TABLE IF NOT EXISTS panier (
-    id_panier INTEGER PRIMARY KEY AUTOINCREMENT,
-    quantite INTEGER NOT NULL CHECK(quantite > 0),
-    date_ajout TEXT DEFAULT CURRENT_TIMESTAMP,
-    utilisateur_id INTEGER NOT NULL,
-    produit_id INTEGER NOT NULL,
-    code_promo_id INTEGER,
-    FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id_utilisateur) ON DELETE CASCADE,
-    FOREIGN KEY (produit_id) REFERENCES produit(id_produit) ON DELETE CASCADE,
-    FOREIGN KEY (code_promo_id) REFERENCES code_promotionnel(id_code_promo) ON DELETE SET NULL,
-    UNIQUE (utilisateur_id, produit_id)
-);
-
-CREATE TABLE IF NOT EXISTS commande (
-    id_commande INTEGER PRIMARY KEY AUTOINCREMENT,    
-    date_commande TEXT DEFAULT CURRENT_TIMESTAMP,
-    utilisateur_id INTEGER NOT NULL,
-    FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id_utilisateur) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS article_commande (
-    id_article_commande INTEGER PRIMARY KEY AUTOINCREMENT,
-    quantite INTEGER NOT NULL CHECK(quantite > 0),
-    prix_unitaire REAL NOT NULL CHECK(prix_unitaire > 0),
-    commande_id INTEGER NOT NULL,
-    produit_id INTEGER NOT NULL,
-    FOREIGN KEY (commande_id) REFERENCES commande(id_commande) ON DELETE CASCADE,
-    FOREIGN KEY (produit_id) REFERENCES produit(id_produit) ON DELETE CASCADE,
-    UNIQUE (commande_id, produit_id)
-);
-
-CREATE TABLE IF NOT EXISTS paiement (
-    id_paiement INTEGER PRIMARY KEY AUTOINCREMENT,
-    date_paiement TEXT DEFAULT CURRENT_TIMESTAMP,
-    montant REAL NOT NULL CHECK(montant > 0),
-    moyen TEXT NOT NULL,
-    statut TEXT DEFAULT 'en_attente' CHECK(statut IN ('en_attente','payé','remboursé')),
-    date_echeance TEXT,
-    numero_echeance INTEGER,
-    nombre_echeances_total INTEGER,
-    commande_id INTEGER NOT NULL,
-    FOREIGN KEY (commande_id) REFERENCES commande(id_commande) ON DELETE RESTRICT
 );
 
 CREATE TABLE IF NOT EXISTS avis (
@@ -208,18 +152,3 @@ CREATE TABLE IF NOT EXISTS avis (
     FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id_utilisateur) ON DELETE CASCADE,
     FOREIGN KEY (produit_id) REFERENCES produit(id_produit) ON DELETE CASCADE
 );
-
-CREATE TABLE IF NOT EXISTS demande_retour (
-    id_retour INTEGER PRIMARY KEY AUTOINCREMENT,
-    numero_retour TEXT UNIQUE,
-    raison TEXT DEFAULT 'produit abimé' CHECK (raison IN ('produit abimé', 'produit manquant', 'mauvais produit envoyé')),
-    descriptif TEXT,
-    date_demande TEXT DEFAULT CURRENT_TIMESTAMP,
-    statut TEXT DEFAULT 'en attente' CHECK(statut IN ('accepté', 'en attente', 'refusé')),
-    utilisateur_id INTEGER NOT NULL,
-    commande_id INTEGER NOT NULL,
-    FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id_utilisateur) ON DELETE CASCADE,
-    FOREIGN KEY (commande_id) REFERENCES commande(id_commande) ON DELETE CASCADE
-);
-
-

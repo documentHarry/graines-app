@@ -1,11 +1,19 @@
-h1 {
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   margin-bottom: 16px;
-  color: #ffb86b;
+}
+
+.page-header h2 {
+  margin: 0 0 0 16px;
+  color: #f2a65a;
+  font-size: 28px;
 }
 
 .add-link {
   display: inline-block;
-  margin-bottom: 16px;
   padding: 8px 12px;
   border-radius: 10px;
   background-color: #f2a65a;
@@ -25,6 +33,13 @@ h1 {
   align-items: stretch;
 }
 
+.utilisateurs-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
 .utilisateur-card {
   display: flex;
   flex-direction: column;
@@ -38,6 +53,10 @@ h1 {
 
 .utilisateur-card:hover {
   transform: translateY(-1px);
+}
+
+.utilisateur-card p strong {
+  color: #7a3e13;
 }
 
 .utilisateur-header {

@@ -1,0 +1,147 @@
+.search-input {
+  width: 280px;
+  box-sizing: border-box;
+  padding: 9px 10px;
+  border: 1px solid #8a5a36;
+  border-radius: 8px;
+  background-color: #f8ead8;
+  color: #d9782d;
+  font-weight: bold;
+}
+
+.search-input::placeholder {
+  color: #d9782d;
+  opacity: 1;
+}
+
+.proprietes-card {
+  max-width: 1000px;
+  padding: 20px;
+  border: 1px solid #8a5a36;
+  border-radius: 12px;
+  background-color: #f8ead8;
+  color: #2a1a10;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 18%);
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+h2 {
+  margin: 0;
+  color: #d9782d;
+  font-size: 18px;
+}
+
+.proprietes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.propriete-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px;
+  border: 1px solid #d8c1a8;
+  border-radius: 12px;
+  background-color: #fff7ec;
+}
+
+.propriete-item strong {
+  color: #7a3e13;
+}
+
+.actions,
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.add-button,
+.edit-button,
+.save-button {
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 10px;
+  background-color: #f2a65a;
+  color: #2a1a10;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.add-button:hover,
+.edit-button:hover,
+.save-button:hover {
+  background-color: #ffb86b;
+}
+
+.delete-button,
+.cancel-button {
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 10px;
+  background-color: #9b1c1c;
+  color: #ffffff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.delete-button:hover,
+.cancel-button:hover {
+  background-color: #b32626;
+}
+
+.propriete-form {
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid #d8c1a8;
+  border-radius: 12px;
+  background-color: #fff7ec;
+}
+
+.form-field {
+  margin-top: 12px;
+  margin-bottom: 14px;
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 6px;
+  color: #7a3e13;
+  font-weight: bold;
+}
+
+.form-field input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 10px;
+  border: 1px solid #8a5a36;
+  border-radius: 8px;
+  background-color: #f8ead8;
+  color: #2a1a10;
+}
+
+.form-field input::placeholder {
+  color: #5f4b3b;
+  opacity: 1;
+}
+
+.message {
+  color: #f8ead8;
+}
+
+.error {
+  margin: 6px 0 0;
+  color: #9b1c1c;
+  font-size: 14px;
+  font-weight: bold;
+}

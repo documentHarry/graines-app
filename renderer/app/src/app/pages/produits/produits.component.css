@@ -1,6 +1,15 @@
-h1 {
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   margin-bottom: 16px;
+}
+
+.page-header h2 {
+  margin: 0 0 0 16px;
   color: #f2a65a;
+  font-size: 28px;
 }
 
 .back-link {
@@ -18,7 +27,6 @@ h1 {
 
 .add-link {
   display: inline-block;
-  margin-bottom: 16px;
   padding: 8px 12px;
   border-radius: 10px;
   background-color: #f2a65a;
@@ -31,6 +39,15 @@ h1 {
   background-color: #ffb86b;
 }
 
+.produits-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+
+
 h2 {
   margin: 0 0 6px;
   color: #c96f2d;
@@ -38,11 +55,23 @@ h2 {
   line-height: 1.2;
 }
 
+h3 {
+  color: #d9782d;
+}
+
 .produits-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
   gap: 16px;
   align-items: stretch;
+}
+
+.produit-card p {
+  color: #2a1a10;
+}
+
+.produit-card p strong {
+  color: #7a3e13;
 }
 
 .produit-card {
@@ -53,7 +82,7 @@ h2 {
   border: 1px solid #8a5a36;
   border-radius: 12px;
   background-color: #f8ead8;
-  color: #2a1a10;
+  color: #7a3e13;;
 }
 
 .prix {
@@ -65,7 +94,6 @@ h2 {
 .infos {
   margin-bottom: 12px;
 }
-
 
 .nom-scientifique {
    color: #5f4b3b;

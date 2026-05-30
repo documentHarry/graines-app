@@ -1,6 +1,20 @@
-<h1>Espèces</h1>
+<div class="especes-header">
+  <a class="add-link" routerLink="/especes/ajouter">Ajouter une espèce</a>
 
-<a class="add-link" routerLink="/especes/ajouter">Ajouter une espèce</a>
+  <input
+    class="search-input"
+    type="text"
+    placeholder="Rechercher par nom commun"
+    [value]="rechercheNomCommun()"
+    (input)="changerRechercheNomCommun($event)">
+
+  <input
+    class="search-input search-input-scientifique"
+    type="text"
+    placeholder="Rechercher par nom scientifique"
+    [value]="rechercheNomScientifique()"
+    (input)="changerRechercheNomScientifique($event)">
+</div>
 
 @if (isLoading()) {
   <p>Chargement des espèces...</p>
@@ -13,7 +27,7 @@
 }
 @else {
   <section class="especes-grid">
-    @for (espece of especes(); track espece.id_espece) {
+    @for (espece of especesFiltrees(); track espece.id_espece) {
       <article class="espece-card">
         <header class="espece-header">
           <h2>{{ espece.nom_commun }}</h2>

@@ -3,9 +3,22 @@ h1 {
   color: #ffb86b;
 }
 
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.page-header h2 {
+  margin: 0 0 0 16px;
+  color: #f2a65a;
+  font-size: 28px;
+}
+
 .add-link {
   display: inline-block;
-  margin-bottom: 16px;
   padding: 8px 12px;
   border-radius: 10px;
   background-color: #f2a65a;
@@ -16,6 +29,13 @@ h1 {
 
 .add-link:hover {
   background-color: #ffb86b;
+}
+
+.varietes-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 20px;
+  align-items: start;
 }
 
 .varietes-grid {

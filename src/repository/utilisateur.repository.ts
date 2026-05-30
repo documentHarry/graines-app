@@ -14,6 +14,7 @@ export class UtilisateurRepository {
         date_inscription: true,
         actif: true,
         adresse_livraison: { include: { localite: true } },
+        utilisateur_role: { include: { role: true } },
       },
       orderBy: [ { nom: 'asc' }, { prenom: 'asc' } ],
     });
@@ -30,6 +31,7 @@ export class UtilisateurRepository {
         date_inscription: true,
         actif: true,
         adresse_livraison: { include: { localite: true } },
+        utilisateur_role: { include: { role: true } },
       },
     });
   }
@@ -49,10 +51,11 @@ export class UtilisateurRepository {
     });
   }
 
-  create(utilisateur: UtilisateurCreateInput, motDePasse: {
-    hash: string;
-    salt: Uint8Array<ArrayBuffer>;
-  }) {
+
+
+  create(utilisateur: UtilisateurCreateInput, motDePasse: { hash: string; salt: Uint8Array<ArrayBuffer>; }) {
+    const dateInscription = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
     return this.prisma.utilisateur.create({
       data: {
         nom: utilisateur.nom,
@@ -60,6 +63,7 @@ export class UtilisateurRepository {
         email: utilisateur.email,
         mot_de_passe_hash: motDePasse.hash,
         mot_de_passe_salt: motDePasse.salt,
+        date_inscription: dateInscription,
         actif: 1,
       },
       select: {

@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guards';
-import { AccueilComponent } from './pages/accueil/accueil.component';
 import { ConnexionComponent } from './pages/connexion/connexion.component';
 import { CategoriesComponent } from './pages/categories/categories.component';
 import { CategorieAjouterComponent } from './pages/categories/ajouter/categorie-ajouter.component';
@@ -16,6 +15,7 @@ import { VarieteDetailComponent } from './pages/varietes/variete-detail/variete-
 import { VarieteAjouterComponent } from './pages/varietes/variete-ajouter/variete-ajouter.component';
 import { VarieteModifierComponent } from './pages/varietes/variete-modifier/variete-modifier.component';
 import { VarieteSupprimerComponent } from './pages/varietes/variete-supprimer/variete-supprimer.component';
+import { ProprietesMedicinalesComponent } from './pages/proprietes-medicinales/proprietes-medicinales.component';
 import { ProduitsComponent } from './pages/produits/produits.component';
 import { ProduitAjouterComponent } from './pages/produits/ajouter/produit-ajouter.component';
 import { ProduitModifierComponent } from './pages/produits/modifier/produit-modifier.component';
@@ -39,6 +39,7 @@ const PATHS = {
   CATEGORIES: 'categories',
   ESPECES: 'especes',
   VARIETES: 'varietes',
+  PROPRIETES_MEDICINALES: 'proprietes-medicinales',
   PRODUITS: 'produits',
   UTILISATEURS: 'utilisateurs',
   AVIS: 'avis',
@@ -55,16 +56,13 @@ const SEGMENTS = {
 
 const ROLES = {
   CLIENT: 'CLIENT',
-  SUPPORT_CLIENT: 'SUPPORT_CLIENT',
-  GESTIONNAIRE_RETOURS: 'GESTIONNAIRE_RETOURS',
   MODERATEUR: 'MODERATEUR',
-  LOGISTICIEN: 'LOGISTICIEN',
   GESTIONNAIRE_CATALOGUE: 'GESTIONNAIRE_CATALOGUE',
   ADMIN: 'ADMIN',
 } as const;
 
 export const routes: Routes = [
-  { path: PATHS.ACCUEIL, component: AccueilComponent },
+  { path: PATHS.ACCUEIL, component: CategoriesComponent },
   { path: PATHS.CONNEXION, component: ConnexionComponent },
 
   { path: PATHS.CATEGORIES, component: CategoriesComponent },
@@ -92,6 +90,9 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard], data: { roles: [ROLES.GESTIONNAIRE_CATALOGUE, ROLES.ADMIN] } },
   { path: `${PATHS.VARIETES}/${SEGMENTS.ID}`, component: VarieteDetailComponent },
 
+  { path: PATHS.PROPRIETES_MEDICINALES, component: ProprietesMedicinalesComponent, 
+    canActivate: [authGuard, roleGuard], data: { roles: [ROLES.GESTIONNAIRE_CATALOGUE, ROLES.ADMIN] } },
+
   { path: PATHS.PRODUITS, component: ProduitsComponent },
   { path: `${PATHS.PRODUITS}/${SEGMENTS.AJOUTER}`, component: ProduitAjouterComponent,
     canActivate: [authGuard, roleGuard], data: { roles: [ROLES.GESTIONNAIRE_CATALOGUE, ROLES.ADMIN] } },
@@ -111,7 +112,7 @@ export const routes: Routes = [
   { path: `${PATHS.UTILISATEURS}/${SEGMENTS.ROLES_ID}`, component: UtilisateurRolesComponent,
     canActivate: [authGuard, roleGuard], data: { roles: [ROLES.ADMIN] } },
   { path: `${PATHS.UTILISATEURS}/${SEGMENTS.ID}`, component: UtilisateurDetailComponent,
-    canActivate: [authGuard, roleGuard], data: { roles: [ROLES.ADMIN, ROLES.SUPPORT_CLIENT] } },
+    canActivate: [authGuard, roleGuard], data: { roles: [ROLES.ADMIN] } },
 
   { path: PATHS.AVIS, component: AvisComponent },
   { path: `${PATHS.AVIS}/${SEGMENTS.AJOUTER}`, component: AvisAjouterComponent,

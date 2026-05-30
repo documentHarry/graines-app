@@ -4,8 +4,15 @@ export default defineConfig({
   build: {
     rollupOptions: {
       external: [
+        'electron',
         'better-sqlite3',
-        /\.node$/,
+        'bindings',
+        'file-uri-to-path',
+        '@prisma/client',
+        '@prisma/adapter-better-sqlite3',
+        'node:path',
+        'node:fs',
+        'node:os',
       ],
     },
   },

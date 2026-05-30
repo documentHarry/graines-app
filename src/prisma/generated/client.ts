@@ -55,11 +55,6 @@ export type aromate = Prisma.aromateModel
  */
 export type aromate_propriete = Prisma.aromate_proprieteModel
 /**
- * Model article_commande
- * 
- */
-export type article_commande = Prisma.article_commandeModel
-/**
  * Model avis
  * 
  */
@@ -70,21 +65,6 @@ export type avis = Prisma.avisModel
  */
 export type categorie = Prisma.categorieModel
 /**
- * Model code_promotionnel
- * 
- */
-export type code_promotionnel = Prisma.code_promotionnelModel
-/**
- * Model commande
- * 
- */
-export type commande = Prisma.commandeModel
-/**
- * Model demande_retour
- * 
- */
-export type demande_retour = Prisma.demande_retourModel
-/**
  * Model espece
  * 
  */
@@ -94,16 +74,6 @@ export type espece = Prisma.especeModel
  * 
  */
 export type localite = Prisma.localiteModel
-/**
- * Model paiement
- * 
- */
-export type paiement = Prisma.paiementModel
-/**
- * Model panier
- * 
- */
-export type panier = Prisma.panierModel
 /**
  * Model produit
  * 

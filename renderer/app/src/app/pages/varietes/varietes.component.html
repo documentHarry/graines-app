@@ -1,5 +1,9 @@
-<h1>Variétés</h1>
-<a class="add-link" routerLink="/varietes/ajouter">Ajouter une variété</a>
+<div class="page-header">
+  <h2>Variété</h2>
+  <a class="add-link" routerLink="/varietes/ajouter">Ajouter une variété</a>
+</div>
+
+
 
 @if (isLoading()) {
   <p>Chargement des variétés...</p>
@@ -7,49 +11,67 @@
 @else if (message()) {
   <p class="message">{{ message() }}</p>
 }
-@else if (varietes().length === 0) {
-  <p>Aucune variété trouvée.</p>
-}
 @else {
-  <section class="varietes-grid">
-    @for (variete of varietes(); track variete.id_variete) {
-      <article class="variete-card">
-        <header class="variete-header">
-          <div>
-            <h2>{{ variete.nom }}</h2>
-            <p class="scientifique">{{ variete.espece.nom_scientifique }}</p>
-          </div>
+  <div class="varietes-layout">
 
-          <span
-            class="produits-count"
-            [class.empty]="getNombreProduits(variete) === 0">
-            {{ getNombreProduits(variete) }}
-          </span>
-        </header>
+    <app-variete-filtres
+      [(rechercheNom)]="rechercheNom"
+      [(bioRecherche)]="bioRecherche"
+      [(typeRecherche)]="typeRecherche"
+      [(especeRecherche)]="especeRecherche"
+      [(ensoleillementRecherche)]="ensoleillementRecherche"
+      [(cycleVieRecherche)]="cycleVieRecherche"
+      [especes]="especesDisponibles()"
+      [ensoleillements]="ensoleillementsDisponibles()"
+      [cyclesVie]="cyclesVieDisponibles()">
+    </app-variete-filtres>
 
-        <div class="infos">
-          <p><strong>Espèce: </strong>{{ variete.espece.nom_commun }}</p>
-          <p><strong>Label: </strong>{{ getLabelBio(variete) }}</p>
+    <section class="varietes-zone">
+      @if (varietesFiltrees().length === 0) {
+        <p>Aucune variété trouvée. Cliquez sur la croix pour réinitialiser les filtres.</p>
+      }
+      @else {
+        <section class="varietes-grid">
+          @for (variete of varietesFiltrees(); track variete.id_variete) {
+            <article class="variete-card">
+              <header class="variete-header">
+                <div>
+                  <h2>{{ variete.nom }}</h2>
+                  <p class="scientifique">{{ variete.espece.nom_scientifique }}</p>
+                </div>
 
-          @if (estAromate(variete)) {
-            <p><strong>Type: </strong><span class="aromate-badge">Aromate</span></p>
+                <span
+                  class="produits-count"
+                  [class.empty]="getNombreProduits(variete) === 0">
+                  {{ getNombreProduits(variete) }}
+                </span>
+              </header>
+
+              <div class="infos">
+                <p><strong>Espèce: </strong>{{ variete.espece.nom_commun }}</p>
+                <p><strong>Label: </strong>{{ getLabelBio(variete) }}</p>
+
+                @if (estAromate(variete)) {
+                  <p><strong>Type: </strong><span class="aromate-badge">Aromate</span></p>
+                }
+                @else {
+                  <p><strong>Type: </strong><span class="non-aromate-badge">Légume</span></p>
+                }
+
+                @if (variete.cycle_de_vie) {
+                  <p><strong>Cycle de vie: </strong>{{ variete.cycle_de_vie }}</p>
+                }
+
+                @if (variete.type_ensoleillement) {
+                  <p><strong>Ensoleillement: </strong>{{ variete.type_ensoleillement }}</p>
+                }
+              </div>
+
+              <a class="details-link" [routerLink]="['/varietes', variete.id_variete]">Voir en détail</a>
+            </article>
           }
-          @else {
-            <p><strong>Type: </strong><span class="non-aromate-badge">Légume</span></p>
-          }
-
-          @if (variete.cycle_de_vie) {
-            <p><strong>Cycle de vie: </strong>{{ variete.cycle_de_vie }}</p>
-          }
-
-          @if (variete.type_ensoleillement) {
-            <p><strong>Ensoleillement: </strong>{{ variete.type_ensoleillement }}</p>
-          }
-        </div>
-
-        <a class="details-link" [routerLink]="['/varietes', variete.id_variete]">Voir en détail</a>
-
-      </article>
-    }
-  </section>
+        </section>
+      }
+    </section>
+  </div>
 }

@@ -59,13 +59,9 @@ export class AvisRepository {
     return avis !== null;
   }
 
-  create(avis: {
-    note: number;
-    titre: string | null;
-    commentaire: string | null;
-    utilisateur_id: number;
-    produit_id: number;
-  }) {
+  create(avis: { note: number; titre: string | null; commentaire: string | null; utilisateur_id: number; produit_id: number; }) {
+    const dateDepot = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
     return this.prisma.avis.create({
       data: {
         note: avis.note,
@@ -73,6 +69,7 @@ export class AvisRepository {
         commentaire: avis.commentaire,
         utilisateur_id: avis.utilisateur_id,
         produit_id: avis.produit_id,
+        date_depot: dateDepot,
         statut: 'nouveau',
         nombre_jaime: 0,
       },

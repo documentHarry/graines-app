@@ -1,0 +1,57 @@
+.filtres-panel {
+  padding: 16px;
+  border: 1px solid #8a5a36;
+  border-radius: 12px;
+  background-color: #f8ead8;
+  height: 656px;
+  box-sizing: border-box;
+}
+
+.filtres-panel h3 {
+  margin-top: 0;
+  color: #d9782d;
+}
+
+.filtres-panel label {
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 6px;
+  font-weight: bold;
+  color: #7a3e13;
+}
+
+.filtres-panel input,
+.filtres-panel select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #8a5a36;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.filtres-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.filtres-header h3 {
+  margin: 0;
+  color: #d9782d;
+}
+
+.reset-filtres-button {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background-color: #9b1c1c;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.reset-filtres-button:hover {
+  background-color: #b32626;
+}

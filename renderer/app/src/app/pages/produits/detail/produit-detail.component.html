@@ -40,7 +40,7 @@
     </section>
       
     <section>
-      <h2>Informations générales</h2>
+      <h3>Informations générales</h3>
 
       <div class="info-grid">
         <p><strong>Catégorie: </strong>{{ produit()?.categorie?.nom_categorie }}</p>
@@ -54,7 +54,7 @@
     </section>
 
     <section>
-      <h2>Culture</h2>
+      <h3>Culture</h3>
 
       <div class="info-grid">
         @if (produit()?.variete?.cycle_de_vie) {
@@ -100,7 +100,7 @@
     </section>
 
     <section>
-      <h2>Dimensions et distances</h2>
+      <h3>Dimensions et distances</h3>
 
       <div class="info-grid">
         @if (produit()?.variete?.espacement_entre_les_plants != null) {
@@ -135,14 +135,14 @@
 
     @if (produit()?.variete?.descriptif) {
       <section>
-        <h2>Descriptif de la variété</h2>
+        <h3>Descriptif de la variété</h3>
         <p>{{ produit()?.variete?.descriptif }}</p>
       </section>
     }
 
     @if (getConseilsPlantation().length > 0) {
       <section>
-        <h2>Conseil de plantation</h2>
+        <h3>Conseil de plantation</h3>
 
         @for (phrase of getConseilsPlantation(); track phrase) {
           <p>{{ phrase }}</p>
@@ -150,6 +150,37 @@
       </section>
     }
   </article>
+
+  @if (avis().length > 0) {
+    <section>
+      <h2>Avis des utilisateurs</h2>
+
+      <div class="avis-list">
+        @for (avisItem of avis(); track avisItem.id_avis) {
+          <article class="avis-card">
+            <div class="avis-header">
+              <strong>{{ avisItem.titre }}</strong>
+              <span>{{ getNoteAvis(avisItem) }}</span>
+            </div>
+
+            <p class="avis-auteur">{{ getAuteurAvis(avisItem) }}</p>
+
+            @if (avisItem.commentaire) {
+              <p>{{ avisItem.commentaire }}</p>
+            }
+
+            <p class="avis-like">J'aime : {{ avisItem.nombre_jaime ?? 0 }}</p>
+          </article>
+        }
+      </div>
+    </section>
+  }
+  @else {
+    <section>
+      <h2>Avis des utilisateurs</h2>
+      <p>Aucun avis pour ce produit.</p>
+    </section>
+  }
 
   @if (produitsSimilaires().length > 0) {
     <section>

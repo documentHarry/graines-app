@@ -1,17 +1,44 @@
-h1 {
+.categories-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 16px;
-  color: #ffb86b;
 }
 
 .add-link {
   display: inline-block;
-  margin-bottom: 16px;
   padding: 8px 12px;
   border-radius: 10px;
   background-color: #f2a65a;
   color: #2a1a10;
   font-weight: bold;
   text-decoration: none;
+  white-space: nowrap;
+}
+
+.search-title {
+  color: #f2a65a;
+  font-weight: bold;
+}
+
+.search-input {
+  width: 240px;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border: 1px solid #8a5a36;
+  border-radius: 8px;
+  background-color: #f8ead8;
+  color: #d9782d;
+  font-weight: bold;
+}
+
+.search-input-descriptif {
+  width: 480px;
+}
+
+.search-input::placeholder {
+  color: #d9782d;
+  opacity: 1;
 }
 
 .add-link:hover {

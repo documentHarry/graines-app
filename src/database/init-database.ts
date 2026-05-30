@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import Database from 'better-sqlite3';
+import { app } from 'electron';
 
 function executerScriptsSql(database: Database.Database, dossier: string): void {
   const scripts = fs.readdirSync(dossier)
@@ -34,8 +35,8 @@ export function initialiserBaseDeDonnees(dbPath: string): void {
   try {
     database.pragma('foreign_keys = ON');
 
-    const schemaDirectory = path.join(__dirname, '..', '..', 'database', 'schema');
-    const seedDirectory = path.join(__dirname, '..', '..', 'database', 'seed');
+    const schemaDirectory = path.join(app.getAppPath(), 'database', 'schema');
+    const seedDirectory = path.join(app.getAppPath(), 'database', 'seed');
 
     executerScriptsSql(database, schemaDirectory);
     executerScriptsSql(database, seedDirectory);

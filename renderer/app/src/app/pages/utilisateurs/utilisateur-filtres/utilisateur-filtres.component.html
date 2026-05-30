@@ -1,0 +1,42 @@
+<aside class="filtres-panel">
+  <div class="filtres-header">
+    <h3>Filtres</h3>
+
+    <button type="button" class="reset-filtres-button" title="Réinitialiser les filtres" (click)="resetFiltres()"> ✕ </button>
+  </div>
+
+  <label for="nomRecherche">Nom</label>
+  <input id="nomRecherche" type="text" placeholder="Rechercher par nom" [value]="nomRecherche()"
+  (input)="changerNomRecherche($event)">
+
+  <label for="prenomRecherche">Prénom</label>
+  <input id="prenomRecherche" type="text" placeholder="Rechercher par prénom" [value]="prenomRecherche()"
+  (input)="changerPrenomRecherche($event)">
+
+  <label for="emailRecherche">Email</label>
+  <input id="emailRecherche" type="text" placeholder="Rechercher par email" [value]="emailRecherche()"
+  (input)="changerEmailRecherche($event)">
+
+  <label for="filtreStatut">Statut</label>
+  <select id="filtreStatut" [value]="statutRecherche()" (change)="changerStatutRecherche($event)">
+    <option value="">Tous</option>
+    <option value="actif">Actifs</option>
+    <option value="inactif">Inactifs</option>
+  </select>
+
+  <label for="filtreRole">Rôle</label>
+  <select id="filtreRole" [value]="roleRecherche()" (change)="changerRoleRecherche($event)">
+    <option value="">Tous</option>
+
+    @for (role of roles(); track role) {
+      <option [value]="role">{{ role }}</option>
+    }
+  </select>
+
+  <label for="filtreAdresse">Adresse</label>
+  <select id="filtreAdresse" [value]="adresseRecherche()" (change)="changerAdresseRecherche($event)">
+    <option value="">Toutes</option>
+    <option value="avec-adresse">Avec adresse</option>
+    <option value="sans-adresse">Sans adresse</option>
+  </select>
+</aside>

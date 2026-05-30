@@ -54,16 +54,10 @@ export const ModelName = {
   adresse_livraison: 'adresse_livraison',
   aromate: 'aromate',
   aromate_propriete: 'aromate_propriete',
-  article_commande: 'article_commande',
   avis: 'avis',
   categorie: 'categorie',
-  code_promotionnel: 'code_promotionnel',
-  commande: 'commande',
-  demande_retour: 'demande_retour',
   espece: 'espece',
   localite: 'localite',
-  paiement: 'paiement',
-  panier: 'panier',
   produit: 'produit',
   propriete_medicinale: 'propriete_medicinale',
   role: 'role',
@@ -116,17 +110,6 @@ export const Aromate_proprieteScalarFieldEnum = {
 export type Aromate_proprieteScalarFieldEnum = (typeof Aromate_proprieteScalarFieldEnum)[keyof typeof Aromate_proprieteScalarFieldEnum]
 
 
-export const Article_commandeScalarFieldEnum = {
-  id_article_commande: 'id_article_commande',
-  quantite: 'quantite',
-  prix_unitaire: 'prix_unitaire',
-  commande_id: 'commande_id',
-  produit_id: 'produit_id'
-} as const
-
-export type Article_commandeScalarFieldEnum = (typeof Article_commandeScalarFieldEnum)[keyof typeof Article_commandeScalarFieldEnum]
-
-
 export const AvisScalarFieldEnum = {
   id_avis: 'id_avis',
   note: 'note',
@@ -151,41 +134,6 @@ export const CategorieScalarFieldEnum = {
 export type CategorieScalarFieldEnum = (typeof CategorieScalarFieldEnum)[keyof typeof CategorieScalarFieldEnum]
 
 
-export const Code_promotionnelScalarFieldEnum = {
-  id_code_promo: 'id_code_promo',
-  code_texte: 'code_texte',
-  type_remise: 'type_remise',
-  remise: 'remise',
-  date_expiration: 'date_expiration',
-  actif: 'actif'
-} as const
-
-export type Code_promotionnelScalarFieldEnum = (typeof Code_promotionnelScalarFieldEnum)[keyof typeof Code_promotionnelScalarFieldEnum]
-
-
-export const CommandeScalarFieldEnum = {
-  id_commande: 'id_commande',
-  date_commande: 'date_commande',
-  utilisateur_id: 'utilisateur_id'
-} as const
-
-export type CommandeScalarFieldEnum = (typeof CommandeScalarFieldEnum)[keyof typeof CommandeScalarFieldEnum]
-
-
-export const Demande_retourScalarFieldEnum = {
-  id_retour: 'id_retour',
-  numero_retour: 'numero_retour',
-  raison: 'raison',
-  descriptif: 'descriptif',
-  date_demande: 'date_demande',
-  statut: 'statut',
-  utilisateur_id: 'utilisateur_id',
-  commande_id: 'commande_id'
-} as const
-
-export type Demande_retourScalarFieldEnum = (typeof Demande_retourScalarFieldEnum)[keyof typeof Demande_retourScalarFieldEnum]
-
-
 export const EspeceScalarFieldEnum = {
   id_espece: 'id_espece',
   nom_scientifique: 'nom_scientifique',
@@ -202,33 +150,6 @@ export const LocaliteScalarFieldEnum = {
 } as const
 
 export type LocaliteScalarFieldEnum = (typeof LocaliteScalarFieldEnum)[keyof typeof LocaliteScalarFieldEnum]
-
-
-export const PaiementScalarFieldEnum = {
-  id_paiement: 'id_paiement',
-  date_paiement: 'date_paiement',
-  montant: 'montant',
-  moyen: 'moyen',
-  statut: 'statut',
-  date_echeance: 'date_echeance',
-  numero_echeance: 'numero_echeance',
-  nombre_echeances_total: 'nombre_echeances_total',
-  commande_id: 'commande_id'
-} as const
-
-export type PaiementScalarFieldEnum = (typeof PaiementScalarFieldEnum)[keyof typeof PaiementScalarFieldEnum]
-
-
-export const PanierScalarFieldEnum = {
-  id_panier: 'id_panier',
-  quantite: 'quantite',
-  date_ajout: 'date_ajout',
-  utilisateur_id: 'utilisateur_id',
-  produit_id: 'produit_id',
-  code_promo_id: 'code_promo_id'
-} as const
-
-export type PanierScalarFieldEnum = (typeof PanierScalarFieldEnum)[keyof typeof PanierScalarFieldEnum]
 
 
 export const ProduitScalarFieldEnum = {

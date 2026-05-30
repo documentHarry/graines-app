@@ -1,604 +1,158 @@
-# Bilan des changements depuis le dernier commit
+# Commit message
 
-## 1. Authentification
+## Résumé
 
-### Ajout du login réel
+Ajout et amélioration de plusieurs fonctionnalités de gestion dans l’application : filtres multi-critères, gestion des adresses utilisateur, propriétés médicinales, rôles, dates, navigation et ajustements CSS.
 
-Mise en place d’un flux de connexion complet entre Angular, Electron et Prisma.
-
-Flux actuel :
-
-    ConnexionComponent
-    → AuthService
-    → preload.ts
-    → auth.ipc.ts
-    → AuthRepository
-    → Prisma / SQLite
-
-La connexion utilise maintenant :
-
-- l’email saisi ;
-- le mot de passe saisi ;
-- le hash stocké en base ;
-- le salt stocké en base ;
-- les rôles associés à l’utilisateur.
-
-### Vérification du mot de passe
-
-La vérification du mot de passe utilise PBKDF2 avec SHA-512.
-
-Le mot de passe n’est plus comparé en clair.
-
-Fichier concerné :
-
-    src/security/password-utils.ts
-
-Fonctions principales :
-
-    hacherMotDePasse
-    verifierMotDePasse
-
-### Conservation de l’utilisateur connecté
-
-L’utilisateur connecté est stocké dans le service d’authentification et dans `localStorage`.
-
-Cela permet de conserver la session pendant l’utilisation de l’application.
-
-### Déconnexion
-
-Ajout de la logique de déconnexion.
-
-Le logout supprime l’utilisateur courant du service et du `localStorage`.
-
----
-
-## 2. Gestion des rôles
-
-### Création des rôles
-
-Ajout des rôles applicatifs :
-
-    CLIENT
-    SUPPORT_CLIENT
-    GESTIONNAIRE_RETOURS
-    MODERATEUR
-    LOGISTICIEN
-    GESTIONNAIRE_CATALOGUE
-    ADMIN
-
-### Attribution initiale des rôles
-
-Tous les utilisateurs reçoivent le rôle `CLIENT`.
-
-Des comptes de test reçoivent également des rôles spécifiques :
-
-    jthomas@example.org            → ADMIN
-    marie82@example.net            → SUPPORT_CLIENT
-    mariannesimon@example.org      → GESTIONNAIRE_RETOURS
-    inge37@example.net             → MODERATEUR
-    jadotjoelle@example.net        → LOGISTICIEN
-    daan27@example.org             → GESTIONNAIRE_CATALOGUE
-
-### Tables concernées
-
-    role
-    utilisateur_role
-
-### Fichiers ajoutés
-
-    src/repository/role.repository.ts
-    src/repository/utilisateur-role.repository.ts
-    src/ipc/role.ipc.ts
-    src/ipc/utilisateur-role.ipc.ts
-    role.service.ts
-
-### Canaux IPC ajoutés
-
-    roles:get-all
-    utilisateur-roles:get-by-utilisateur
-    utilisateur-roles:update
-
----
-
-## 3. Guards et protection des routes
-
-### Guards utilisés
-
-    authGuard
-    roleGuard
-
-`authGuard` vérifie que l’utilisateur est connecté.
-
-`roleGuard` vérifie que l’utilisateur possède au moins un des rôles autorisés sur la route.
-
-### Protection des routes
-
-Les routes sensibles utilisent maintenant :
-
-    canActivate: [authGuard, roleGuard]
-    data: { roles: [...] }
-
-### Routes protégées
-
-Les routes de gestion catalogue sont accessibles aux rôles :
-
-    GESTIONNAIRE_CATALOGUE
-    ADMIN
-
-Les routes de gestion utilisateurs sont principalement accessibles à :
-
-    ADMIN
-
-Certaines routes de détail utilisateur sont aussi accessibles à :
-
-    SUPPORT_CLIENT
-
-Les routes de gestion des avis sont protégées selon les rôles :
-
-    CLIENT
-    MODERATEUR
-    ADMIN
-
----
-
-## 4. Page de connexion
-
-Ajout d’une page permettant à l’utilisateur de s’authentifier.
-
-La page permet :
-
-- de saisir un email ;
-- de saisir un mot de passe ;
-- d’appeler le vrai flux de connexion ;
-- d’afficher un message d’erreur si la connexion échoue ;
-- de rediriger vers l’URL initialement demandée après connexion.
-
-La redirection utilise `returnUrl`.
-
----
-
-## 5. Navigation
-
-La barre de navigation a été enrichie avec :
-
-- affichage conditionnel selon l’état connecté ;
-- bouton de déconnexion ;
-- badge utilisateur avec les initiales du prénom et du nom.
-
----
-
-## 6. Gestion des utilisateurs
-
-### Pages utilisateurs stabilisées
-
-    liste utilisateurs
-    détail utilisateur
-    ajout utilisateur
-    modification utilisateur
-    suppression / désactivation utilisateur
-
-La suppression logique désactive l’utilisateur avec :
-
-    actif = 0
-
-### Hash du mot de passe à la création
-
-Lors de la création d’un utilisateur, le mot de passe est hashé avant insertion en base.
-
-### Page de gestion des rôles
-
-Ajout d’une page dédiée :
-
-    /utilisateurs/roles/:id
-
-Cette page permet :
-
-- de charger un utilisateur ;
-- de charger tous les rôles disponibles ;
-- de charger les rôles déjà attribués ;
-- de cocher / décocher les rôles ;
-- d’enregistrer les rôles.
-
-La route est protégée par le rôle `ADMIN`.
-
----
-
-## 7. Gestion des avis
-
-### Table avis
-
-Ajout de la gestion métier des avis avec les champs :
-
-    id_avis
-    note
-    titre
-    commentaire
-    date_depot
-    statut
-    nombre_jaime
-    utilisateur_id
-    produit_id
-
-### Statuts des avis
-
-    nouveau
-    modifié
-    supprimé
-
-La suppression d’un avis est logique avec :
-
-    statut = 'supprimé'
-
-### Opérations ajoutées
-
-    lister les avis
-    récupérer un avis par ID
-    récupérer les avis d’un produit
-    créer un avis
-    modifier un avis
-    supprimer logiquement un avis
-    ajouter un j’aime
-
-### Fichiers créés
-
-    src/repository/avis.repository.ts
-    src/ipc/avis.ipc.ts
-    avis.service.ts
-    avis.component.ts
-    avis-ajouter.component.ts
-    avis-modifier.component.ts
-    avis-supprimer.component.ts
-
-### Seed avis
-
-Création d’un script d’insertion pour les avis.
-
-Objectif :
-
-    entre 0 et 3 avis par produit
-
-Les avis sont liés à :
-
-    utilisateur
-    produit
-
-### Export / bulk insert
-
-Travail effectué pour transformer les avis existants en un gros script :
-
-    INSERT INTO avis (...) VALUES
-    (...),
-    (...),
-    (...);
-
----
-
-## 8. Produits et intégration future des avis
-
-Préparation de l’intégration des avis dans la page détail produit.
-
-Décision d’architecture :
-
-    un composant enfant affichera les avis d’un produit
-
-Principe prévu :
-
-    ProduitDetailComponent
-    → AvisProduitComponent
-    → getAvisByProduit(produitId)
-
-L’objectif est de garder une page produit centralisée tout en réutilisant les composants avis.
-
----
-
-## 9. Refactorisation Repository / IPC
-
-### Objectif
-
-Réduire fortement la taille de `main.ts`.
-
-Avant, `main.ts` contenait :
-
-- les requêtes Prisma ;
-- les handlers IPC ;
-- les règles métier ;
-- la logique d’authentification ;
-- la logique de création / update / delete de tous les domaines.
-
-Après refactorisation :
-
-    main.ts
-    → démarre Electron
-    → initialise la base
-    → crée Prisma
-    → instancie les repositories
-    → enregistre les IPC
-
-### Repositories créés
-
-    auth.repository.ts
-    categorie.repository.ts
-    espece.repository.ts
-    variete.repository.ts
-    aromate.repository.ts
-    propriete-medicinale.repository.ts
-    produit.repository.ts
-    avis.repository.ts
-    utilisateur.repository.ts
-    localite.repository.ts
-    adresse-livraison.repository.ts
-    role.repository.ts
-    utilisateur-role.repository.ts
-
-### IPC créés
-
-    auth.ipc.ts
-    categorie.ipc.ts
-    espece.ipc.ts
-    variete.ipc.ts
-    propriete-medicinale.ipc.ts
-    produit.ipc.ts
-    avis.ipc.ts
-    utilisateur.ipc.ts
-    localite.ipc.ts
-    adresse-livraison.ipc.ts
-    role.ipc.ts
-    utilisateur-role.ipc.ts
-
-### Séparation des responsabilités
-
-    repository
-    → accès aux données Prisma
-
-    ipc
-    → communication Electron / renderer
-
-    main.ts
-    → initialisation et câblage
-
----
-
-## 10. Variétés et aromates
-
-La logique variété / aromate a été séparée côté repository.
-
-Raison métier :
-
-- une variété peut être un aromate ;
-- un aromate dépend toujours d’une variété ;
-- toutes les variétés ne sont pas des aromates.
-
-Repositories concernés :
-
-    variete.repository.ts
-    aromate.repository.ts
-
-`variete.repository.ts` gère la table `variete`.
-
-`aromate.repository.ts` gère :
-
-    aromate
-    aromate_propriete
-
-La table N-N `aromate_propriete` est gérée dans `AromateRepository`, car elle sert uniquement à lier un aromate à ses propriétés médicinales.
-
-Aucune page indépendante `aromates` n’a été créée.
-
-L’aromate reste géré depuis les pages :
-
-    variete-ajouter
-    variete-modifier
-    variete-detail
-
----
-
-## 11. Propriétés médicinales
-
-Ajout d’un repository et d’un IPC dédié :
-
-    propriete-medicinale.repository.ts
-    propriete-medicinale.ipc.ts
-
-Canal IPC :
-
-    proprietes-medicinales:get-all
-
----
-
-## 12. Catégories, espèces, produits, localités, adresses
-
-Ces domaines ont été migrés vers le pattern Repository / IPC.
-
-### Catégories
-
-    categorie.repository.ts
-    categorie.ipc.ts
-
-### Espèces
-
-    espece.repository.ts
-    espece.ipc.ts
+## Détails des changements
 
 ### Produits
 
-    produit.repository.ts
-    produit.ipc.ts
+- Ajout d’un panneau latéral de filtres multi-critères pour la page produits.
+- Ajout de filtres par recherche, stock, catégorie, variété, espèce, aromate et fourchette de prix.
+- Ajout d’un bouton de réinitialisation des filtres.
+- Maintien du panneau de filtres visible même lorsqu’aucun produit ne correspond aux critères.
+- Ajout de sécurités sur les prix minimum et maximum selon les valeurs disponibles en base de données.
+- Harmonisation du style de la page produits : titre, bouton d’ajout, alignements, couleurs et hauteur du panneau de filtres.
+- Correction de l’affichage des avis sur la page détail produit.
+- Ajout du chargement des avis liés au produit.
+- Correction de l’intégration IPC/preload/service pour `getAvisByProduit`.
+- Ajustement CSS des commentaires, likes et liens de détail.
 
-### Localités
+### Catégories
 
-    localite.repository.ts
-    localite.ipc.ts
+- Ajout de recherches sur la page catégories.
+- Ajout d’une recherche par nom de catégorie.
+- Ajout d’une recherche par descriptif.
+- Alignement du bouton d’ajout et des champs de recherche sur une même ligne.
+- Harmonisation des couleurs des champs de recherche avec le style des cartes.
+- Suppression du style avec labels inutiles au profit de placeholders dans les inputs.
+
+### Espèces
+
+- Ajout d’une recherche par nom commun.
+- Ajout d’une recherche par nom scientifique.
+- Alignement du titre, du bouton d’ajout et des champs de recherche.
+- Harmonisation du style avec la page catégories.
+- Ajustement des largeurs de champs et suppression des marges inutiles.
+
+### Variétés
+
+- Ajout d’un composant enfant pour les filtres de variétés.
+- Ajout d’un panneau latéral gauche de filtres multi-critères.
+- Ajout de filtres par nom, bio, type aromate/légume, espèce, ensoleillement et cycle de vie.
+- Ajout d’un bouton de réinitialisation des filtres.
+- Correction de la détection des aromates dans la liste des variétés.
+- Remplacement de la condition incorrecte basée sur `aromate != null` par une vérification de longueur du tableau `aromate`.
+- Harmonisation du CSS du panneau de filtres avec celui de la page produits.
+
+### Utilisateurs
+
+- Ajout de l’affichage des rôles dans la fiche détaillée utilisateur.
+- Ajout de `utilisateur_role` dans le type `Utilisateur`.
+- Ajout du chargement des rôles dans `UtilisateurRepository.getById`.
+- Amélioration de la page de modification des rôles.
+- Ajout d’un CSS dédié pour la page de modification des rôles.
+- Ajout d’un bouton annuler stylisé.
+- Réduction et simplification de la liste des rôles utilisés dans l’application.
+- Suppression des rôles devenus inutiles après réduction du périmètre fonctionnel.
+- Préparation d’un composant enfant pour les filtres utilisateurs.
+- Ajout d’un panneau latéral de filtres utilisateurs.
+- Ajout de filtres par nom, prénom, email, statut, rôle et présence d’adresse.
+- Ajout du chargement des rôles dans `UtilisateurRepository.getAll` pour permettre le filtrage par rôle.
+- Alignement du titre `Utilisateurs` et du bouton `Ajouter un utilisateur` sur une même ligne.
+- Harmonisation du style de la page utilisateurs avec la page produits.
 
 ### Adresses de livraison
 
-    adresse-livraison.repository.ts
-    adresse-livraison.ipc.ts
-
----
-
-## 13. Initialisation de la base de données
-
-Les fichiers liés à l’initialisation de la base ont été déplacés dans :
-
-    src/database/
-
-Fichiers concernés :
-
-    init-database.ts
-    generer-utilisateurs-hashes.ts
-
-`init-database.ts` :
-
-- crée le dossier de base de données si nécessaire ;
-- vérifie si la base existe déjà ;
-- exécute les scripts de schéma ;
-- exécute les scripts de seed ;
-- ignore le fichier source `07_insert_utilisateurs.sql` pour éviter d’insérer les mots de passe en clair.
-
-`generer-utilisateurs-hashes.ts` :
-
-- lit le fichier SQL source des utilisateurs ;
-- détecte les mots de passe en clair ;
-- génère un salt ;
-- génère un hash PBKDF2 ;
-- écrit un nouveau fichier SQL avec les hashes ;
-- utilise la syntaxe SQLite `X'...'` pour stocker le salt en BLOB.
-
----
-
-## 14. Sécurité
-
-`password-utils.ts` a été déplacé dans :
-
-    src/security/
-
-Il contient :
-
-    hacherMotDePasse
-    verifierMotDePasse
-
-Les logs de debug affichant le hash et le salt ont été retirés une fois le login fonctionnel.
-
----
-
-## 15. Gestion des erreurs
-
-`prisma-errors.ts` a été déplacé dans :
-
-    src/errors/
-
-Il contient :
-
-    METIER
-    TECHNIQUES
-    gererErreurPrisma
-
-Erreurs métier ajoutées notamment :
-
-    LOGIN_INCORRECT
-    DUPLICATE_AVIS
-    AVIS_NOT_FOUND
-
-Erreurs techniques ajoutées notamment :
-
-    AUTH_LOGIN_ERROR
-    AVIS_CREATE_ERROR
-    AVIS_UPDATE_ERROR
-    AVIS_DELETE_ERROR
-    AVIS_LIKE_ERROR
-
----
-
-## 16. Tests
-
-Les tests de routes ont été enrichis pour vérifier :
-
-- les routes publiques ;
-- les routes protégées catalogue ;
-- les routes protégées utilisateurs ;
-- les routes protégées avis ;
-- la position du wildcard ;
-- l’ordre des routes spécifiques avant les routes génériques `:id`.
-
-Ajout du test :
-
-    verifierRouteProtegee('utilisateurs/roles/:id', rolesAdmin);
-
-Ajout du test d’ordre :
-
-    expect(paths.indexOf('utilisateurs/roles/:id')).toBeLessThan(paths.indexOf('utilisateurs/:id'));
-
-Tests composants ajoutés ou adaptés :
-
-    avis
-    avis-ajouter
-    avis-modifier
-    avis-supprimer
-    utilisateur-roles
-
-Tests services ajoutés ou adaptés :
-
-    avis.service
-    role.service
-
-Tous les tests passent après correction de l’ordre des routes.
-
----
-
-## 17. Corrections importantes
-
-### Correction preload / main pour login
-
-Correction du passage des identifiants entre `preload.ts` et le handler IPC.
-
-Le handler attendait :
-
-    email
-    mot_de_passe
-
-Le preload envoie maintenant correctement :
-
-    email
-    mot_de_passe
-
-### Correction des rôles
-
-Correction du problème :
-
-    No handler registered for 'roles:get-all'
-
-Le problème venait du fait que l’IPC des rôles n’était pas encore enregistré dans `main.ts`.
-
-Ajout de :
-
-    enregistrerRoleIpc(roleRepository)
-    enregistrerUtilisateurRoleIpc(utilisateurRoleRepository)
-
-### Correction ordre des routes
-
-Correction du problème où `utilisateurs/:id` était déclaré avant `utilisateurs/roles/:id`.
-
-La route spécifique est maintenant placée avant la route générique.
-
----
-
-## 18. État actuel
-
-À ce stade :
-
-- l’application démarre correctement ;
-- la base SQLite est initialisée automatiquement ;
-- les utilisateurs sont insérés avec mots de passe hashés ;
-- le login fonctionne ;
-- les rôles sont chargés et modifiables ;
-- les guards fonctionnent ;
-- les avis sont gérés ;
-- les principaux domaines sont migrés vers repositories + IPC ;
-- les fichiers utilitaires sont dans des dossiers cohérents ;
-- les tests passent.
-
----
-
-## Proposition de message de commit
-
-    refactor: reorganize Electron main process, add role management and reviews
+- Ajout de la création d’adresse de livraison depuis la fiche détaillée utilisateur.
+- Ajout de la modification d’adresse de livraison depuis la fiche détaillée utilisateur.
+- Conservation de la suppression d’adresse existante.
+- Ajout d’un formulaire intégré pour l’ajout et la modification d’adresse.
+- Ajout du chargement des localités pour sélectionner une localité dans le formulaire.
+- Extraction de la gestion des adresses dans un composant enfant dédié.
+- Réduction de la complexité du composant `utilisateur-detail`.
+- Ajout d’un composant `utilisateur-adresses` / `utilisateur-adresse-livraison`.
+- Déplacement du HTML, du TypeScript et du CSS liés aux adresses vers le composant enfant.
+- Ajout d’événements pour notifier le parent après création, modification ou suppression d’adresse.
+- Ajout d’un affichage d’erreur transmis au parent.
+- Ajustements CSS : titre orange, espacement entre les boutons modifier/supprimer, bouton annuler stylisé.
+
+### Propriétés médicinales
+
+- Ajout d’une page dédiée à la gestion des propriétés médicinales.
+- Ajout d’une liste des propriétés médicinales.
+- Ajout de la création d’une propriété médicinale.
+- Ajout de la modification d’une propriété médicinale.
+- Ajout de la suppression d’une propriété médicinale.
+- Ajout d’un formulaire intégré pour l’ajout et la modification.
+- Ajout d’un champ de recherche en haut de page.
+- Ajout du filtrage par nom de propriété médicinale.
+- Ajout du service Angular `ProprieteMedicinaleService` avec `get`, `create`, `update` et `delete`.
+- Ajout des méthodes correspondantes dans `ElectronAPI`.
+- Ajout des appels correspondants dans `preload.ts`.
+- Ajout des handlers IPC pour `create`, `update` et `delete`.
+- Ajout des méthodes `create`, `update` et `delete` dans le repository.
+- Ajout d’une route `/proprietes-medicinales`.
+- Ajout du lien de navigation vers les propriétés médicinales.
+- Ajout d’une confirmation avant suppression car la suppression retire aussi les liens avec les aromates associés.
+
+### Avis
+
+- Ajout de l’affichage des avis dans la page détail produit.
+- Ajout du service et de l’appel permettant de récupérer les avis d’un produit.
+- Correction de l’erreur liée à une méthode manquante dans le preload/API Electron.
+- Ajout de l’affichage du titre, de la note, de l’auteur, du commentaire et du nombre de likes.
+- Ajustements CSS pour améliorer la lisibilité des commentaires et des likes.
+
+### Dates et SQLite/Prisma
+
+- Correction du problème d’affichage littéral de `CURRENT_TIMESTAMP` dans les dates.
+- Ajout d’une date explicite dans les repositories lors des créations via Prisma.
+- Harmonisation du format de date au format SQLite `YYYY-MM-DD HH:mm:ss`.
+- Application du format dans les créations utilisateur, produit et avis.
+- Correction des anciennes données avec des formats de dates différents.
+- Clarification de l’emplacement réel de la base SQLite Electron dans `AppData/Roaming/graines-app`.
+- Régénération du schéma Prisma depuis la base SQLite réelle utilisée par l’application.
+- Réduction du schéma aux tables réellement conservées dans l’application.
+
+### Base de données et schéma
+
+- Nettoyage du périmètre de la base de données.
+- Conservation des tables utiles au périmètre actuel de l’application.
+- Correction d’une erreur SQL potentielle dans la table `produit` concernant une virgule manquante entre deux clés étrangères.
+- Vérification du comportement `ON DELETE CASCADE` sur `aromate_propriete` lors de la suppression d’une propriété médicinale.
+
+### Navigation et accueil
+
+- Suppression fonctionnelle de la page d’accueil inutile.
+- Redirection de la route racine vers la page catégories.
+- Suppression du lien `Accueil` de la navigation.
+- Conservation de la page catégories comme point d’entrée principal de l’application.
+
+### CSS et cohérence visuelle
+
+- Harmonisation globale des couleurs entre les pages.
+- Réutilisation des couleurs principales : orange, beige clair, brun et rouge pour les actions destructives.
+- Alignement des titres et boutons d’ajout sur plusieurs pages.
+- Ajout de styles cohérents pour les formulaires, boutons, cartes, champs de recherche et panneaux de filtres.
+- Amélioration de la lisibilité des titres, labels, placeholders et liens d’action.
+- Ajout d’espacements entre boutons d’action.
+- Stylisation des boutons annuler, supprimer, modifier et enregistrer.
+
+## Impact technique
+
+- Ajout de plusieurs composants enfants pour alléger les composants principaux.
+- Meilleure séparation des responsabilités entre affichage principal et formulaires/filtres.
+- Extension des types partagés Electron/Angular.
+- Extension du preload Electron.
+- Extension des handlers IPC.
+- Extension des repositories Prisma.
+- Extension des services Angular.
+- Amélioration de la cohérence entre frontend, IPC, preload, services et repositories.
+
+## Notes
+
+- Après modification du preload, des repositories ou du main process Electron, l’application doit être relancée complètement.
+- Le filtre par rôle utilisateur nécessite que `UtilisateurRepository.getAll()` charge aussi `utilisateur_role` avec `role`.
+- Les suppressions de propriétés médicinales retirent automatiquement les associations avec les aromates grâce au `ON DELETE CASCADE`.

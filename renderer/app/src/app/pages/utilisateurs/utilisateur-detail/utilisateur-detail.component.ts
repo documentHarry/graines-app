@@ -1,28 +1,41 @@
 import { Component, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AdresseLivraison, Utilisateur } from '../../../types/electron';
-import { AdresseLivraisonService } from '../../../services/adresse-livraison.service';
+import { AdresseLivraison, Localite, Utilisateur } from '../../../types/electron';
+import { LocaliteService } from '../../../services/localite.service';
 import { UtilisateurService } from '../../../services/utilisateur.service';
+import { UtilisateurAdresseLivraisonComponent } from '../utilisateur-adresse-livraison/utilisateur-adresse-livraison.component';
 
 @Component({
   selector: 'app-utilisateur-detail',
-  imports: [RouterLink],
+  imports: [RouterLink, UtilisateurAdresseLivraisonComponent],
   templateUrl: './utilisateur-detail.component.html',
   styleUrl: './utilisateur-detail.component.css',
 })
 
 export class UtilisateurDetailComponent {
   private readonly utilisateurService = inject(UtilisateurService);
-  private readonly adresseLivraisonService = inject(AdresseLivraisonService);
+  private readonly localiteService = inject(LocaliteService);
 
   id = input<string>();
-
   utilisateur = signal<Utilisateur | null>(null);
+  localites = signal<Localite[]>([]);
   isLoading = signal(true);
   message = signal('');
 
   async ngOnInit(): Promise<void> {
     await this.chargerUtilisateur();
+    await this.chargerLocalites();
+  }
+
+  async chargerLocalites(): Promise<void> {
+    try {
+      const localites = await this.localiteService.getLocalites();
+      this.localites.set(localites);
+    }
+    catch (error) {
+      console.error(error);
+      this.message.set('Erreur pendant le chargement des localités.');
+    }
   }
 
   async chargerUtilisateur(): Promise<void> {
@@ -75,33 +88,19 @@ export class UtilisateurDetailComponent {
     return this.utilisateur()?.adresse_livraison ?? [];
   }
 
-  getAdresseComplete(adresse: AdresseLivraison): string {
-    return `${adresse.rue} ${adresse.numero}, ${adresse.localite.code_postal} ${adresse.localite.localite}`;
+  getRolesUtilisateur(): string {
+    const roles = this.utilisateur()?.utilisateur_role ?? [];
+
+    if (roles.length === 0) {
+      return 'Aucun rôle';
+    }
+
+    return roles.map(utilisateurRole => utilisateurRole.role.nom_role)
+      .join(', ');
   }
 
-  getLabelAdresseParDefaut(adresse: AdresseLivraison): string {
-    if (adresse.par_defaut === 1) {
-      return 'Adresse par défaut';
-    }
-
-    return 'Adresse secondaire';
-  }
-
-  async supprimerAdresse(adresse: AdresseLivraison): Promise<void> {
-    const confirmation = confirm('Voulez-vous vraiment supprimer cette adresse ?');
-
-    if (!confirmation) {
-      return;
-    }
-
-    try {
-      await this.adresseLivraisonService.deleteAdresseLivraison(adresse.id_adresse);
-      await this.chargerUtilisateur();
-    }
-    catch (error) {
-      console.error(error);
-      this.message.set('Une erreur est survenue pendant la suppression de l’adresse.');
-    }
+  afficherErreurAdresse(message: string): void {
+    this.message.set(message);
   }
 
 }

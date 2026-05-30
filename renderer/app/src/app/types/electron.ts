@@ -145,6 +145,15 @@ export interface AromatePropriete {
   propriete_medicinale: ProprieteMedicinale;
 }
 
+export interface ProprieteMedicinaleCreateInput {
+  nom_propriete: string;
+}
+
+export interface ProprieteMedicinaleUpdateInput {
+  id_propriete: number;
+  nom_propriete: string;
+}
+
 //#region Aromate
 
 export interface Aromate {
@@ -260,6 +269,7 @@ export interface Utilisateur {
   date_inscription: string | null;
   actif: number | null;
   adresse_livraison: AdresseLivraison[];
+  utilisateur_role?: UtilisateurRole[];
 }
 
 export interface UtilisateurCreateInput {
@@ -357,10 +367,14 @@ export interface ElectronAPI {
 
   getVarietes: () => Promise<Variete[]>;
   getVarieteById: (id: number) => Promise<Variete | null>;
-  getProprietesMedicinales: () => Promise<ProprieteMedicinale[]>;
   createVariete: (variete: VarieteCreateInput) => Promise<Variete>;
   updateVariete: (variete: VarieteUpdateInput) => Promise<Variete>;
   deleteVariete: (id: number) => Promise<Variete>;
+
+  getProprietesMedicinales: () => Promise<ProprieteMedicinale[]>;
+  createProprieteMedicinale: (propriete: ProprieteMedicinaleCreateInput) => Promise<ProprieteMedicinale>;
+  updateProprieteMedicinale: (propriete: ProprieteMedicinaleUpdateInput) => Promise<ProprieteMedicinale>;
+  deleteProprieteMedicinale: (id: number) => Promise<ProprieteMedicinale>;
 
   getProduits: () => Promise<Produit[]>;
   getProduitById: (id: number) => Promise<Produit | null>;

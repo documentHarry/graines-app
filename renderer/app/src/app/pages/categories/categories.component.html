@@ -1,5 +1,20 @@
-<h1>Catégories</h1>
-<a class="add-link" routerLink="/categories/ajouter">Ajouter une catégorie</a>
+<div class="categories-header">
+  <a class="add-link" routerLink="/categories/ajouter">Ajouter une catégorie</a>
+
+  <input
+    class="search-input"
+    type="text"
+    placeholder="Rechercher par nom"
+    [value]="rechercheNom()"
+    (input)="changerRechercheNom($event)">
+
+  <input
+    class="search-input search-input-descriptif"
+    type="text"
+    placeholder="Rechercher par descriptif"
+    [value]="rechercheDescriptif()"
+    (input)="changerRechercheDescriptif($event)">
+</div>
 
 @if (isLoading()) {
   <p>Chargement des catégories...</p>
@@ -7,12 +22,12 @@
 @else if (message()) {
   <p class="message">{{ message() }}</p>
 }
-@else if (categories().length === 0) {
+@else if (categoriesFiltrees().length === 0) {
   <p>Aucune catégorie trouvée.</p>
 }
 @else {
   <section class="categories-grid">
-    @for (categorie of categories(); track categorie.id_categorie) {
+    @for (categorie of categoriesFiltrees(); track categorie.id_categorie) {
       <article class="categorie-card">
         <header class="categorie-header">
           <h2>{{ categorie.nom_categorie }}</h2>

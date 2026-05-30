@@ -86,6 +86,15 @@ type AromateInput = {
   proprietes_ids: number[];
 };
 
+type ProprieteMedicinaleCreateInput = {
+  nom_propriete: string;
+};
+
+type ProprieteMedicinaleUpdateInput = {
+  id_propriete: number;
+  nom_propriete: string;
+};
+
 type ProduitCreateInput = {
   intitule: string;
   prix_unitaire: number;
@@ -192,7 +201,11 @@ contextBridge.exposeInMainWorld('api', {
   createVariete: (variete: VarieteCreateInput) => ipcRenderer.invoke('varietes:create', variete),
   updateVariete: (variete: VarieteUpdateInput) => ipcRenderer.invoke('varietes:update', variete),
   deleteVariete: (id: number) => ipcRenderer.invoke('varietes:delete', id),
+
   getProprietesMedicinales: () => ipcRenderer.invoke('proprietes-medicinales:get-all'),
+  createProprieteMedicinale: (propriete: ProprieteMedicinaleCreateInput) =>  ipcRenderer.invoke('proprietes-medicinales:create', propriete),
+  updateProprieteMedicinale: (propriete: ProprieteMedicinaleUpdateInput) =>  ipcRenderer.invoke('proprietes-medicinales:update', propriete),
+  deleteProprieteMedicinale: (id: number) => ipcRenderer.invoke('proprietes-medicinales:delete', id),
 
   getProduits: () => ipcRenderer.invoke('produits:get-all'),
   getProduitById: (id: number) => ipcRenderer.invoke('produits:get-by-id', id),
@@ -221,6 +234,9 @@ contextBridge.exposeInMainWorld('api', {
   getUtilisateurRoles: (idUtilisateur: number) => ipcRenderer.invoke('utilisateur-roles:get-by-utilisateur', idUtilisateur),
   updateUtilisateurRoles: (donnees: UtilisateurRoleUpdateInput) => ipcRenderer.invoke('utilisateur-roles:update', donnees),
 
+  getAvis: () => ipcRenderer.invoke('avis:get-all'),
+  getAvisById: (id: number) => ipcRenderer.invoke('avis:get-by-id', id),
+  getAvisByProduit: (produitId: number) => ipcRenderer.invoke('avis:get-by-produit', produitId),
   createAvis: (avis: AvisCreateInput) => ipcRenderer.invoke('avis:create', avis),
   updateAvis: (avis: AvisUpdateInput) => ipcRenderer.invoke('avis:update', avis),
   deleteAvis: (id: number) => ipcRenderer.invoke('avis:delete', id),

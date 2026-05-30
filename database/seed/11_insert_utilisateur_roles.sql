@@ -17,24 +17,6 @@ FROM utilisateur
 JOIN role ON role.nom_role = 'ADMIN'
 WHERE utilisateur.email = 'jthomas@example.org';
 
--- Compte de test : SUPPORT_CLIENT.
-INSERT INTO utilisateur_role (utilisateur_id, role_id)
-SELECT
-    utilisateur.id_utilisateur,
-    role.id_role
-FROM utilisateur
-JOIN role ON role.nom_role = 'SUPPORT_CLIENT'
-WHERE utilisateur.email = 'marie82@example.net';
-
--- Compte de test : GESTIONNAIRE_RETOURS.
-INSERT INTO utilisateur_role (utilisateur_id, role_id)
-SELECT
-    utilisateur.id_utilisateur,
-    role.id_role
-FROM utilisateur
-JOIN role ON role.nom_role = 'GESTIONNAIRE_RETOURS'
-WHERE utilisateur.email = 'mariannesimon@example.org';
-
 -- Compte de test : MODERATEUR.
 INSERT INTO utilisateur_role (utilisateur_id, role_id)
 SELECT
@@ -43,15 +25,6 @@ SELECT
 FROM utilisateur
 JOIN role ON role.nom_role = 'MODERATEUR'
 WHERE utilisateur.email = 'inge37@example.net';
-
--- Compte de test : LOGISTICIEN.
-INSERT INTO utilisateur_role (utilisateur_id, role_id)
-SELECT
-    utilisateur.id_utilisateur,
-    role.id_role
-FROM utilisateur
-JOIN role ON role.nom_role = 'LOGISTICIEN'
-WHERE utilisateur.email = 'jadotjoelle@example.net';
 
 -- Compte de test : GESTIONNAIRE_CATALOGUE.
 INSERT INTO utilisateur_role (utilisateur_id, role_id)

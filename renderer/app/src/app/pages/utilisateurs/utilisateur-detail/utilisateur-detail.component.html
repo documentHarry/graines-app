@@ -10,7 +10,7 @@
   <article class="detail-card">
     <header class="detail-header">
       <div>
-        <h1>{{ getNomComplet() }}</h1>
+        <h1>{{ getNomComplet() }} : {{ getRolesUtilisateur() }}</h1>
         <p class="email">{{ utilisateur()?.email }}</p>
       </div>
 
@@ -39,24 +39,10 @@
       </div>
     </section>
 
-    <section>
-      <h2>Adresses de livraison</h2>
+    <app-utilisateur-adresses
+      [utilisateurId]="utilisateur()!.id_utilisateur" [adresses]="getAdresses()"  [localites]="localites()"
+      (adressesModifiees)="chargerUtilisateur()" (erreur)="afficherErreurAdresse($event)">
+    </app-utilisateur-adresses>
 
-      @if (getAdresses().length === 0) {
-        <p>Aucune adresse enregistrée.</p>
-      }
-      @else {
-        @for (adresse of getAdresses(); track adresse.id_adresse) {
-          <div class="adresse-card">
-            <p><strong>{{ getAdresseComplete(adresse) }}</strong></p>
-            <p>{{ getLabelAdresseParDefaut(adresse) }}</p>
-
-            <button type="button" class="delete-address-button" (click)="supprimerAdresse(adresse)">
-              Supprimer l'adresse
-            </button>
-          </div>
-        }
-      }
-    </section>
   </article>
 }

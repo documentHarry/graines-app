@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AccueilComponent } from './accueil.component';
+import { VarieteFiltresComponent } from './variete-filtres.component';
 
-describe('AccueilComponent', () => {
-  let component: AccueilComponent;
-  let fixture: ComponentFixture<AccueilComponent>;
+describe('VarieteFiltresComponent', () => {
+  let component: VarieteFiltresComponent;
+  let fixture: ComponentFixture<VarieteFiltresComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AccueilComponent],
+      imports: [VarieteFiltresComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AccueilComponent);
+    fixture = TestBed.createComponent(VarieteFiltresComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

@@ -1,0 +1,119 @@
+.adresse-card {
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid #d8c1a8;
+  border-radius: 12px;
+  background-color: #fff7ec;
+}
+
+.delete-address-button {
+  margin-top: 8px;
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 10px;
+  background-color: #9b1c1c;
+  color: #ffffff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.delete-address-button:hover {
+  background-color: #b32626;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.section-header h2,
+.adresse-form h3 {
+  margin: 0;
+  color: #d9782d;
+}
+
+.adresse-form h3 {
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+
+.add-address-button,
+.edit-address-button,
+.form-actions button[type="submit"] {
+  margin-top: 8px;
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 10px;
+  background-color: #f2a65a;
+  color: #2a1a10;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.add-address-button:hover,
+.edit-address-button:hover,
+.form-actions button[type="submit"]:hover {
+  background-color: #ffb86b;
+}
+
+.edit-address-button {
+  margin-right: 12px;
+}
+
+.adresse-form {
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid #d8c1a8;
+  border-radius: 12px;
+  background-color: #fff7ec;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+  color: #7a3e13;
+}
+
+.form-field input,
+.form-field select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px;
+  border: 1px solid #8a5a36;
+  border-radius: 8px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.error {
+  color: #9b1c1c;
+  font-weight: bold;
+}
+
+.cancel-button {
+  margin-top: 8px;
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 10px;
+  background-color: #9b1c1c;
+  color: #ffffff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  background-color: #b32626;
+}

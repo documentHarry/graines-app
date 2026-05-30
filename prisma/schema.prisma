@@ -37,18 +37,6 @@ model aromate_propriete {
   @@id([aromate_id, propriete_id])
 }
 
-model article_commande {
-  id_article_commande Int      @id @default(autoincrement())
-  quantite            Int
-  prix_unitaire       Float
-  commande_id         Int
-  produit_id          Int
-  produit             produit  @relation(fields: [produit_id], references: [id_produit], onDelete: Cascade, onUpdate: NoAction)
-  commande            commande @relation(fields: [commande_id], references: [id_commande], onDelete: Cascade, onUpdate: NoAction)
-
-  @@unique([commande_id, produit_id], map: "sqlite_autoindex_article_commande_1")
-}
-
 model avis {
   id_avis        Int         @id @default(autoincrement())
   note           Int?        @default(5)
@@ -70,39 +58,6 @@ model categorie {
   produit       produit[]
 }
 
-model code_promotionnel {
-  id_code_promo   Int      @id @default(autoincrement())
-  code_texte      String   @unique(map: "sqlite_autoindex_code_promotionnel_1")
-  type_remise     String
-  remise          Float
-  date_expiration String?
-  actif           Int?     @default(1)
-  panier          panier[]
-}
-
-model commande {
-  id_commande      Int                @id @default(autoincrement())
-  date_commande    String?            @default("CURRENT_TIMESTAMP")
-  utilisateur_id   Int
-  article_commande article_commande[]
-  utilisateur      utilisateur        @relation(fields: [utilisateur_id], references: [id_utilisateur], onDelete: Cascade, onUpdate: NoAction)
-  demande_retour   demande_retour[]
-  paiement         paiement[]
-}
-
-model demande_retour {
-  id_retour      Int         @id @default(autoincrement())
-  numero_retour  String?     @unique(map: "sqlite_autoindex_demande_retour_1")
-  raison         String?     @default("produit abimé")
-  descriptif     String?
-  date_demande   String?     @default("CURRENT_TIMESTAMP")
-  statut         String?     @default("en attente")
-  utilisateur_id Int
-  commande_id    Int
-  commande       commande    @relation(fields: [commande_id], references: [id_commande], onDelete: Cascade, onUpdate: NoAction)
-  utilisateur    utilisateur @relation(fields: [utilisateur_id], references: [id_utilisateur], onDelete: Cascade, onUpdate: NoAction)
-}
-
 model espece {
   id_espece        Int       @id @default(autoincrement())
   nom_scientifique String
@@ -121,47 +76,18 @@ model localite {
   @@unique([code_postal, localite], map: "sqlite_autoindex_localite_1")
 }
 
-model paiement {
-  id_paiement            Int      @id @default(autoincrement())
-  date_paiement          String?  @default("CURRENT_TIMESTAMP")
-  montant                Float
-  moyen                  String
-  statut                 String?  @default("en_attente")
-  date_echeance          String?
-  numero_echeance        Int?
-  nombre_echeances_total Int?
-  commande_id            Int
-  commande               commande @relation(fields: [commande_id], references: [id_commande], onUpdate: NoAction)
-}
-
-model panier {
-  id_panier         Int                @id @default(autoincrement())
-  quantite          Int
-  date_ajout        String?            @default("CURRENT_TIMESTAMP")
-  utilisateur_id    Int
-  produit_id        Int
-  code_promo_id     Int?
-  code_promotionnel code_promotionnel? @relation(fields: [code_promo_id], references: [id_code_promo], onUpdate: NoAction)
-  produit           produit            @relation(fields: [produit_id], references: [id_produit], onDelete: Cascade, onUpdate: NoAction)
-  utilisateur       utilisateur        @relation(fields: [utilisateur_id], references: [id_utilisateur], onDelete: Cascade, onUpdate: NoAction)
-
-  @@unique([utilisateur_id, produit_id], map: "sqlite_autoindex_panier_1")
-}
-
 model produit {
-  id_produit       Int                @id @default(autoincrement())
-  intitule         String
-  prix_unitaire    Float
-  quantite         Int                @default(0)
-  image_produit    String?
-  date_ajout       String?            @default("CURRENT_TIMESTAMP")
-  variete_id       Int
-  categorie_id     Int
-  article_commande article_commande[]
-  avis             avis[]
-  panier           panier[]
-  categorie        categorie          @relation(fields: [categorie_id], references: [id_categorie], onUpdate: NoAction)
-  variete          variete            @relation(fields: [variete_id], references: [id_variete], onUpdate: NoAction)
+  id_produit    Int       @id @default(autoincrement())
+  intitule      String
+  prix_unitaire Float
+  quantite      Int       @default(0)
+  image_produit String?
+  date_ajout    String?   @default("CURRENT_TIMESTAMP")
+  variete_id    Int
+  categorie_id  Int
+  avis          avis[]
+  categorie     categorie @relation(fields: [categorie_id], references: [id_categorie], onUpdate: NoAction)
+  variete       variete   @relation(fields: [variete_id], references: [id_variete], onUpdate: NoAction)
 }
 
 model propriete_medicinale {
@@ -187,9 +113,6 @@ model utilisateur {
   actif             Int?                @default(1)
   adresse_livraison adresse_livraison[]
   avis              avis[]
-  commande          commande[]
-  demande_retour    demande_retour[]
-  panier            panier[]
   utilisateur_role  utilisateur_role[]
 }
 

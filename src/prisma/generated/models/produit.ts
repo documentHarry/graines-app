@@ -256,9 +256,7 @@ export type produitWhereInput = {
   date_ajout?: Prisma.StringNullableFilter<"produit"> | string | null
   variete_id?: Prisma.IntFilter<"produit"> | number
   categorie_id?: Prisma.IntFilter<"produit"> | number
-  article_commande?: Prisma.Article_commandeListRelationFilter
   avis?: Prisma.AvisListRelationFilter
-  panier?: Prisma.PanierListRelationFilter
   categorie?: Prisma.XOR<Prisma.CategorieScalarRelationFilter, Prisma.categorieWhereInput>
   variete?: Prisma.XOR<Prisma.VarieteScalarRelationFilter, Prisma.varieteWhereInput>
 }
@@ -272,9 +270,7 @@ export type produitOrderByWithRelationInput = {
   date_ajout?: Prisma.SortOrderInput | Prisma.SortOrder
   variete_id?: Prisma.SortOrder
   categorie_id?: Prisma.SortOrder
-  article_commande?: Prisma.article_commandeOrderByRelationAggregateInput
   avis?: Prisma.avisOrderByRelationAggregateInput
-  panier?: Prisma.panierOrderByRelationAggregateInput
   categorie?: Prisma.categorieOrderByWithRelationInput
   variete?: Prisma.varieteOrderByWithRelationInput
 }
@@ -291,9 +287,7 @@ export type produitWhereUniqueInput = Prisma.AtLeast<{
   date_ajout?: Prisma.StringNullableFilter<"produit"> | string | null
   variete_id?: Prisma.IntFilter<"produit"> | number
   categorie_id?: Prisma.IntFilter<"produit"> | number
-  article_commande?: Prisma.Article_commandeListRelationFilter
   avis?: Prisma.AvisListRelationFilter
-  panier?: Prisma.PanierListRelationFilter
   categorie?: Prisma.XOR<Prisma.CategorieScalarRelationFilter, Prisma.categorieWhereInput>
   variete?: Prisma.XOR<Prisma.VarieteScalarRelationFilter, Prisma.varieteWhereInput>
 }, "id_produit">
@@ -334,9 +328,7 @@ export type produitCreateInput = {
   quantite?: number
   image_produit?: string | null
   date_ajout?: string | null
-  article_commande?: Prisma.article_commandeCreateNestedManyWithoutProduitInput
   avis?: Prisma.avisCreateNestedManyWithoutProduitInput
-  panier?: Prisma.panierCreateNestedManyWithoutProduitInput
   categorie: Prisma.categorieCreateNestedOneWithoutProduitInput
   variete: Prisma.varieteCreateNestedOneWithoutProduitInput
 }
@@ -350,9 +342,7 @@ export type produitUncheckedCreateInput = {
   date_ajout?: string | null
   variete_id: number
   categorie_id: number
-  article_commande?: Prisma.article_commandeUncheckedCreateNestedManyWithoutProduitInput
   avis?: Prisma.avisUncheckedCreateNestedManyWithoutProduitInput
-  panier?: Prisma.panierUncheckedCreateNestedManyWithoutProduitInput
 }
 
 export type produitUpdateInput = {
@@ -361,9 +351,7 @@ export type produitUpdateInput = {
   quantite?: Prisma.IntFieldUpdateOperationsInput | number
   image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  article_commande?: Prisma.article_commandeUpdateManyWithoutProduitNestedInput
   avis?: Prisma.avisUpdateManyWithoutProduitNestedInput
-  panier?: Prisma.panierUpdateManyWithoutProduitNestedInput
   categorie?: Prisma.categorieUpdateOneRequiredWithoutProduitNestedInput
   variete?: Prisma.varieteUpdateOneRequiredWithoutProduitNestedInput
 }
@@ -377,9 +365,7 @@ export type produitUncheckedUpdateInput = {
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   variete_id?: Prisma.IntFieldUpdateOperationsInput | number
   categorie_id?: Prisma.IntFieldUpdateOperationsInput | number
-  article_commande?: Prisma.article_commandeUncheckedUpdateManyWithoutProduitNestedInput
   avis?: Prisma.avisUncheckedUpdateManyWithoutProduitNestedInput
-  panier?: Prisma.panierUncheckedUpdateManyWithoutProduitNestedInput
 }
 
 export type produitCreateManyInput = {
@@ -476,20 +462,6 @@ export type produitSumOrderByAggregateInput = {
   categorie_id?: Prisma.SortOrder
 }
 
-export type produitCreateNestedOneWithoutArticle_commandeInput = {
-  create?: Prisma.XOR<Prisma.produitCreateWithoutArticle_commandeInput, Prisma.produitUncheckedCreateWithoutArticle_commandeInput>
-  connectOrCreate?: Prisma.produitCreateOrConnectWithoutArticle_commandeInput
-  connect?: Prisma.produitWhereUniqueInput
-}
-
-export type produitUpdateOneRequiredWithoutArticle_commandeNestedInput = {
-  create?: Prisma.XOR<Prisma.produitCreateWithoutArticle_commandeInput, Prisma.produitUncheckedCreateWithoutArticle_commandeInput>
-  connectOrCreate?: Prisma.produitCreateOrConnectWithoutArticle_commandeInput
-  upsert?: Prisma.produitUpsertWithoutArticle_commandeInput
-  connect?: Prisma.produitWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.produitUpdateToOneWithWhereWithoutArticle_commandeInput, Prisma.produitUpdateWithoutArticle_commandeInput>, Prisma.produitUncheckedUpdateWithoutArticle_commandeInput>
-}
-
 export type produitCreateNestedOneWithoutAvisInput = {
   create?: Prisma.XOR<Prisma.produitCreateWithoutAvisInput, Prisma.produitUncheckedCreateWithoutAvisInput>
   connectOrCreate?: Prisma.produitCreateOrConnectWithoutAvisInput
@@ -546,18 +518,12 @@ export type produitUncheckedUpdateManyWithoutCategorieNestedInput = {
   deleteMany?: Prisma.produitScalarWhereInput | Prisma.produitScalarWhereInput[]
 }
 
-export type produitCreateNestedOneWithoutPanierInput = {
-  create?: Prisma.XOR<Prisma.produitCreateWithoutPanierInput, Prisma.produitUncheckedCreateWithoutPanierInput>
-  connectOrCreate?: Prisma.produitCreateOrConnectWithoutPanierInput
-  connect?: Prisma.produitWhereUniqueInput
-}
-
-export type produitUpdateOneRequiredWithoutPanierNestedInput = {
-  create?: Prisma.XOR<Prisma.produitCreateWithoutPanierInput, Prisma.produitUncheckedCreateWithoutPanierInput>
-  connectOrCreate?: Prisma.produitCreateOrConnectWithoutPanierInput
-  upsert?: Prisma.produitUpsertWithoutPanierInput
-  connect?: Prisma.produitWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.produitUpdateToOneWithWhereWithoutPanierInput, Prisma.produitUpdateWithoutPanierInput>, Prisma.produitUncheckedUpdateWithoutPanierInput>
+export type FloatFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type produitCreateNestedManyWithoutVarieteInput = {
@@ -602,80 +568,12 @@ export type produitUncheckedUpdateManyWithoutVarieteNestedInput = {
   deleteMany?: Prisma.produitScalarWhereInput | Prisma.produitScalarWhereInput[]
 }
 
-export type produitCreateWithoutArticle_commandeInput = {
-  intitule: string
-  prix_unitaire: number
-  quantite?: number
-  image_produit?: string | null
-  date_ajout?: string | null
-  avis?: Prisma.avisCreateNestedManyWithoutProduitInput
-  panier?: Prisma.panierCreateNestedManyWithoutProduitInput
-  categorie: Prisma.categorieCreateNestedOneWithoutProduitInput
-  variete: Prisma.varieteCreateNestedOneWithoutProduitInput
-}
-
-export type produitUncheckedCreateWithoutArticle_commandeInput = {
-  id_produit?: number
-  intitule: string
-  prix_unitaire: number
-  quantite?: number
-  image_produit?: string | null
-  date_ajout?: string | null
-  variete_id: number
-  categorie_id: number
-  avis?: Prisma.avisUncheckedCreateNestedManyWithoutProduitInput
-  panier?: Prisma.panierUncheckedCreateNestedManyWithoutProduitInput
-}
-
-export type produitCreateOrConnectWithoutArticle_commandeInput = {
-  where: Prisma.produitWhereUniqueInput
-  create: Prisma.XOR<Prisma.produitCreateWithoutArticle_commandeInput, Prisma.produitUncheckedCreateWithoutArticle_commandeInput>
-}
-
-export type produitUpsertWithoutArticle_commandeInput = {
-  update: Prisma.XOR<Prisma.produitUpdateWithoutArticle_commandeInput, Prisma.produitUncheckedUpdateWithoutArticle_commandeInput>
-  create: Prisma.XOR<Prisma.produitCreateWithoutArticle_commandeInput, Prisma.produitUncheckedCreateWithoutArticle_commandeInput>
-  where?: Prisma.produitWhereInput
-}
-
-export type produitUpdateToOneWithWhereWithoutArticle_commandeInput = {
-  where?: Prisma.produitWhereInput
-  data: Prisma.XOR<Prisma.produitUpdateWithoutArticle_commandeInput, Prisma.produitUncheckedUpdateWithoutArticle_commandeInput>
-}
-
-export type produitUpdateWithoutArticle_commandeInput = {
-  intitule?: Prisma.StringFieldUpdateOperationsInput | string
-  prix_unitaire?: Prisma.FloatFieldUpdateOperationsInput | number
-  quantite?: Prisma.IntFieldUpdateOperationsInput | number
-  image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avis?: Prisma.avisUpdateManyWithoutProduitNestedInput
-  panier?: Prisma.panierUpdateManyWithoutProduitNestedInput
-  categorie?: Prisma.categorieUpdateOneRequiredWithoutProduitNestedInput
-  variete?: Prisma.varieteUpdateOneRequiredWithoutProduitNestedInput
-}
-
-export type produitUncheckedUpdateWithoutArticle_commandeInput = {
-  id_produit?: Prisma.IntFieldUpdateOperationsInput | number
-  intitule?: Prisma.StringFieldUpdateOperationsInput | string
-  prix_unitaire?: Prisma.FloatFieldUpdateOperationsInput | number
-  quantite?: Prisma.IntFieldUpdateOperationsInput | number
-  image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  variete_id?: Prisma.IntFieldUpdateOperationsInput | number
-  categorie_id?: Prisma.IntFieldUpdateOperationsInput | number
-  avis?: Prisma.avisUncheckedUpdateManyWithoutProduitNestedInput
-  panier?: Prisma.panierUncheckedUpdateManyWithoutProduitNestedInput
-}
-
 export type produitCreateWithoutAvisInput = {
   intitule: string
   prix_unitaire: number
   quantite?: number
   image_produit?: string | null
   date_ajout?: string | null
-  article_commande?: Prisma.article_commandeCreateNestedManyWithoutProduitInput
-  panier?: Prisma.panierCreateNestedManyWithoutProduitInput
   categorie: Prisma.categorieCreateNestedOneWithoutProduitInput
   variete: Prisma.varieteCreateNestedOneWithoutProduitInput
 }
@@ -689,8 +587,6 @@ export type produitUncheckedCreateWithoutAvisInput = {
   date_ajout?: string | null
   variete_id: number
   categorie_id: number
-  article_commande?: Prisma.article_commandeUncheckedCreateNestedManyWithoutProduitInput
-  panier?: Prisma.panierUncheckedCreateNestedManyWithoutProduitInput
 }
 
 export type produitCreateOrConnectWithoutAvisInput = {
@@ -715,8 +611,6 @@ export type produitUpdateWithoutAvisInput = {
   quantite?: Prisma.IntFieldUpdateOperationsInput | number
   image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  article_commande?: Prisma.article_commandeUpdateManyWithoutProduitNestedInput
-  panier?: Prisma.panierUpdateManyWithoutProduitNestedInput
   categorie?: Prisma.categorieUpdateOneRequiredWithoutProduitNestedInput
   variete?: Prisma.varieteUpdateOneRequiredWithoutProduitNestedInput
 }
@@ -730,8 +624,6 @@ export type produitUncheckedUpdateWithoutAvisInput = {
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   variete_id?: Prisma.IntFieldUpdateOperationsInput | number
   categorie_id?: Prisma.IntFieldUpdateOperationsInput | number
-  article_commande?: Prisma.article_commandeUncheckedUpdateManyWithoutProduitNestedInput
-  panier?: Prisma.panierUncheckedUpdateManyWithoutProduitNestedInput
 }
 
 export type produitCreateWithoutCategorieInput = {
@@ -740,9 +632,7 @@ export type produitCreateWithoutCategorieInput = {
   quantite?: number
   image_produit?: string | null
   date_ajout?: string | null
-  article_commande?: Prisma.article_commandeCreateNestedManyWithoutProduitInput
   avis?: Prisma.avisCreateNestedManyWithoutProduitInput
-  panier?: Prisma.panierCreateNestedManyWithoutProduitInput
   variete: Prisma.varieteCreateNestedOneWithoutProduitInput
 }
 
@@ -754,9 +644,7 @@ export type produitUncheckedCreateWithoutCategorieInput = {
   image_produit?: string | null
   date_ajout?: string | null
   variete_id: number
-  article_commande?: Prisma.article_commandeUncheckedCreateNestedManyWithoutProduitInput
   avis?: Prisma.avisUncheckedCreateNestedManyWithoutProduitInput
-  panier?: Prisma.panierUncheckedCreateNestedManyWithoutProduitInput
 }
 
 export type produitCreateOrConnectWithoutCategorieInput = {
@@ -798,81 +686,13 @@ export type produitScalarWhereInput = {
   categorie_id?: Prisma.IntFilter<"produit"> | number
 }
 
-export type produitCreateWithoutPanierInput = {
-  intitule: string
-  prix_unitaire: number
-  quantite?: number
-  image_produit?: string | null
-  date_ajout?: string | null
-  article_commande?: Prisma.article_commandeCreateNestedManyWithoutProduitInput
-  avis?: Prisma.avisCreateNestedManyWithoutProduitInput
-  categorie: Prisma.categorieCreateNestedOneWithoutProduitInput
-  variete: Prisma.varieteCreateNestedOneWithoutProduitInput
-}
-
-export type produitUncheckedCreateWithoutPanierInput = {
-  id_produit?: number
-  intitule: string
-  prix_unitaire: number
-  quantite?: number
-  image_produit?: string | null
-  date_ajout?: string | null
-  variete_id: number
-  categorie_id: number
-  article_commande?: Prisma.article_commandeUncheckedCreateNestedManyWithoutProduitInput
-  avis?: Prisma.avisUncheckedCreateNestedManyWithoutProduitInput
-}
-
-export type produitCreateOrConnectWithoutPanierInput = {
-  where: Prisma.produitWhereUniqueInput
-  create: Prisma.XOR<Prisma.produitCreateWithoutPanierInput, Prisma.produitUncheckedCreateWithoutPanierInput>
-}
-
-export type produitUpsertWithoutPanierInput = {
-  update: Prisma.XOR<Prisma.produitUpdateWithoutPanierInput, Prisma.produitUncheckedUpdateWithoutPanierInput>
-  create: Prisma.XOR<Prisma.produitCreateWithoutPanierInput, Prisma.produitUncheckedCreateWithoutPanierInput>
-  where?: Prisma.produitWhereInput
-}
-
-export type produitUpdateToOneWithWhereWithoutPanierInput = {
-  where?: Prisma.produitWhereInput
-  data: Prisma.XOR<Prisma.produitUpdateWithoutPanierInput, Prisma.produitUncheckedUpdateWithoutPanierInput>
-}
-
-export type produitUpdateWithoutPanierInput = {
-  intitule?: Prisma.StringFieldUpdateOperationsInput | string
-  prix_unitaire?: Prisma.FloatFieldUpdateOperationsInput | number
-  quantite?: Prisma.IntFieldUpdateOperationsInput | number
-  image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  article_commande?: Prisma.article_commandeUpdateManyWithoutProduitNestedInput
-  avis?: Prisma.avisUpdateManyWithoutProduitNestedInput
-  categorie?: Prisma.categorieUpdateOneRequiredWithoutProduitNestedInput
-  variete?: Prisma.varieteUpdateOneRequiredWithoutProduitNestedInput
-}
-
-export type produitUncheckedUpdateWithoutPanierInput = {
-  id_produit?: Prisma.IntFieldUpdateOperationsInput | number
-  intitule?: Prisma.StringFieldUpdateOperationsInput | string
-  prix_unitaire?: Prisma.FloatFieldUpdateOperationsInput | number
-  quantite?: Prisma.IntFieldUpdateOperationsInput | number
-  image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  variete_id?: Prisma.IntFieldUpdateOperationsInput | number
-  categorie_id?: Prisma.IntFieldUpdateOperationsInput | number
-  article_commande?: Prisma.article_commandeUncheckedUpdateManyWithoutProduitNestedInput
-  avis?: Prisma.avisUncheckedUpdateManyWithoutProduitNestedInput
-}
-
 export type produitCreateWithoutVarieteInput = {
   intitule: string
   prix_unitaire: number
   quantite?: number
   image_produit?: string | null
   date_ajout?: string | null
-  article_commande?: Prisma.article_commandeCreateNestedManyWithoutProduitInput
   avis?: Prisma.avisCreateNestedManyWithoutProduitInput
-  panier?: Prisma.panierCreateNestedManyWithoutProduitInput
   categorie: Prisma.categorieCreateNestedOneWithoutProduitInput
 }
 
@@ -884,9 +704,7 @@ export type produitUncheckedCreateWithoutVarieteInput = {
   image_produit?: string | null
   date_ajout?: string | null
   categorie_id: number
-  article_commande?: Prisma.article_commandeUncheckedCreateNestedManyWithoutProduitInput
   avis?: Prisma.avisUncheckedCreateNestedManyWithoutProduitInput
-  panier?: Prisma.panierUncheckedCreateNestedManyWithoutProduitInput
 }
 
 export type produitCreateOrConnectWithoutVarieteInput = {
@@ -930,9 +748,7 @@ export type produitUpdateWithoutCategorieInput = {
   quantite?: Prisma.IntFieldUpdateOperationsInput | number
   image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  article_commande?: Prisma.article_commandeUpdateManyWithoutProduitNestedInput
   avis?: Prisma.avisUpdateManyWithoutProduitNestedInput
-  panier?: Prisma.panierUpdateManyWithoutProduitNestedInput
   variete?: Prisma.varieteUpdateOneRequiredWithoutProduitNestedInput
 }
 
@@ -944,9 +760,7 @@ export type produitUncheckedUpdateWithoutCategorieInput = {
   image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   variete_id?: Prisma.IntFieldUpdateOperationsInput | number
-  article_commande?: Prisma.article_commandeUncheckedUpdateManyWithoutProduitNestedInput
   avis?: Prisma.avisUncheckedUpdateManyWithoutProduitNestedInput
-  panier?: Prisma.panierUncheckedUpdateManyWithoutProduitNestedInput
 }
 
 export type produitUncheckedUpdateManyWithoutCategorieInput = {
@@ -975,9 +789,7 @@ export type produitUpdateWithoutVarieteInput = {
   quantite?: Prisma.IntFieldUpdateOperationsInput | number
   image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  article_commande?: Prisma.article_commandeUpdateManyWithoutProduitNestedInput
   avis?: Prisma.avisUpdateManyWithoutProduitNestedInput
-  panier?: Prisma.panierUpdateManyWithoutProduitNestedInput
   categorie?: Prisma.categorieUpdateOneRequiredWithoutProduitNestedInput
 }
 
@@ -989,9 +801,7 @@ export type produitUncheckedUpdateWithoutVarieteInput = {
   image_produit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   date_ajout?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categorie_id?: Prisma.IntFieldUpdateOperationsInput | number
-  article_commande?: Prisma.article_commandeUncheckedUpdateManyWithoutProduitNestedInput
   avis?: Prisma.avisUncheckedUpdateManyWithoutProduitNestedInput
-  panier?: Prisma.panierUncheckedUpdateManyWithoutProduitNestedInput
 }
 
 export type produitUncheckedUpdateManyWithoutVarieteInput = {
@@ -1010,15 +820,11 @@ export type produitUncheckedUpdateManyWithoutVarieteInput = {
  */
 
 export type ProduitCountOutputType = {
-  article_commande: number
   avis: number
-  panier: number
 }
 
 export type ProduitCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  article_commande?: boolean | ProduitCountOutputTypeCountArticle_commandeArgs
   avis?: boolean | ProduitCountOutputTypeCountAvisArgs
-  panier?: boolean | ProduitCountOutputTypeCountPanierArgs
 }
 
 /**
@@ -1034,22 +840,8 @@ export type ProduitCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exte
 /**
  * ProduitCountOutputType without action
  */
-export type ProduitCountOutputTypeCountArticle_commandeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.article_commandeWhereInput
-}
-
-/**
- * ProduitCountOutputType without action
- */
 export type ProduitCountOutputTypeCountAvisArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.avisWhereInput
-}
-
-/**
- * ProduitCountOutputType without action
- */
-export type ProduitCountOutputTypeCountPanierArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.panierWhereInput
 }
 
 
@@ -1062,9 +854,7 @@ export type produitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   date_ajout?: boolean
   variete_id?: boolean
   categorie_id?: boolean
-  article_commande?: boolean | Prisma.produit$article_commandeArgs<ExtArgs>
   avis?: boolean | Prisma.produit$avisArgs<ExtArgs>
-  panier?: boolean | Prisma.produit$panierArgs<ExtArgs>
   categorie?: boolean | Prisma.categorieDefaultArgs<ExtArgs>
   variete?: boolean | Prisma.varieteDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.ProduitCountOutputTypeDefaultArgs<ExtArgs>
@@ -1109,9 +899,7 @@ export type produitSelectScalar = {
 
 export type produitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id_produit" | "intitule" | "prix_unitaire" | "quantite" | "image_produit" | "date_ajout" | "variete_id" | "categorie_id", ExtArgs["result"]["produit"]>
 export type produitInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  article_commande?: boolean | Prisma.produit$article_commandeArgs<ExtArgs>
   avis?: boolean | Prisma.produit$avisArgs<ExtArgs>
-  panier?: boolean | Prisma.produit$panierArgs<ExtArgs>
   categorie?: boolean | Prisma.categorieDefaultArgs<ExtArgs>
   variete?: boolean | Prisma.varieteDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.ProduitCountOutputTypeDefaultArgs<ExtArgs>
@@ -1128,9 +916,7 @@ export type produitIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type $produitPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "produit"
   objects: {
-    article_commande: Prisma.$article_commandePayload<ExtArgs>[]
     avis: Prisma.$avisPayload<ExtArgs>[]
-    panier: Prisma.$panierPayload<ExtArgs>[]
     categorie: Prisma.$categoriePayload<ExtArgs>
     variete: Prisma.$varietePayload<ExtArgs>
   }
@@ -1537,9 +1323,7 @@ readonly fields: produitFieldRefs;
  */
 export interface Prisma__produitClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  article_commande<T extends Prisma.produit$article_commandeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.produit$article_commandeArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$article_commandePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   avis<T extends Prisma.produit$avisArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.produit$avisArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$avisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  panier<T extends Prisma.produit$panierArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.produit$panierArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$panierPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   categorie<T extends Prisma.categorieDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.categorieDefaultArgs<ExtArgs>>): Prisma.Prisma__categorieClient<runtime.Types.Result.GetResult<Prisma.$categoriePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   variete<T extends Prisma.varieteDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.varieteDefaultArgs<ExtArgs>>): Prisma.Prisma__varieteClient<runtime.Types.Result.GetResult<Prisma.$varietePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
@@ -1978,30 +1762,6 @@ export type produitDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
 }
 
 /**
- * produit.article_commande
- */
-export type produit$article_commandeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the article_commande
-   */
-  select?: Prisma.article_commandeSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the article_commande
-   */
-  omit?: Prisma.article_commandeOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.article_commandeInclude<ExtArgs> | null
-  where?: Prisma.article_commandeWhereInput
-  orderBy?: Prisma.article_commandeOrderByWithRelationInput | Prisma.article_commandeOrderByWithRelationInput[]
-  cursor?: Prisma.article_commandeWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.Article_commandeScalarFieldEnum | Prisma.Article_commandeScalarFieldEnum[]
-}
-
-/**
  * produit.avis
  */
 export type produit$avisArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2023,30 +1783,6 @@ export type produit$avisArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.AvisScalarFieldEnum | Prisma.AvisScalarFieldEnum[]
-}
-
-/**
- * produit.panier
- */
-export type produit$panierArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the panier
-   */
-  select?: Prisma.panierSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the panier
-   */
-  omit?: Prisma.panierOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.panierInclude<ExtArgs> | null
-  where?: Prisma.panierWhereInput
-  orderBy?: Prisma.panierOrderByWithRelationInput | Prisma.panierOrderByWithRelationInput[]
-  cursor?: Prisma.panierWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.PanierScalarFieldEnum | Prisma.PanierScalarFieldEnum[]
 }
 
 /**
