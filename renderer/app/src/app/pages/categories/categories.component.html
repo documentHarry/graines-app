@@ -1,5 +1,7 @@
 <div class="categories-header">
-  <a class="add-link" routerLink="/categories/ajouter">Ajouter une catégorie</a>
+  @if (authService.hasAnyRole(['GESTIONNAIRE_CATALOGUE', 'ADMIN'])) {
+      <a class="add-link" routerLink="/categories/ajouter">Ajouter une catégorie</a>
+  }
 
   <input
     class="search-input"
@@ -42,8 +44,11 @@
 
         <div class="actions">
           <a class="view-link" [routerLink]="['/produits/categorie', categorie.id_categorie]">Voir</a>
-          <a class="edit-link" [routerLink]="['/categories/modifier', categorie.id_categorie]">Modifier</a>
-          <a class="delete-link" [routerLink]="['/categories/supprimer', categorie.id_categorie]">Supprimer</a>
+
+          @if (authService.hasAnyRole(['GESTIONNAIRE_CATALOGUE', 'ADMIN'])) {
+            <a class="edit-link" [routerLink]="['/categories/modifier', categorie.id_categorie]">Modifier</a>
+            <a class="delete-link" [routerLink]="['/categories/supprimer', categorie.id_categorie]">Supprimer</a>
+          }
         </div>
       </article>
     }

@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Espece } from '../../types/electron';
 import { EspeceService } from '../../services/espece.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-especes',
@@ -11,6 +12,7 @@ import { EspeceService } from '../../services/espece.service';
 })
 export class EspecesComponent {
   private readonly especeService = inject(EspeceService);
+  readonly authService = inject(AuthService);
 
   especes = signal<Espece[]>([]);
   isLoading = signal(true);

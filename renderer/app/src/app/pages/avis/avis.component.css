@@ -1,0 +1,109 @@
+h1 {
+  margin: 0 0 16px;
+  color: #ffb86b;
+  font-size: 26px;
+  line-height: 1.2;
+}
+
+.avis-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.avis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 320px));
+  gap: 16px;
+  align-items: stretch;
+}
+
+.avis-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 190px;
+  padding: 14px;
+  border: 1px solid #8a5a36;
+  border-radius: 14px;
+  background-color: #f8ead8;
+  color: #2a1a10;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 18%);
+}
+
+.avis-card:hover {
+  transform: translateY(-1px);
+}
+
+.avis-card header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.avis-card h2 {
+  margin: 0;
+  color: #d9782d;
+  font-size: 17px;
+  line-height: 1.2;
+}
+
+.auteur {
+  margin: 6px 0 0;
+  color: #5f4b3b;
+  font-style: italic;
+}
+
+.note {
+  flex-shrink: 0;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background-color: #b6e0a6;
+  color: #256029;
+  font-size: 13px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.infos {
+  margin-bottom: 12px;
+}
+
+.infos p {
+  margin: 6px 0;
+  line-height: 1.35;
+}
+
+.infos p strong {
+  color: #7a3e13;
+}
+
+.avis-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+.delete-button {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background-color: #9b1c1c;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: #b32626;
+}
+
+.message {
+  color: #f8ead8;
+}

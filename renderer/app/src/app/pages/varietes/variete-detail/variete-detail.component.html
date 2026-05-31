@@ -17,10 +17,12 @@
       <span class="produits-count" [class.empty]="getNombreProduits() === 0">{{ getNombreProduits() }}</span>
     </header>
 
-    <div class="actions">
-      <a class="edit-link" [routerLink]="['/varietes/modifier', variete()?.id_variete]">Modifier la variété</a>
-      <a class="delete-link" [routerLink]="['/varietes/supprimer', variete()?.id_variete]">Supprimer la variété</a>
-    </div>
+    @if (authService.hasAnyRole(['GESTIONNAIRE_CATALOGUE', 'ADMIN'])) {
+      <div class="actions">
+        <a class="edit-link" [routerLink]="['/varietes/modifier', variete()?.id_variete]">Modifier la variété</a>
+        <a class="delete-link" [routerLink]="['/varietes/supprimer', variete()?.id_variete]">Supprimer la variété</a>
+      </div>
+    }
 
     <p><strong>Label: </strong>{{ getLabelBio() }}</p>
 

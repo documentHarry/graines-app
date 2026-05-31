@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { Utilisateur } from '../../types/electron';
 import { UtilisateurService } from '../../services/utilisateur.service';
 import { UtilisateurFiltresComponent } from './utilisateur-filtres/utilisateur-filtres.component';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-utilisateurs',
@@ -13,6 +14,7 @@ import { UtilisateurFiltresComponent } from './utilisateur-filtres/utilisateur-f
 
 export class UtilisateursComponent {
   private readonly utilisateurService = inject(UtilisateurService);
+  readonly authService = inject(AuthService);
 
   utilisateurs = signal<Utilisateur[]>([]);
   isLoading = signal(true);

@@ -92,3 +92,4 @@ typings/
 out/
 
 /generated/prisma
+src/prisma/generated/

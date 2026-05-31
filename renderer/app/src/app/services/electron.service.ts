@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ElectronAPI } from '../types/electron';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
+
 export class ElectronService {
 
   isElectron(): boolean {

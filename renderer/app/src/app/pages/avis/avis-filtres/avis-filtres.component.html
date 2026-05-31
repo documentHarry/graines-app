@@ -1,0 +1,57 @@
+<aside class="filtres-panel">
+  <div class="filtres-header">
+    <h3>Filtres</h3>
+
+    <button type="button" class="reset-filtres-button" title="Réinitialiser les filtres"
+      (click)="resetFiltres()"> ✕ </button>
+  </div>
+
+  <label for="titreRecherche">Titre</label>
+  <input id="titreRecherche" type="text" placeholder="Rechercher par titre"
+    [value]="titreRecherche()" (input)="changerTitreRecherche($event)">
+
+  <label for="commentaireRecherche">Commentaire</label>
+  <input id="commentaireRecherche" type="text" placeholder="Rechercher dans le commentaire"
+    [value]="commentaireRecherche()" (input)="changerCommentaireRecherche($event)">
+
+  <label for="produitRecherche">Produit</label>
+  <input id="produitRecherche" type="text" placeholder="Rechercher par produit"
+    [value]="produitRecherche()" (input)="changerProduitRecherche($event)">
+
+  <label for="auteurRecherche">Auteur</label>
+  <input id="auteurRecherche" type="text" placeholder="Rechercher par auteur"
+    [value]="auteurRecherche()" (input)="changerAuteurRecherche($event)">
+
+  <label for="noteRecherche">Note</label>
+  <select
+    id="noteRecherche"
+    [value]="noteRecherche()"
+    (change)="changerNoteRecherche($event)">
+    <option value="">Toutes</option>
+    <option value="1">1/10</option>
+    <option value="2">2/10</option>
+    <option value="3">3/10</option>
+    <option value="4">4/10</option>
+    <option value="5">5/10</option>
+    <option value="6">6/10</option>
+    <option value="7">7/10</option>
+    <option value="8">8/10</option>
+    <option value="9">9/10</option>
+    <option value="10">10/10</option>
+  </select>
+
+  <label for="statutRecherche">Statut</label>
+  <select
+    id="statutRecherche"
+    [value]="statutRecherche()"
+    (change)="changerStatutRecherche($event)">
+    <option value="">Tous</option>
+    <option value="nouveau">Nouveau</option>
+    <option value="modifié">Modifié</option>
+    <option value="supprimé">Supprimé</option>
+  </select>
+
+  <label for="jaimeMinRecherche">J’aime minimum</label>
+  <input id="jaimeMinRecherche" type="number" min="0" placeholder="Exemple : 3"
+    [value]="jaimeMinRecherche()" (input)="changerJaimeMinRecherche($event)">
+</aside>

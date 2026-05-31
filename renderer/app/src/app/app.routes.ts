@@ -27,9 +27,6 @@ import { UtilisateurModifierComponent } from './pages/utilisateurs/utilisateur-m
 import { UtilisateurSupprimerComponent } from './pages/utilisateurs/utilisateur-supprimer/utilisateur-supprimer.component';
 import { UtilisateurRolesComponent } from './pages/utilisateurs/utilisateur-roles/utilisateur-roles.component';
 import { AvisComponent } from './pages/avis/avis.component';
-import { AvisAjouterComponent } from './pages/avis/avis-ajouter/avis-ajouter.component';
-import { AvisModifierComponent } from './pages/avis/avis-modifier/avis-modifier.component';
-import { AvisSupprimerComponent } from './pages/avis/avis-supprimer/avis-supprimer.component';
 
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 
@@ -114,12 +111,7 @@ export const routes: Routes = [
   { path: `${PATHS.UTILISATEURS}/${SEGMENTS.ID}`, component: UtilisateurDetailComponent,
     canActivate: [authGuard, roleGuard], data: { roles: [ROLES.ADMIN] } },
 
-  { path: PATHS.AVIS, component: AvisComponent },
-  { path: `${PATHS.AVIS}/${SEGMENTS.AJOUTER}`, component: AvisAjouterComponent,
-    canActivate: [authGuard, roleGuard], data: { roles: [ROLES.CLIENT, ROLES.ADMIN] } },
-  { path: `${PATHS.AVIS}/${SEGMENTS.MODIFIER_ID}`, component: AvisModifierComponent,
-    canActivate: [authGuard, roleGuard], data: { roles: [ROLES.CLIENT, ROLES.MODERATEUR, ROLES.ADMIN] } },
-  { path: `${PATHS.AVIS}/${SEGMENTS.SUPPRIMER_ID}`, component: AvisSupprimerComponent,
+  { path: PATHS.AVIS, component: AvisComponent,
     canActivate: [authGuard, roleGuard], data: { roles: [ROLES.MODERATEUR, ROLES.ADMIN] } },
 
   { path: '**', component: NotFoundComponent }

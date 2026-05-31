@@ -1,0 +1,27 @@
+<form class="avis-form" [formGroup]="avisForm" (ngSubmit)="envoyerFormulaire()">
+  <h3>{{ getTitreFormulaire() }}</h3>
+
+  <div class="form-field">
+    <label for="note">Note</label>
+    <input id="note" type="number" min="1" max="10" formControlName="note">
+
+    @if (avisForm.controls.note.invalid && avisForm.controls.note.touched) {
+      <p class="error">La note doit être comprise entre 1 et 10.</p>
+    }
+  </div>
+
+  <div class="form-field">
+    <label for="titre">Titre</label>
+    <input id="titre" type="text" formControlName="titre">
+  </div>
+
+  <div class="form-field">
+    <label for="commentaire">Commentaire</label>
+    <textarea id="commentaire" rows="4" formControlName="commentaire"></textarea>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit">Enregistrer</button>
+    <button type="button" class="cancel-button" (click)="annulerFormulaire()">Annuler</button>
+  </div>
+</form>

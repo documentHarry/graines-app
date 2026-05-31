@@ -1,0 +1,66 @@
+<section class="avis-section">
+  <div class="avis-header">
+    <h2>Avis</h2>
+
+    @if (peutAjouterAvis()) {
+      <button type="button" class="add-button" (click)="afficherAjoutAvis()">Ajouter un avis</button>
+    }
+  </div>
+
+  @if (message()) {
+    <p class="message">{{ message() }}</p>
+  }
+
+  @if (avis().length === 0) {
+    <p>Aucun avis pour ce produit.</p>
+  }
+  @else {
+    <section class="avis-grid">
+      @for (unAvis of avis(); track unAvis.id_avis) {
+        <article class="avis-card">
+          <header class="avis-card-header">
+            <div>
+              <h3>{{ unAvis.titre || 'Avis sans titre' }}</h3>
+              <p class="auteur">{{ getAuteurAvis(unAvis) }}</p>
+            </div>
+
+            <span class="note">{{ getNoteAvis(unAvis) }}</span>
+          </header>
+
+          @if (unAvis.commentaire) {
+            <p class="commentaire">{{ unAvis.commentaire }}</p>
+          }
+
+          <p><strong>Statut : </strong>{{ unAvis.statut }}</p>
+          <p><strong>J’aime : </strong>{{ unAvis.nombre_jaime }}</p>
+
+          <div class="avis-actions">
+            <button type="button" class="like-button" (click)="aimerAvis(unAvis.id_avis)">J’aime</button>
+
+            @if (peutModifierAvis(unAvis)) {
+              <button type="button" class="edit-button" (click)="afficherModificationAvis(unAvis)">Modifier</button>
+            }
+
+            @if (peutSupprimerAvis(unAvis)) {
+              <button type="button" class="delete-button" (click)="demanderSuppressionAvis(unAvis)">Supprimer</button>
+            }
+          </div>
+        </article>
+      }
+    </section>
+  }
+
+  @if (modeAvis() !== 'aucun') {
+    <app-produit-avis-form
+      [mode]="getModeFormulaire()" [avis]="avisSelectionne()"
+      [onEnregistrer]="enregistrerAvis" [onAnnuler]="annulerActionAvis">
+    </app-produit-avis-form>
+  }
+
+  @if (avisASupprimer()) {
+    <app-produit-avis-supprimer
+      [avis]="avisASupprimer()!"
+      [onConfirmer]="confirmerSuppressionAvis" [onAnnuler]="annulerActionAvis">
+    </app-produit-avis-supprimer>
+  }
+</section>

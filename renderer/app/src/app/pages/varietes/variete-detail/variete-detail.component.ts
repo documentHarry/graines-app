@@ -2,6 +2,7 @@ import { Component, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Aromate, Variete } from '../../../types/electron';
 import { VarieteService } from '../../../services/variete.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-variete-detail',
@@ -11,6 +12,7 @@ import { VarieteService } from '../../../services/variete.service';
 })
 export class VarieteDetailComponent {
   private readonly varieteService = inject(VarieteService);
+  readonly authService = inject(AuthService);
 
   id = input<string>();
 

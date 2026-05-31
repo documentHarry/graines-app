@@ -1,25 +1,23 @@
 import { Component, effect, inject, input, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { Avis, Produit } from '../../../types/electron';
+import { Produit } from '../../../types/electron';
 import { ProduitService } from '../../../services/produit.service';
-import { AvisService } from '../../../services/avis.service';
+import { ProduitAvisComponent } from '../avis/produit-avis.component';
 
 @Component({
   selector: 'app-produit-detail',
-  imports: [RouterLink],
+  imports: [RouterLink, ProduitAvisComponent],
   templateUrl: './produit-detail.component.html',
   styleUrl: './produit-detail.component.css',
 })
 export class ProduitDetailComponent {
 
   private readonly produitService = inject(ProduitService);
-  private readonly avisService = inject(AvisService);
   private readonly router = inject(Router);
 
   id = input<string>();
 
   produit = signal<Produit | null>(null);
-  avis = signal<Avis[]>([]);
   produitsSimilaires = signal<Produit[]>([]);
   isLoading = signal(true);
   message = signal('');
@@ -37,7 +35,6 @@ export class ProduitDetailComponent {
   async chargerProduit(): Promise<void> {
     this.isLoading.set(true);
     this.message.set('');
-    this.avis.set([]);
     this.produitsSimilaires.set([]);
 
     const idProduit = Number(this.id());
@@ -56,11 +53,9 @@ export class ProduitDetailComponent {
         return;
       }
 
-      const avis = await this.avisService.getAvisByProduit(idProduit);
       const produitsSimilaires = await this.produitService.getProduitsSimilaires(idProduit);
 
       this.produit.set(result);
-      this.avis.set(avis);
       this.produitsSimilaires.set(produitsSimilaires);
       this.message.set('');
     }
@@ -126,18 +121,6 @@ export class ProduitDetailComponent {
       console.error(error);
       this.message.set('Une erreur est survenue pendant la suppression du produit.');
     }
-  }
-
-  getNoteAvis(avis: Avis): string {
-    if (avis.note === null) {
-      return 'Non noté';
-    }
-
-    return avis.note + '/10';
-  }
-
-  getAuteurAvis(avis: Avis): string {
-    return avis.utilisateur.prenom + ' ' + avis.utilisateur.nom;
   }
 
 }

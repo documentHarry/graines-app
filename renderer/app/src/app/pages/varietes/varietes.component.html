@@ -1,9 +1,10 @@
 <div class="page-header">
   <h2>Variété</h2>
-  <a class="add-link" routerLink="/varietes/ajouter">Ajouter une variété</a>
+
+  @if (authService.hasAnyRole(['GESTIONNAIRE_CATALOGUE', 'ADMIN'])) {
+    <a class="add-link" routerLink="/varietes/ajouter">Ajouter une variété</a>
+  }
 </div>
-
-
 
 @if (isLoading()) {
   <p>Chargement des variétés...</p>

@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Categorie } from '../../types/electron';
 import { CategorieService } from '../../services/categorie.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-categories',
@@ -11,6 +12,7 @@ import { CategorieService } from '../../services/categorie.service';
 })
 export class CategoriesComponent {
   private readonly categorieService = inject(CategorieService);
+  readonly authService = inject(AuthService);
 
   categories = signal<Categorie[]>([]);
   isLoading = signal(true);

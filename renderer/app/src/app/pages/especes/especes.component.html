@@ -1,19 +1,12 @@
 <div class="especes-header">
-  <a class="add-link" routerLink="/especes/ajouter">Ajouter une espèce</a>
+  @if (authService.hasAnyRole(['GESTIONNAIRE_CATALOGUE', 'ADMIN'])) {
+    <a class="add-link" routerLink="/especes/ajouter">Ajouter une espèce</a>
+  }
+  <input class="search-input" type="text" placeholder="Rechercher par nom commun"
+    [value]="rechercheNomCommun()" (input)="changerRechercheNomCommun($event)">
 
-  <input
-    class="search-input"
-    type="text"
-    placeholder="Rechercher par nom commun"
-    [value]="rechercheNomCommun()"
-    (input)="changerRechercheNomCommun($event)">
-
-  <input
-    class="search-input search-input-scientifique"
-    type="text"
-    placeholder="Rechercher par nom scientifique"
-    [value]="rechercheNomScientifique()"
-    (input)="changerRechercheNomScientifique($event)">
+  <input class="search-input search-input-scientifique" type="text" placeholder="Rechercher par nom scientifique"
+    [value]="rechercheNomScientifique()" (input)="changerRechercheNomScientifique($event)">
 </div>
 
 @if (isLoading()) {
@@ -37,8 +30,10 @@
         <p class="scientifique">{{ espece.nom_scientifique }}</p>
 
         <div class="actions">
-          <a class="edit-link" [routerLink]="['/especes/modifier', espece.id_espece]">Modifier</a>
-          <a class="delete-link" [routerLink]="['/especes/supprimer', espece.id_espece]">Supprimer</a>
+          @if (authService.hasAnyRole(['GESTIONNAIRE_CATALOGUE', 'ADMIN'])) {
+            <a class="edit-link" [routerLink]="['/especes/modifier', espece.id_espece]">Modifier</a>
+            <a class="delete-link" [routerLink]="['/especes/supprimer', espece.id_espece]">Supprimer</a>
+          }
         </div>
       </article>
     }

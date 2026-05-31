@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { Variete } from '../../types/electron';
 import { VarieteService } from '../../services/variete.service';
 import { VarieteFiltresComponent } from './variete-filtres/variete-filtres.component';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-varietes',
@@ -13,6 +14,7 @@ import { VarieteFiltresComponent } from './variete-filtres/variete-filtres.compo
 
 export class VarietesComponent {
   private readonly varieteService = inject(VarieteService);
+  readonly authService = inject(AuthService);
 
   varietes = signal<Variete[]>([]);
   isLoading = signal(true);

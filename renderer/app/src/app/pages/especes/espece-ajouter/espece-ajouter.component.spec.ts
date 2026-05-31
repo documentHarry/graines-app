@@ -1,26 +1,37 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
+import { vi } from 'vitest';
 
 import { EspeceAjouterComponent } from './espece-ajouter.component';
+import { EspeceService } from '../../../services/espece.service';
 
 describe('EspeceAjouterComponent', () => {
   let component: EspeceAjouterComponent;
   let fixture: ComponentFixture<EspeceAjouterComponent>;
+  let especeServiceMock: {
+    createEspece: ReturnType<typeof vi.fn>;
+  };
+  let router: Router;
 
   beforeEach(async () => {
+    especeServiceMock = {
+      createEspece: vi.fn().mockResolvedValue(undefined),
+    };
+
     await TestBed.configureTestingModule({
       imports: [EspeceAjouterComponent],
       providers: [
         provideRouter([]),
+        { provide: EspeceService, useValue: especeServiceMock },
       ],
     }).compileComponents();
 
+    router = TestBed.inject(Router);
     fixture = TestBed.createComponent(EspeceAjouterComponent);
     component = fixture.componentInstance;
-    await fixture.whenStable();
   });
 
-  it('should create', () => {
+  it('devrait créer le composant', () => {
     expect(component).toBeTruthy();
   });
 
@@ -58,5 +69,61 @@ describe('EspeceAjouterComponent', () => {
     });
 
     expect(component.especeForm.valid).toBe(true);
+  });
+
+  it('ne devrait pas enregistrer si le formulaire est invalide', async () => {
+    component.especeForm.patchValue({
+      nom_commun: '',
+      nom_scientifique: '',
+    });
+
+    await component.enregistrer();
+
+    expect(component.message()).toBe('Veuillez remplir les champs obligatoires.');
+    expect(especeServiceMock.createEspece).not.toHaveBeenCalled();
+  });
+
+  it('devrait créer une espèce et rediriger vers la liste', async () => {
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    component.especeForm.patchValue({
+      nom_commun: ' Camomille ',
+      nom_scientifique: ' Matricaria chamomilla ',
+    });
+
+    await component.enregistrer();
+
+    expect(especeServiceMock.createEspece).toHaveBeenCalledWith({
+      nom_commun: 'Camomille',
+      nom_scientifique: 'Matricaria chamomilla',
+    });
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/especes']);
+  });
+
+  it('devrait afficher un message si l’espèce existe déjà', async () => {
+    especeServiceMock.createEspece.mockRejectedValue('DUPLICATE_ESPECE');
+
+    component.especeForm.patchValue({
+      nom_commun: 'Camomille',
+      nom_scientifique: 'Matricaria chamomilla',
+    });
+
+    await component.enregistrer();
+
+    expect(component.message()).toBe('Une espèce avec ce nom commun ou ce nom scientifique existe déjà.');
+  });
+
+  it('devrait afficher un message si la création échoue techniquement', async () => {
+    especeServiceMock.createEspece.mockRejectedValue(new Error('Erreur technique'));
+
+    component.especeForm.patchValue({
+      nom_commun: 'Camomille',
+      nom_scientifique: 'Matricaria chamomilla',
+    });
+
+    await component.enregistrer();
+
+    expect(component.message()).toBe('Une erreur technique est survenue pendant la création de l’espèce.');
   });
 });

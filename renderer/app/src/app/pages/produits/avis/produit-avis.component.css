@@ -1,0 +1,112 @@
+.avis-section {
+  margin-top: 24px;
+}
+
+.avis-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.avis-header h2 {
+  margin: 0;
+  color: #d9782d;
+  font-size: 20px;
+}
+
+.avis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.avis-card {
+  padding: 14px;
+  border: 1px solid #d8c1a8;
+  border-radius: 12px;
+  background-color: #fff7ec;
+  color: #2a1a10;
+}
+
+.avis-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.avis-card h3 {
+  margin: 0;
+  color: #d9782d;
+  font-size: 17px;
+}
+
+.auteur {
+  margin: 6px 0 0;
+  color: #5f4b3b;
+  font-style: italic;
+}
+
+.note {
+  flex-shrink: 0;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background-color: #b6e0a6;
+  color: #256029;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.commentaire {
+  margin-top: 12px;
+}
+
+.avis-card p strong {
+  color: #7a3e13;
+}
+
+.avis-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.add-button,
+.edit-button,
+.like-button {
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 10px;
+  background-color: #f2a65a;
+  color: #2a1a10;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.add-button:hover,
+.edit-button:hover,
+.like-button:hover {
+  background-color: #ffb86b;
+}
+
+.delete-button {
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 10px;
+  background-color: #9b1c1c;
+  color: #ffffff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: #b32626;
+}
+
+.message {
+  color: #9b1c1c;
+  font-weight: bold;
+}

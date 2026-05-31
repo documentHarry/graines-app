@@ -10,10 +10,7 @@ function trouverRoute(path: string): Route | undefined {
 describe('app.routes', () => {
   const rolesCatalogue = ['GESTIONNAIRE_CATALOGUE', 'ADMIN'];
   const rolesAdmin = ['ADMIN'];
-  const rolesUtilisateurDetail = ['ADMIN', 'SUPPORT_CLIENT'];
-  const rolesAvisAjout = ['CLIENT', 'ADMIN'];
-  const rolesAvisModification = ['CLIENT', 'MODERATEUR', 'ADMIN'];
-  const rolesAvisSuppression = ['MODERATEUR', 'ADMIN'];
+  const rolesModerationAvis = ['MODERATEUR', 'ADMIN'];
 
   function verifierRouteProtegee(path: string, rolesAttendus: string[]): void {
     const route = trouverRoute(path);
@@ -31,6 +28,12 @@ describe('app.routes', () => {
     expect(route?.data?.['roles']).toBeUndefined();
   }
 
+  function verifierRouteInexistante(path: string): void {
+    const route = trouverRoute(path);
+
+    expect(route).toBeUndefined();
+  }
+
   it('devrait déclarer les routes publiques', () => {
     verifierRoutePublique('');
     verifierRoutePublique('connexion');
@@ -43,8 +46,6 @@ describe('app.routes', () => {
     verifierRoutePublique('produits');
     verifierRoutePublique('produits/categorie/:categorieId');
     verifierRoutePublique('produits/:id');
-
-    verifierRoutePublique('avis');
   });
 
   it('devrait protéger les routes catalogue avec GESTIONNAIRE_CATALOGUE et ADMIN', () => {
@@ -60,17 +61,29 @@ describe('app.routes', () => {
     verifierRouteProtegee('varietes/modifier/:id', rolesCatalogue);
     verifierRouteProtegee('varietes/supprimer/:id', rolesCatalogue);
 
+    verifierRouteProtegee('proprietes-medicinales', rolesCatalogue);
+
     verifierRouteProtegee('produits/ajouter', rolesCatalogue);
     verifierRouteProtegee('produits/modifier/:id', rolesCatalogue);
   });
 
-  it('devrait protéger les routes utilisateurs selon les rôles attendus', () => {
+  it('devrait protéger les routes utilisateurs avec ADMIN uniquement', () => {
     verifierRouteProtegee('utilisateurs', rolesAdmin);
     verifierRouteProtegee('utilisateurs/ajouter', rolesAdmin);
     verifierRouteProtegee('utilisateurs/modifier/:id', rolesAdmin);
     verifierRouteProtegee('utilisateurs/supprimer/:id', rolesAdmin);
     verifierRouteProtegee('utilisateurs/roles/:id', rolesAdmin);
-    verifierRouteProtegee('utilisateurs/:id', rolesUtilisateurDetail);
+    verifierRouteProtegee('utilisateurs/:id', rolesAdmin);
+  });
+
+  it('devrait protéger la route de modération des avis', () => {
+    verifierRouteProtegee('avis', rolesModerationAvis);
+  });
+
+  it('ne devrait plus déclarer les anciennes routes CRUD globales des avis', () => {
+    verifierRouteInexistante('avis/ajouter');
+    verifierRouteInexistante('avis/modifier/:id');
+    verifierRouteInexistante('avis/supprimer/:id');
   });
 
   it('devrait placer la route wildcard en dernier', () => {
@@ -103,11 +116,4 @@ describe('app.routes', () => {
     expect(paths.indexOf('produits/categorie/:categorieId'))
       .toBeLessThan(paths.indexOf('produits/:id'));
   });
-
-  it('devrait protéger les routes avis selon les rôles attendus', () => {
-    verifierRouteProtegee('avis/ajouter', rolesAvisAjout);
-    verifierRouteProtegee('avis/modifier/:id', rolesAvisModification);
-    verifierRouteProtegee('avis/supprimer/:id', rolesAvisSuppression);
-  });
-
 });

@@ -151,36 +151,7 @@
     }
   </article>
 
-  @if (avis().length > 0) {
-    <section>
-      <h2>Avis des utilisateurs</h2>
-
-      <div class="avis-list">
-        @for (avisItem of avis(); track avisItem.id_avis) {
-          <article class="avis-card">
-            <div class="avis-header">
-              <strong>{{ avisItem.titre }}</strong>
-              <span>{{ getNoteAvis(avisItem) }}</span>
-            </div>
-
-            <p class="avis-auteur">{{ getAuteurAvis(avisItem) }}</p>
-
-            @if (avisItem.commentaire) {
-              <p>{{ avisItem.commentaire }}</p>
-            }
-
-            <p class="avis-like">J'aime : {{ avisItem.nombre_jaime ?? 0 }}</p>
-          </article>
-        }
-      </div>
-    </section>
-  }
-  @else {
-    <section>
-      <h2>Avis des utilisateurs</h2>
-      <p>Aucun avis pour ce produit.</p>
-    </section>
-  }
+  <app-produit-avis [produitId]="produit()!.id_produit"></app-produit-avis>
 
   @if (produitsSimilaires().length > 0) {
     <section>
@@ -203,5 +174,5 @@
         }
       </div>
     </section>
-}
+  }
 }

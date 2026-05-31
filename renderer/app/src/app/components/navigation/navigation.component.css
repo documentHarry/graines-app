@@ -11,13 +11,14 @@ a {
 }
 
 a:hover {
-  text-decoration: underline;
+  color: #f2c45a;
+  text-decoration: none;
 }
 
 .active {
   color: #8fd694;
   font-weight: bold;
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .badge-utilisateur {

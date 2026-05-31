@@ -1,0 +1,51 @@
+.delete-card {
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid #d8c1a8;
+  border-radius: 12px;
+  background-color: #fff7ec;
+  color: #2a1a10;
+}
+
+.delete-card h3 {
+  margin: 0 0 12px;
+  color: #d9782d;
+  font-size: 18px;
+}
+
+.commentaire {
+  color: #5f4b3b;
+  font-style: italic;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.delete-button,
+.cancel-button {
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 10px;
+  color: #ffffff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.delete-button {
+  background-color: #9b1c1c;
+}
+
+.delete-button:hover {
+  background-color: #b32626;
+}
+
+.cancel-button {
+  background-color: #6b5a4b;
+}
+
+.cancel-button:hover {
+  background-color: #7a3e13;
+}
