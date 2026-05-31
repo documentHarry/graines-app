@@ -57,10 +57,3 @@ export class ConnexionComponent {
 
 }
 
-/*
-Admin
-jthomas@example.org
-&o)FpKqbK0
-
-
-*/
