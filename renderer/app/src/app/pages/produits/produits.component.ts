@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { Categorie, Produit } from '../../types/electron';
 import { ProduitService } from '../../services/produit.service';
 import { CategorieService } from '../../services/categorie.service';
+import { AuthService } from '../../services/auth.service';
 import { ProduitFiltresComponent } from './produit-filtres/produit-filtres.component';
 
 @Component({
@@ -15,7 +16,8 @@ import { ProduitFiltresComponent } from './produit-filtres/produit-filtres.compo
 export class ProduitsComponent {
   private readonly produitService = inject(ProduitService);
   private readonly categorieService = inject(CategorieService);
-
+  readonly authService = inject(AuthService);
+  
   categorieId = input<string>();
 
   produits = signal<Produit[]>([]);

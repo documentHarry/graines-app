@@ -5,7 +5,7 @@
 <div class="page-header">
   <h2>{{ getTitrePage() }}</h2>
 
-  @if (!categorie()) {
+  @if (!categorie() && authService.hasAnyRole(['ADMIN', 'GESTIONNAIRE_CATALOGUE'])) {
     <a class="add-link" routerLink="/produits/ajouter">Ajouter un produit</a>
   }
 </div>

@@ -1,48 +1,44 @@
-# Commit message
-
 ## Résumé
 
-Finalisation des tests renderer Angular, stabilisation des dépendances Electron/Prisma, et ajout de la documentation d'installation.
+Ajout de la documentation projet, des diagrammes de base de données et correction de la protection des boutons selon les rôles.
 
 ## Changements principaux
 
-- Ajout et mise à jour des tests unitaires du renderer Angular.
-- Couverture des composants de navigation, connexion, avis, produits, catégories, espèces, variétés, utilisateurs et propriétés médicinales.
-- Mise à jour des tests des services Angular utilisant `ElectronService`.
-- Vérification des routes protégées, des rôles, des formulaires, des filtres et des messages d'erreur.
-- Suppression de l'idée de tests backend/repository/ipc pour éviter une configuration Vitest séparée non prévue dans le main process Electron.
-- Stabilisation des dépendances critiques dans `package.json`.
-- Fixation des versions sensibles pour éviter les incompatibilités :
-  - Electron
-  - Electron Forge
-  - Prisma
-  - better-sqlite3
-- Mise à jour de la logique autour du packaging Electron Forge.
-- Conservation et clarification du rôle de `forge.config.ts`.
-- Copie explicite des dossiers et dépendances nécessaires au packaging :
-  - `database/`
-  - `better-sqlite3`
-  - `bindings`
-  - `file-uri-to-path`
-  - `@prisma`
-- Vérification de la création automatique de la base SQLite au premier lancement.
-- Documentation du rôle des scripts SQL présents dans :
-  - `database/schema/`
-  - `database/seed/`
-- Mise à jour du `.gitignore` pour exclure les fichiers générés tout en conservant les fichiers nécessaires au lancement.
-- Ajout d'un guide d'installation Markdown pour expliquer l'installation, le lancement, Prisma, SQLite et Electron Forge.
+- Ajout du fichier `README.md`.
+- Ajout du fichier `GUIDE_INSTALLATION.md`.
+- Ajout de deux diagrammes de base de données dans `database/diagram/` :
+  - `graine-app-erd-diagram.png`
+  - `graine-app-erd-diagram.svg`
+- Documentation de l'installation du projet :
+  - installation des dépendances Electron ;
+  - installation des dépendances Angular ;
+  - génération Prisma ;
+  - lancement avec Electron Forge ;
+  - création automatique de la base SQLite ;
+  - comptes de test par rôle.
+- Documentation du fonctionnement général de l'application :
+  - application interne Angular + Electron ;
+  - base locale SQLite ;
+  - absence de commande et de paiement ;
+  - gestion du catalogue, des utilisateurs, des rôles, des produits et des avis.
+- Ajout des liens vers les diagrammes ERD dans le `README.md`.
+- Correction de la visibilité des boutons selon les rôles utilisateur.
+- Masquage du bouton `Ajouter un produit` pour les utilisateurs ayant uniquement le rôle `CLIENT`.
+- Masquage des boutons `Modifier` et `Supprimer` sur le détail produit pour les utilisateurs non autorisés.
+- Restriction visuelle des actions de gestion produit aux rôles :
+  - `ADMIN`
+  - `GESTIONNAIRE_CATALOGUE`
 
-## Tests
+## Sécurité et rôles
 
-- Tests unitaires du renderer Angular mis à jour.
-- Tests des composants principaux ajoutés ou corrigés.
-- Tests des services Angular ajoutés avec mocks de `ElectronService`.
-- Tests backend/repository/ipc non ajoutés volontairement, car ils nécessitent une configuration dédiée au main process Electron.
+Les boutons liés à la gestion du catalogue produit sont maintenant cohérents avec les droits applicatifs.
 
-## Notes
+Un utilisateur `CLIENT` peut consulter les produits et les détails, mais ne voit plus les actions réservées à la gestion du catalogue.
 
-La base de données SQLite est créée automatiquement au premier lancement de l'application si elle n'existe pas encore.
+Les rôles `ADMIN` et `GESTIONNAIRE_CATALOGUE` conservent l'accès aux actions de création, modification et suppression des produits.
 
-Les versions des dépendances importantes sont fixées afin d'éviter les problèmes de compatibilité rencontrés avec des versions plus récentes.
+## Documentation
 
-Le projet doit être installé avec `npm install` à partir des fichiers `package.json` et `package-lock.json` fournis.
+Le guide d'installation explique comment lancer l'application à partir d'un dépôt GitHub ou d'une archive ZIP.
+
+Le README présente l'application et contient les liens vers les diagrammes de base de données.

@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { Produit } from '../../../types/electron';
 import { ProduitService } from '../../../services/produit.service';
 import { ProduitAvisComponent } from '../avis/produit-avis.component';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-produit-detail',
@@ -14,6 +15,7 @@ export class ProduitDetailComponent {
 
   private readonly produitService = inject(ProduitService);
   private readonly router = inject(Router);
+  readonly authService = inject(AuthService);
 
   id = input<string>();
 

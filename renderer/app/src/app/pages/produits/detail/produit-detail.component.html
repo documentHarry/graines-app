@@ -33,8 +33,10 @@
         <p><strong>Bio: </strong>{{ getLabelBio() }}</p>
 
         <div class="actions">
-          <a class="edit-link" [routerLink]="['/produits/modifier', produit()?.id_produit]">Modifier le produit</a>
-          <button type="button" class="delete-button" (click)="supprimerProduit()">Supprimer le produit</button>
+          @if (authService.hasAnyRole(['ADMIN', 'GESTIONNAIRE_CATALOGUE'])) {
+            <a class="edit-link" [routerLink]="['/produits/modifier', produit()?.id_produit]">Modifier le produit</a>
+            <button type="button" class="delete-button" (click)="supprimerProduit()">Supprimer le produit</button>
+          }
         </div>
       </div>
     </section>
