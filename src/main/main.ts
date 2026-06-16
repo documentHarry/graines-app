@@ -94,7 +94,7 @@ const createWindow = () => {
   });
 
   // and load the Angular app.
-  mainWindow.loadURL('http://localhost:4200');
+  mainWindow.loadFile('renderer/app/dist/app/browser/index.html');
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();

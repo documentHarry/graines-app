@@ -16,18 +16,6 @@ function copyDir(src: string, dest: string) {
   fs.cpSync(src, dest, { recursive: true });
 }
 
-const nativeDeps = [
-  'better-sqlite3',
-  'bindings',
-  'file-uri-to-path'
-];
-
-const prismaDeps = [
-  '@prisma/client',
-  '@prisma/adapter-better-sqlite3',
-  '@prisma/driver-adapter-utils'
-];
-
 const config: ForgeConfig = {
   packagerConfig: {
     asar: false,

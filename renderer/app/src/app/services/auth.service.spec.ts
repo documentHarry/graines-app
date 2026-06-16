@@ -15,6 +15,8 @@ describe('AuthService', () => {
   };
 
   beforeEach(() => {
+    TestBed.resetTestingModule();
+    sessionStorage.clear();
     localStorage.clear();
 
     (window as any).api = {
@@ -29,6 +31,8 @@ describe('AuthService', () => {
   });
 
   afterEach(() => {
+    service.logout();
+    sessionStorage.clear();
     localStorage.clear();
     vi.clearAllMocks();
     delete (window as any).api;
@@ -46,7 +50,7 @@ describe('AuthService', () => {
     expect((window as any).api.login).toHaveBeenCalledWith('marie@example.com', 'secret');
     expect(result).toEqual(utilisateurMock);
     expect(service.getUtilisateur()).toEqual(utilisateurMock);
-    expect(localStorage.getItem('utilisateur')).toBe(JSON.stringify(utilisateurMock));
+    expect(sessionStorage.getItem('utilisateur')).toBe(JSON.stringify(utilisateurMock));
   });
 
   it('devrait retourner null si la connexion échoue', async () => {
@@ -56,18 +60,18 @@ describe('AuthService', () => {
 
     expect(result).toBeNull();
     expect(service.getUtilisateur()).toBeNull();
-    expect(localStorage.getItem('utilisateur')).toBeNull();
+    expect(sessionStorage.getItem('utilisateur')).toBeNull();
   });
 
-  it('devrait enregistrer l’utilisateur connecté dans le service et le localStorage', () => {
+  it('devrait enregistrer l’utilisateur connecté dans le service et le sessionStorage', () => {
     service.setUtilisateur(utilisateurMock);
 
     expect(service.getUtilisateur()).toEqual(utilisateurMock);
-    expect(localStorage.getItem('utilisateur')).toBe(JSON.stringify(utilisateurMock));
+    expect(sessionStorage.getItem('utilisateur')).toBe(JSON.stringify(utilisateurMock));
   });
 
-  it('devrait récupérer l’utilisateur depuis le localStorage', () => {
-    localStorage.setItem('utilisateur', JSON.stringify(utilisateurMock));
+  it('devrait récupérer l’utilisateur depuis le sessionStorage', () => {
+    sessionStorage.setItem('utilisateur', JSON.stringify(utilisateurMock));
 
     expect(service.getUtilisateur()).toEqual(utilisateurMock);
   });
@@ -125,6 +129,6 @@ describe('AuthService', () => {
 
     expect(service.getUtilisateur()).toBeNull();
     expect(service.isLoggedIn()).toBe(false);
-    expect(localStorage.getItem('utilisateur')).toBeNull();
+    expect(sessionStorage.getItem('utilisateur')).toBeNull();
   });
 });
