@@ -53,7 +53,7 @@ Cloner le dépôt :
 
 ```bash
 git clone https://github.com/documentHarry/graines-app.git
-cd graines-app-main
+cd graines-app
 ```
 
 Installer les dépendances du projet Electron :
