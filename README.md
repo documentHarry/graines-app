@@ -34,7 +34,6 @@ L'application permet de gérer plusieurs grands ensembles de données :
 * les variétés
 * les aromates et leurs propriétés médicinales
 * les produits
-* les avis déposés sur les produits
 
 ## Gestion des utilisateurs et des rôles
 
@@ -44,7 +43,6 @@ Les rôles utilisés sont :
 
 * `ADMIN`
 * `GESTIONNAIRE_CATALOGUE`
-* `MODERATEUR`
 * `CLIENT`
 
 Un administrateur peut gérer les utilisateurs et leurs rôles. Les utilisateurs peuvent être actifs ou inactifs. Chaque utilisateur peut également posséder une ou plusieurs adresses de livraison. Ces adresses servent à gérer les informations associées à l'utilisateur, mais elles ne sont pas utilisées pour passer une commande dans l'application.
@@ -79,16 +77,6 @@ Certaines variétés peuvent être associées à des informations aromatiques. U
 * les propriétés médicinales associées
 
 Les propriétés médicinales sont gérées séparément afin de pouvoir être associées à différents aromates.
-
-## Gestion des avis
-
-Les utilisateurs peuvent déposer des avis sur les produits. Un avis contient une note, un titre, un commentaire, une date de dépôt, un statut et un nombre de mentions "J'aime".
-
-Les statuts possibles d'un avis sont :
-
-* `nouveau`
-* `modifié`
-* `supprimé`
 
 La page de détail d'un produit affiche les avis liés à ce produit. Les clients peuvent ajouter un avis, modifier leur propre avis et supprimer leur propre avis selon les droits prévus. Les administrateurs disposent également de droits étendus.
 

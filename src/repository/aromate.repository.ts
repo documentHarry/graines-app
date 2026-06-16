@@ -1,13 +1,33 @@
 import { PrismaClient } from '../prisma/generated/client.js';
-import { AromateInput } from '../../renderer/app/src/app/types/electron';
-
-type TransactionClient = Parameters<Parameters<PrismaClient['$transaction']>[0]>[0];
+import { AromateCreateInput, AromateUpdateInput } from '../../renderer/app/src/app/types/electron';
 
 export class AromateRepository {
-  create(transact: TransactionClient, varieteId: number, aromate: AromateInput) {
-    return transact.aromate.create({
+  constructor(private readonly prisma: PrismaClient) {}
+
+  getAll() {
+    return this.prisma.aromate.findMany({
+      include: {
+        variete: { include: { espece: true } },
+        aromate_propriete: { include: { propriete_medicinale: true } },
+      },
+      orderBy: { id_aromate: 'asc' },
+    });
+  }
+
+  getById(id: number) {
+    return this.prisma.aromate.findUnique({
+      where: { id_aromate: id },
+      include: {
+        variete: { include: { espece: true } },
+        aromate_propriete: { include: { propriete_medicinale: true } },
+      },
+    });
+  }
+
+  create(aromate: AromateCreateInput) {
+    return this.prisma.aromate.create({
       data: {
-        variete_id: varieteId,
+        variete_id: aromate.variete_id,
         partie_utilisee: aromate.partie_utilisee,
         propriete: aromate.propriete,
         usage_culinaire: aromate.usage_culinaire,
@@ -15,28 +35,40 @@ export class AromateRepository {
     });
   }
 
-  deleteByVariete(transact: TransactionClient, varieteId: number) {
-    return transact.aromate.deleteMany({
-      where: { variete_id: varieteId },
+  update(aromate: AromateUpdateInput) {
+    return this.prisma.aromate.update({
+      where: { id_aromate: aromate.id_aromate },
+      data: {
+        variete_id: aromate.variete_id,
+        partie_utilisee: aromate.partie_utilisee,
+        propriete: aromate.propriete,
+        usage_culinaire: aromate.usage_culinaire,
+      },
     });
   }
 
-  deleteProprietesByVariete(transact: TransactionClient, varieteId: number) {
-    return transact.aromate_propriete.deleteMany({
-      where: { aromate: { variete_id: varieteId } },
-    });
-  }
-
-  createProprietes(transact: TransactionClient, aromateId: number, proprietesIds: number[]) {
+  createProprietes(aromateId: number, proprietesIds: number[]) {
     if (proprietesIds.length === 0) {
-      return;
+      return Promise.resolve();
     }
 
-    return transact.aromate_propriete.createMany({
+    return this.prisma.aromate_propriete.createMany({
       data: proprietesIds.map(proprieteId => ({
         aromate_id: aromateId,
         propriete_id: proprieteId,
       })),
+    });
+  }
+
+  deleteProprietes(aromateId: number) {
+    return this.prisma.aromate_propriete.deleteMany({
+      where: { aromate_id: aromateId },
+    });
+  }
+
+  delete(id: number) {
+    return this.prisma.aromate.delete({
+      where: { id_aromate: id },
     });
   }
 }

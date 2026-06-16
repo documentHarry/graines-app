@@ -1,87 +1,73 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter, Router } from '@angular/router';
-import { vi } from 'vitest';
-
+import { Router } from '@angular/router';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { UtilisateurRolesComponent } from './utilisateur-roles.component';
 import { UtilisateurService } from '../../../services/utilisateur.service';
 import { RoleService } from '../../../services/role.service';
+import { UtilisateurRoleService } from '../../../services/utilisateur-role.service';
 import { Role, Utilisateur, UtilisateurRole } from '../../../types/electron';
 
 describe('UtilisateurRolesComponent', () => {
   let component: UtilisateurRolesComponent;
   let fixture: ComponentFixture<UtilisateurRolesComponent>;
 
-  let utilisateurServiceMock: {
-    getUtilisateurById: ReturnType<typeof vi.fn>;
-  };
-
-  let roleServiceMock: {
-    getRoles: ReturnType<typeof vi.fn>;
-    getUtilisateurRoles: ReturnType<typeof vi.fn>;
-    updateUtilisateurRoles: ReturnType<typeof vi.fn>;
-  };
-
-  let router: Router;
-
   const utilisateurMock: Utilisateur = {
     id_utilisateur: 1,
     nom: 'Dupont',
-    prenom: 'Marie',
-    email: 'marie@example.com',
-    mot_de_passe: 'secret',
-    date_inscription: '2026-05-31 10:00:00',
+    prenom: 'Jean',
+    email: 'jean.dupont@test.fr',
+    date_inscription: '2024-01-01',
     actif: 1,
     adresse_livraison: [],
-    utilisateur_role: [],
-  } as Utilisateur;
+  };
 
   const rolesMock: Role[] = [
-    {
-      id_role: 1,
-      nom_role: 'ADMIN',
-    },
-    {
-      id_role: 2,
-      nom_role: 'CLIENT',
-    },
-    {
-      id_role: 3,
-      nom_role: 'MODERATEUR',
-    },
+    { id_role: 1, nom_role: 'Admin' },
+    { id_role: 2, nom_role: 'Client' },
   ];
 
-  const utilisateurRolesMock: UtilisateurRole[] = [
-    {
-      utilisateur_id: 1,
-      role_id: 2,
-      role: {
-        id_role: 2,
-        nom_role: 'CLIENT',
-      },
-    } as UtilisateurRole,
-  ];
+  const utilisateurRolesMock = [
+    { utilisateur_id: 1, role_id: 1 },
+  ] as UtilisateurRole[];
+
+  const utilisateurServiceMock = {
+    getUtilisateurById: vi.fn(),
+  };
+
+  const roleServiceMock = {
+    getRoles: vi.fn(),
+  };
+
+  const utilisateurRoleServiceMock = {
+    getUtilisateurRoles: vi.fn(),
+    getRoleIdsDepuisUtilisateurRoles: vi.fn(),
+    getNomComplet: vi.fn(),
+    isRoleCoche: vi.fn(),
+    ajouterRoleId: vi.fn(),
+    retirerRoleId: vi.fn(),
+    construireUtilisateurRoleUpdateInput: vi.fn(),
+    updateUtilisateurRoles: vi.fn(),
+    getMessageErreurAucunRole: vi.fn(),
+    getMessageErreurModification: vi.fn(),
+  };
+
+  const routerMock = {
+    navigate: vi.fn(),
+  };
 
   beforeEach(async () => {
-    utilisateurServiceMock = {
-      getUtilisateurById: vi.fn().mockResolvedValue(utilisateurMock),
-    };
-
-    roleServiceMock = {
-      getRoles: vi.fn().mockResolvedValue(rolesMock),
-      getUtilisateurRoles: vi.fn().mockResolvedValue(utilisateurRolesMock),
-      updateUtilisateurRoles: vi.fn().mockResolvedValue(undefined),
-    };
+    vi.clearAllMocks();
 
     await TestBed.configureTestingModule({
       imports: [UtilisateurRolesComponent],
       providers: [
-        provideRouter([]),
         { provide: UtilisateurService, useValue: utilisateurServiceMock },
         { provide: RoleService, useValue: roleServiceMock },
+        { provide: UtilisateurRoleService, useValue: utilisateurRoleServiceMock },
+        { provide: Router, useValue: routerMock },
       ],
     }).compileComponents();
 
-    router = TestBed.inject(Router);
     fixture = TestBed.createComponent(UtilisateurRolesComponent);
     component = fixture.componentInstance;
   });
@@ -93,16 +79,20 @@ describe('UtilisateurRolesComponent', () => {
   it('devrait charger l’utilisateur, les rôles et les rôles cochés', async () => {
     fixture.componentRef.setInput('id', '1');
 
+    utilisateurServiceMock.getUtilisateurById.mockResolvedValue(utilisateurMock);
+    roleServiceMock.getRoles.mockResolvedValue(rolesMock);
+    utilisateurRoleServiceMock.getUtilisateurRoles.mockResolvedValue(utilisateurRolesMock);
+    utilisateurRoleServiceMock.getRoleIdsDepuisUtilisateurRoles.mockReturnValue([1]);
+
     await component.chargerDonnees();
 
     expect(utilisateurServiceMock.getUtilisateurById).toHaveBeenCalledWith(1);
-    expect(roleServiceMock.getRoles).toHaveBeenCalled();
-    expect(roleServiceMock.getUtilisateurRoles).toHaveBeenCalledWith(1);
-
+    expect(roleServiceMock.getRoles).toHaveBeenCalledOnce();
+    expect(utilisateurRoleServiceMock.getUtilisateurRoles).toHaveBeenCalledWith(1);
     expect(component.utilisateur()).toEqual(utilisateurMock);
     expect(component.roles()).toEqual(rolesMock);
     expect(component.utilisateurRoles()).toEqual(utilisateurRolesMock);
-    expect(component.rolesForm.controls.roles_ids.value).toEqual([2]);
+    expect(component.rolesForm.controls.roles_ids.value).toEqual([1]);
     expect(component.message()).toBe('');
     expect(component.isLoading()).toBe(false);
   });
@@ -118,18 +108,24 @@ describe('UtilisateurRolesComponent', () => {
   });
 
   it('devrait afficher un message si l’utilisateur est introuvable', async () => {
-    utilisateurServiceMock.getUtilisateurById.mockResolvedValue(null);
     fixture.componentRef.setInput('id', '1');
+
+    utilisateurServiceMock.getUtilisateurById.mockResolvedValue(null);
+    roleServiceMock.getRoles.mockResolvedValue(rolesMock);
+    utilisateurRoleServiceMock.getUtilisateurRoles.mockResolvedValue([]);
 
     await component.chargerDonnees();
 
     expect(component.message()).toBe('Utilisateur introuvable.');
+    expect(component.utilisateur()).toBeNull();
     expect(component.isLoading()).toBe(false);
   });
 
   it('devrait afficher un message si le chargement des rôles échoue', async () => {
-    roleServiceMock.getRoles.mockRejectedValue(new Error('Erreur test'));
     fixture.componentRef.setInput('id', '1');
+
+    utilisateurServiceMock.getUtilisateurById.mockResolvedValue(utilisateurMock);
+    roleServiceMock.getRoles.mockRejectedValue(new Error('Erreur'));
 
     await component.chargerDonnees();
 
@@ -137,97 +133,98 @@ describe('UtilisateurRolesComponent', () => {
     expect(component.isLoading()).toBe(false);
   });
 
-  it('devrait retourner le nom complet de l’utilisateur', () => {
+  it('devrait retourner le nom complet de l’utilisateur via le service', () => {
     component.utilisateur.set(utilisateurMock);
+    utilisateurRoleServiceMock.getNomComplet.mockReturnValue('Jean Dupont');
 
-    expect(component.getNomComplet()).toBe('Marie Dupont');
+    expect(component.getNomComplet()).toBe('Jean Dupont');
+    expect(utilisateurRoleServiceMock.getNomComplet).toHaveBeenCalledWith(utilisateurMock);
   });
 
-  it('devrait retourner une chaîne vide si aucun utilisateur n’est chargé', () => {
-    component.utilisateur.set(null);
+  it('devrait indiquer qu’un rôle est coché via le service', () => {
+    component.rolesForm.controls.roles_ids.setValue([1]);
+    utilisateurRoleServiceMock.isRoleCoche.mockReturnValue(true);
 
-    expect(component.getNomComplet()).toBe('');
+    expect(component.isRoleCoche(rolesMock[0])).toBe(true);
+    expect(utilisateurRoleServiceMock.isRoleCoche).toHaveBeenCalledWith(rolesMock[0], [1]);
   });
 
-  it('devrait indiquer qu’un rôle est coché', () => {
-    component.rolesForm.controls.roles_ids.setValue([2]);
+  it('devrait ajouter un rôle coché via le service', () => {
+    component.rolesForm.controls.roles_ids.setValue([1]);
+    utilisateurRoleServiceMock.ajouterRoleId.mockReturnValue([1, 2]);
 
-    expect(component.isRoleCoche(rolesMock[1])).toBe(true);
-  });
-
-  it('devrait indiquer qu’un rôle n’est pas coché', () => {
-    component.rolesForm.controls.roles_ids.setValue([2]);
-
-    expect(component.isRoleCoche(rolesMock[0])).toBe(false);
-  });
-
-  it('devrait ajouter un rôle coché', () => {
-    component.rolesForm.controls.roles_ids.setValue([2]);
-
-    const event = {
+    component.modifierRole(rolesMock[1], {
       target: { checked: true },
-    } as unknown as Event;
+    } as unknown as Event);
 
-    component.modifierRole(rolesMock[0], event);
-
-    expect(component.rolesForm.controls.roles_ids.value).toEqual([2, 1]);
+    expect(utilisateurRoleServiceMock.ajouterRoleId).toHaveBeenCalledWith([1], rolesMock[1]);
+    expect(component.rolesForm.controls.roles_ids.value).toEqual([1, 2]);
   });
 
-  it('devrait retirer un rôle décoché', () => {
+  it('devrait retirer un rôle décoché via le service', () => {
     component.rolesForm.controls.roles_ids.setValue([1, 2]);
+    utilisateurRoleServiceMock.retirerRoleId.mockReturnValue([1]);
 
-    const event = {
+    component.modifierRole(rolesMock[1], {
       target: { checked: false },
-    } as unknown as Event;
+    } as unknown as Event);
 
-    component.modifierRole(rolesMock[0], event);
-
-    expect(component.rolesForm.controls.roles_ids.value).toEqual([2]);
+    expect(utilisateurRoleServiceMock.retirerRoleId).toHaveBeenCalledWith([1, 2], rolesMock[1]);
+    expect(component.rolesForm.controls.roles_ids.value).toEqual([1]);
   });
 
   it('devrait afficher un message si aucun utilisateur n’est chargé à l’enregistrement', async () => {
-    component.rolesForm.controls.roles_ids.setValue([1]);
-
     await component.enregistrer();
 
     expect(component.message()).toBe('Utilisateur introuvable.');
-    expect(roleServiceMock.updateUtilisateurRoles).not.toHaveBeenCalled();
   });
 
   it('devrait refuser l’enregistrement si aucun rôle n’est sélectionné', async () => {
     component.utilisateur.set(utilisateurMock);
     component.rolesForm.controls.roles_ids.setValue([]);
+    utilisateurRoleServiceMock.getMessageErreurAucunRole.mockReturnValue('Veuillez sélectionner au moins un rôle.');
 
     await component.enregistrer();
 
-    expect(component.message()).toBe('Un utilisateur doit avoir au moins un rôle.');
-    expect(roleServiceMock.updateUtilisateurRoles).not.toHaveBeenCalled();
+    expect(component.message()).toBe('Veuillez sélectionner au moins un rôle.');
+    expect(utilisateurRoleServiceMock.updateUtilisateurRoles).not.toHaveBeenCalled();
   });
 
   it('devrait enregistrer les rôles et rediriger vers le détail utilisateur', async () => {
-    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    const donnees = {
+      utilisateur_id: 1,
+      roles_ids: [1, 2],
+    };
 
     component.utilisateur.set(utilisateurMock);
     component.rolesForm.controls.roles_ids.setValue([1, 2]);
 
+    utilisateurRoleServiceMock.construireUtilisateurRoleUpdateInput.mockReturnValue(donnees);
+    utilisateurRoleServiceMock.updateUtilisateurRoles.mockResolvedValue(undefined);
+    routerMock.navigate.mockResolvedValue(true);
+
     await component.enregistrer();
 
-    expect(roleServiceMock.updateUtilisateurRoles).toHaveBeenCalledWith({
-      utilisateur_id: 1,
-      roles_ids: [1, 2],
-    });
-
-    expect(navigateSpy).toHaveBeenCalledWith(['/utilisateurs', 1]);
+    expect(utilisateurRoleServiceMock.construireUtilisateurRoleUpdateInput).toHaveBeenCalledWith(1, [1, 2]);
+    expect(utilisateurRoleServiceMock.updateUtilisateurRoles).toHaveBeenCalledWith(donnees);
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/utilisateurs', 1]);
   });
 
   it('devrait afficher un message si l’enregistrement échoue', async () => {
-    roleServiceMock.updateUtilisateurRoles.mockRejectedValue(new Error('Erreur test'));
-
     component.utilisateur.set(utilisateurMock);
     component.rolesForm.controls.roles_ids.setValue([1]);
 
+    utilisateurRoleServiceMock.construireUtilisateurRoleUpdateInput.mockReturnValue({
+      utilisateur_id: 1,
+      roles_ids: [1],
+    });
+    utilisateurRoleServiceMock.updateUtilisateurRoles.mockRejectedValue(new Error('Erreur'));
+    utilisateurRoleServiceMock.getMessageErreurModification.mockReturnValue(
+      'Erreur pendant la modification des rôles.',
+    );
+
     await component.enregistrer();
 
-    expect(component.message()).toBe('Une erreur technique est survenue pendant la modification des rôles.');
+    expect(component.message()).toBe('Erreur pendant la modification des rôles.');
   });
 });

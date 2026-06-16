@@ -15,7 +15,6 @@ import { AromateRepository } from '../repository/aromate.repository';
 import { VarieteRepository } from '../repository/variete.repository';
 import { ProprieteMedicinaleRepository } from '../repository/propriete-medicinale.repository';
 import { ProduitRepository } from '../repository/produit.repository';
-import { AvisRepository } from '../repository/avis.repository';
 import { UtilisateurRepository } from '../repository/utilisateur.repository';
 import { LocaliteRepository } from '../repository/localite.repository';
 import { AdresseLivraisonRepository } from '../repository/adresse-livraison.repository';
@@ -26,9 +25,9 @@ import { enregistrerAuthIpc } from '../ipc/auth.ipc';
 import { enregistrerCategorieIpc } from '../ipc/categorie.ipc';
 import { enregistrerEspeceIpc } from '../ipc/espece.ipc';
 import { enregistrerVarieteIpc } from '../ipc/variete.ipc';
+import { enregistrerAromateIpc } from '../ipc/aromate.ipc';
 import { enregistrerProprieteMedicinaleIpc } from '../ipc/propriete-medicinale.ipc';
 import { enregistrerProduitIpc } from '../ipc/produit.ipc';
-import { enregistrerAvisIpc } from '../ipc/avis.ipc';
 import { enregistrerUtilisateurIpc } from '../ipc/utilisateur.ipc';
 import { enregistrerLocaliteIpc } from '../ipc/localite.ipc';
 import { enregistrerAdresseLivraisonIpc } from '../ipc/adresse-livraison.ipc';
@@ -60,7 +59,7 @@ const authRepository = new AuthRepository(prisma);
 const categorieRepository = new CategorieRepository(prisma);
 const especeRepository = new EspeceRepository(prisma);
 const varieteRepository = new VarieteRepository(prisma);
-const aromateRepository = new AromateRepository();
+const aromateRepository = new AromateRepository(prisma);
 const proprieteMedicinaleRepository = new ProprieteMedicinaleRepository(prisma);
 const produitRepository = new ProduitRepository(prisma);
 const utilisateurRepository = new UtilisateurRepository(prisma);
@@ -68,12 +67,12 @@ const localiteRepository = new LocaliteRepository(prisma);
 const adresseLivraisonRepository = new AdresseLivraisonRepository(prisma);
 const roleRepository = new RoleRepository(prisma);
 const utilisateurRoleRepository = new UtilisateurRoleRepository(prisma);
-const avisRepository = new AvisRepository(prisma);
 
 enregistrerAuthIpc(authRepository);
 enregistrerCategorieIpc(categorieRepository);
 enregistrerEspeceIpc(especeRepository);
-enregistrerVarieteIpc(varieteRepository, aromateRepository);
+enregistrerVarieteIpc(varieteRepository);
+enregistrerAromateIpc(aromateRepository);
 enregistrerProprieteMedicinaleIpc(proprieteMedicinaleRepository);
 enregistrerProduitIpc(produitRepository);
 enregistrerUtilisateurIpc(utilisateurRepository);
@@ -81,13 +80,12 @@ enregistrerLocaliteIpc(localiteRepository);
 enregistrerAdresseLivraisonIpc(adresseLivraisonRepository);
 enregistrerRoleIpc(roleRepository);
 enregistrerUtilisateurRoleIpc(utilisateurRoleRepository);
-enregistrerAvisIpc(avisRepository);
 
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    width: 1920,
+    height: 1200,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,

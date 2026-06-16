@@ -1,0 +1,33 @@
+@if (utilisateur()) {
+  <a class="back-link" [routerLink]="['/utilisateurs', utilisateur()?.id_utilisateur]">← Détail de l'utilisateur</a>
+}
+@else {
+  <a class="back-link" routerLink="/utilisateurs">← Retour aux utilisateurs</a>
+}
+
+<h1>Supprimer une adresse</h1>
+
+@if (isLoading()) {
+  <p>Chargement de l’adresse...</p>
+}
+@else if (message() && !adresse()) {
+  <p class="message">{{ message() }}</p>
+}
+@else if (adresse()) {
+  <section class="delete-card">
+    <h2>{{ getAdresseComplete() }}</h2>
+
+    <p>{{ getLabelAdresseParDefaut() }}</p>
+
+    @if (message()) {
+      <p class="message-card">{{ message() }}</p>
+    }
+
+    <p>Cette adresse sera supprimée définitivement.</p>
+
+    <div class="actions">
+      <button type="button" class="delete-button" (click)="supprimerAdresse()">Supprimer</button>
+      <button type="button" class="cancel-button" (click)="annuler()">Annuler</button>
+    </div>
+  </section>
+}

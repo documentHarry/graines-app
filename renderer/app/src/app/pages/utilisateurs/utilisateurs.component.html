@@ -1,8 +1,6 @@
 <div class="page-header">
   <h2>Utilisateurs</h2>
-  @if (authService.hasRole('ADMIN')) {
-    <a class="add-link" routerLink="/utilisateurs/ajouter">Ajouter un utilisateur</a>
-  }
+  <a class="add-link" routerLink="/utilisateurs/ajouter">Ajouter un utilisateur</a>
 </div>
 
 @if (isLoading()) {

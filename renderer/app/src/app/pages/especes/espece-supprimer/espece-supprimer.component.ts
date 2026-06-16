@@ -9,6 +9,7 @@ import { EspeceService } from '../../../services/espece.service';
   templateUrl: './espece-supprimer.component.html',
   styleUrl: './espece-supprimer.component.css',
 })
+
 export class EspeceSupprimerComponent {
   private readonly especeService = inject(EspeceService);
   private readonly router = inject(Router);
@@ -43,7 +44,8 @@ export class EspeceSupprimerComponent {
       this.espece.set(espece);
       this.message.set('');
     }
-    catch {
+    catch (error) {
+      console.error('Erreur chargement espèce', { error, idEspece });
       this.message.set('Erreur pendant le chargement de l’espèce.');
     }
     finally {
@@ -52,7 +54,7 @@ export class EspeceSupprimerComponent {
   }
 
   getNombreVarietes(): number {
-    return this.espece()?._count?.variete ?? 0;
+    return this.especeService.getNombreVarietes(this.espece());
   }
 
   async supprimerEspece(): Promise<void> {
@@ -73,17 +75,8 @@ export class EspeceSupprimerComponent {
       await this.router.navigate(['/especes']);
     }
     catch (error) {
-      const message = String(error);
-
-      if (message.includes('ESPECE_HAS_VARIETES')) {
-        this.message.set(
-          'Cette espèce possède des variétés associées. Elle ne peut pas être supprimée.'
-        );
-        return;
-      }
-
-      console.error(error);
-      this.message.set('Une erreur est survenue pendant la suppression de l’espèce.');
+      console.error('Erreur suppression espèce', { error, espece });
+      this.message.set(this.especeService.getMessageErreurSuppression(error));
     }
   }
 

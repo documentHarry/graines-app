@@ -6,16 +6,16 @@
   </div>
 
   <label for="nomRecherche">Nom</label>
-  <input id="nomRecherche" type="text" placeholder="Rechercher par nom" [value]="nomRecherche()"
-  (input)="changerNomRecherche($event)">
+  <input id="nomRecherche" type="text" placeholder="Rechercher par nom"
+    [value]="nomRecherche()" (input)="changerNomRecherche($event)">
 
   <label for="prenomRecherche">Prénom</label>
-  <input id="prenomRecherche" type="text" placeholder="Rechercher par prénom" [value]="prenomRecherche()"
-  (input)="changerPrenomRecherche($event)">
+  <input id="prenomRecherche" type="text" placeholder="Rechercher par prénom"
+    [value]="prenomRecherche()" (input)="changerPrenomRecherche($event)">
 
   <label for="emailRecherche">Email</label>
-  <input id="emailRecherche" type="text" placeholder="Rechercher par email" [value]="emailRecherche()"
-  (input)="changerEmailRecherche($event)">
+  <input id="emailRecherche" type="text" placeholder="Rechercher par email" 
+    [value]="emailRecherche()" (input)="changerEmailRecherche($event)">
 
   <label for="filtreStatut">Statut</label>
   <select id="filtreStatut" [value]="statutRecherche()" (change)="changerStatutRecherche($event)">

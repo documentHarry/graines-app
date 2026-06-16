@@ -1,7 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { EspeceCreateInput } from '../../../types/electron';
 import { EspeceService } from '../../../services/espece.service';
 
 @Component({
@@ -10,6 +9,7 @@ import { EspeceService } from '../../../services/espece.service';
   templateUrl: './espece-ajouter.component.html',
   styleUrl: './espece-ajouter.component.css',
 })
+
 export class EspeceAjouterComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly especeService = inject(EspeceService);
@@ -29,27 +29,17 @@ export class EspeceAjouterComponent {
       return;
     }
 
-    const valeurFormulaire = this.especeForm.getRawValue();
-
-    const espece: EspeceCreateInput = {
-      nom_commun: valeurFormulaire.nom_commun?.trim() ?? '',
-      nom_scientifique: valeurFormulaire.nom_scientifique?.trim() ?? '',
-    };
+    const espece = this.especeService.construireEspeceCreateInput(
+      this.especeForm.getRawValue()
+    );
 
     try {
       await this.especeService.createEspece(espece);
       await this.router.navigate(['/especes']);
     }
     catch (error) {
-      const message = String(error);
-
-      if (message.includes('DUPLICATE_ESPECE')) {
-        this.message.set('Une espèce avec ce nom commun ou ce nom scientifique existe déjà.');
-        return;
-      }
-
-      console.error(error);
-      this.message.set('Une erreur technique est survenue pendant la création de l’espèce.');
+      console.error('Erreur création espèce', { error, formulaire: this.especeForm.getRawValue(), espece });
+      this.message.set(this.especeService.getMessageErreurCreation());
     }
   }
 }

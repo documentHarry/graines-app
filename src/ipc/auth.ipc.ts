@@ -4,8 +4,7 @@ import { verifierMotDePasse } from '../security/password-utils';
 import { AuthRepository } from '../repository/auth.repository';
 
 export function enregistrerAuthIpc(authRepository: AuthRepository): void {
-  ipcMain.handle('auth:login', async (_event,
-    identifiants: {
+  ipcMain.handle('auth:login', async (_event, identifiants: {
       email: string;
       mot_de_passe: string;
     }) => {
@@ -33,6 +32,7 @@ export function enregistrerAuthIpc(authRepository: AuthRepository): void {
           ),
         };
       } catch (error) {
+        console.error('Erreur connexion IPC', { error, email: identifiants.email });
         gererErreurPrisma(error, [METIER.LOGIN_INCORRECT], TECHNIQUES.AUTH_LOGIN_ERROR);
       }
     }

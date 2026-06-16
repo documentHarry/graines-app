@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Categorie, ProduitCreateInput, Variete } from '../../../types/electron';
+import { Categorie, Variete } from '../../../types/electron';
 import { CategorieService } from '../../../services/categorie.service';
 import { ProduitService } from '../../../services/produit.service';
 import { VarieteService } from '../../../services/variete.service';
@@ -46,7 +46,8 @@ export class ProduitAjouterComponent {
       this.varietes.set(varietes);
       this.message.set('');
     }
-    catch {
+    catch (error) {
+      console.error('Erreur chargement formulaire produit', { error });
       this.message.set('Erreur pendant le chargement du formulaire.');
     }
     finally {
@@ -61,30 +62,17 @@ export class ProduitAjouterComponent {
       return;
     }
 
-    const valeurFormulaire = this.produitForm.getRawValue();
-
-    const produit: ProduitCreateInput = {
-      intitule: valeurFormulaire.intitule?.trim() ?? '',
-      prix_unitaire: Number(valeurFormulaire.prix_unitaire),
-      quantite: Number(valeurFormulaire.quantite),
-      categorie_id: Number(valeurFormulaire.categorie_id),
-      variete_id: Number(valeurFormulaire.variete_id),
-    };
+    const produit = this.produitService.construireProduitCreateInput(
+      this.produitForm.getRawValue()
+    );
 
     try {
       await this.produitService.createProduit(produit);
       await this.router.navigate(['/produits']);
     }
     catch (error) {
-      const message = String(error);
-
-      if (message.includes('DUPLICATE_PRODUCT')) {
-        this.message.set('Un produit avec cet intitulé et cette variété existe déjà.');
-        return;
-      }
-
-      console.error(error);
-      this.message.set('Une erreur technique est survenue pendant la création du produit.');
+      console.error('Erreur création produit', { error, formulaire: this.produitForm.getRawValue(), produit });
+      this.message.set(this.produitService.getMessageErreurCreation());
     }
   }
 }

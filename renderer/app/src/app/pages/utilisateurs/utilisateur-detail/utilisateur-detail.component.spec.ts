@@ -1,78 +1,53 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { UtilisateurDetailComponent } from './utilisateur-detail.component';
 import { UtilisateurService } from '../../../services/utilisateur.service';
-import { LocaliteService } from '../../../services/localite.service';
-import { Utilisateur, Localite } from '../../../types/electron';
+import { AdresseLivraisonService } from '../../../services/adresse-livraison.service';
+import { Utilisateur } from '../../../types/electron';
 
 describe('UtilisateurDetailComponent', () => {
   let component: UtilisateurDetailComponent;
   let fixture: ComponentFixture<UtilisateurDetailComponent>;
 
-  let utilisateurServiceMock: {
-    getUtilisateurById: ReturnType<typeof vi.fn>;
-  };
-
-  let localiteServiceMock: {
-    getLocalites: ReturnType<typeof vi.fn>;
-  };
-
-  const localitesMock: Localite[] = [
-    {
-      id_localite: 1,
-      code_postal: '5000',
-      localite: 'Namur',
-    },
-  ];
-
   const utilisateurMock: Utilisateur = {
     id_utilisateur: 1,
     nom: 'Dupont',
-    prenom: 'Marie',
-    email: 'marie@example.com',
-    mot_de_passe: 'secret',
-    date_inscription: '2026-05-31 10:00:00',
+    prenom: 'Jean',
+    email: 'jean.dupont@test.fr',
+    date_inscription: '2024-01-01',
     actif: 1,
-    adresse_livraison: [
-      {
-        id_adresse: 1,
-        rue: 'Rue des Fleurs',
-        numero: '12',
-        par_defaut: 1,
-        utilisateur_id: 1,
-        localite_id: 1,
-        localite: localitesMock[0],
-      },
-    ],
-    utilisateur_role: [
-      {
-        utilisateur_id: 1,
-        role_id: 1,
-        role: {
-          id_role: 1,
-          nom_role: 'ADMIN',
-        },
-      },
-    ],
-  } as Utilisateur;
+    adresse_livraison: [],
+  };
+
+  const utilisateurServiceMock = {
+    getUtilisateurById: vi.fn(),
+    getStatutUtilisateur: vi.fn(),
+    getNomComplet: vi.fn(),
+    getRolesUtilisateur: vi.fn(),
+  };
+
+  const adresseLivraisonServiceMock = {
+    getAdresseComplete: vi.fn(),
+    getLabelAdresseParDefaut: vi.fn(),
+  };
 
   beforeEach(async () => {
-    utilisateurServiceMock = {
-      getUtilisateurById: vi.fn().mockResolvedValue(utilisateurMock),
-    };
-
-    localiteServiceMock = {
-      getLocalites: vi.fn().mockResolvedValue(localitesMock),
-    };
+    vi.clearAllMocks();
 
     await TestBed.configureTestingModule({
       imports: [UtilisateurDetailComponent],
       providers: [
         provideRouter([]),
-        { provide: UtilisateurService, useValue: utilisateurServiceMock },
-        { provide: LocaliteService, useValue: localiteServiceMock },
+        {
+          provide: UtilisateurService,
+          useValue: utilisateurServiceMock,
+        },
+        {
+          provide: AdresseLivraisonService,
+          useValue: adresseLivraisonServiceMock,
+        },
       ],
     }).compileComponents();
 
@@ -84,8 +59,9 @@ describe('UtilisateurDetailComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('devrait charger l’utilisateur', async () => {
+  it('devrait charger un utilisateur valide', async () => {
     fixture.componentRef.setInput('id', '1');
+    utilisateurServiceMock.getUtilisateurById.mockResolvedValue(utilisateurMock);
 
     await component.chargerUtilisateur();
 
@@ -95,36 +71,30 @@ describe('UtilisateurDetailComponent', () => {
     expect(component.isLoading()).toBe(false);
   });
 
-  it('devrait charger les localités', async () => {
-    await component.chargerLocalites();
-
-    expect(localiteServiceMock.getLocalites).toHaveBeenCalled();
-    expect(component.localites()).toEqual(localitesMock);
-  });
-
-  it('devrait afficher un message si l’identifiant utilisateur est invalide', async () => {
+  it('devrait afficher un message si l’identifiant est invalide', async () => {
     fixture.componentRef.setInput('id', 'abc');
 
     await component.chargerUtilisateur();
 
+    expect(utilisateurServiceMock.getUtilisateurById).not.toHaveBeenCalled();
     expect(component.message()).toBe('Identifiant de l’utilisateur invalide.');
     expect(component.isLoading()).toBe(false);
-    expect(utilisateurServiceMock.getUtilisateurById).not.toHaveBeenCalled();
   });
 
   it('devrait afficher un message si l’utilisateur est introuvable', async () => {
-    utilisateurServiceMock.getUtilisateurById.mockResolvedValue(null);
     fixture.componentRef.setInput('id', '1');
+    utilisateurServiceMock.getUtilisateurById.mockResolvedValue(null);
 
     await component.chargerUtilisateur();
 
+    expect(component.utilisateur()).toBeNull();
     expect(component.message()).toBe('Utilisateur introuvable.');
     expect(component.isLoading()).toBe(false);
   });
 
-  it('devrait afficher un message si le chargement de l’utilisateur échoue', async () => {
-    utilisateurServiceMock.getUtilisateurById.mockRejectedValue(new Error('Erreur test'));
+  it('devrait afficher un message en cas d’erreur de chargement', async () => {
     fixture.componentRef.setInput('id', '1');
+    utilisateurServiceMock.getUtilisateurById.mockRejectedValue(new Error('Erreur'));
 
     await component.chargerUtilisateur();
 
@@ -132,74 +102,65 @@ describe('UtilisateurDetailComponent', () => {
     expect(component.isLoading()).toBe(false);
   });
 
-  it('devrait afficher un message si le chargement des localités échoue', async () => {
-    localiteServiceMock.getLocalites.mockRejectedValue(new Error('Erreur test'));
+  it('devrait appeler chargerUtilisateur au ngOnInit', async () => {
+    fixture.componentRef.setInput('id', '1');
+    utilisateurServiceMock.getUtilisateurById.mockResolvedValue(utilisateurMock);
 
-    await component.chargerLocalites();
+    await component.ngOnInit();
 
-    expect(component.message()).toBe('Erreur pendant le chargement des localités.');
+    expect(utilisateurServiceMock.getUtilisateurById).toHaveBeenCalledWith(1);
   });
 
-  it('devrait retourner le statut Actif', () => {
+  it('devrait retourner le statut utilisateur depuis le service', () => {
     component.utilisateur.set(utilisateurMock);
+    utilisateurServiceMock.getStatutUtilisateur.mockReturnValue('Actif');
 
     expect(component.getStatutUtilisateur()).toBe('Actif');
+    expect(utilisateurServiceMock.getStatutUtilisateur).toHaveBeenCalledWith(utilisateurMock);
   });
 
-  it('devrait retourner le statut Inactif', () => {
+  it('devrait retourner le nom complet depuis le service', () => {
+    component.utilisateur.set(utilisateurMock);
+    utilisateurServiceMock.getNomComplet.mockReturnValue('Jean Dupont');
+
+    expect(component.getNomComplet()).toBe('Jean Dupont');
+    expect(utilisateurServiceMock.getNomComplet).toHaveBeenCalledWith(utilisateurMock);
+  });
+
+  it('devrait retourner les rôles utilisateur depuis le service', () => {
+    component.utilisateur.set(utilisateurMock);
+    utilisateurServiceMock.getRolesUtilisateur.mockReturnValue('Admin');
+
+    expect(component.getRolesUtilisateur()).toBe('Admin');
+    expect(utilisateurServiceMock.getRolesUtilisateur).toHaveBeenCalledWith(utilisateurMock);
+  });
+
+  it('devrait retourner les adresses de livraison de l’utilisateur', () => {
+    const adresse = {
+      id_adresse: 1,
+      rue: 'Rue des Lilas',
+      numero: '10',
+      par_defaut: 1,
+      utilisateur_id: 1,
+      localite_id: 1,
+      localite: {
+        id_localite: 1,
+        code_postal: '75000',
+        localite: 'Paris',
+      },
+    };
+
     component.utilisateur.set({
       ...utilisateurMock,
-      actif: 0,
+      adresse_livraison: [adresse],
     });
 
-    expect(component.getStatutUtilisateur()).toBe('Inactif');
+    expect(component.getAdresses()).toEqual([adresse]);
   });
 
-  it('devrait retourner le nom complet', () => {
-    component.utilisateur.set(utilisateurMock);
-
-    expect(component.getNomComplet()).toBe('Marie Dupont');
-  });
-
-  it('devrait retourner une chaîne vide si aucun utilisateur n’est chargé', () => {
+  it('devrait retourner une liste vide si aucun utilisateur n’est chargé', () => {
     component.utilisateur.set(null);
 
-    expect(component.getNomComplet()).toBe('');
-  });
-
-  it('devrait retourner les adresses de livraison', () => {
-    component.utilisateur.set(utilisateurMock);
-
-    expect(component.getAdresses()).toEqual(utilisateurMock.adresse_livraison);
-  });
-
-  it('devrait retourner une liste vide si aucune adresse n’existe', () => {
-    component.utilisateur.set({
-      ...utilisateurMock,
-      adresse_livraison: [],
-    });
-
     expect(component.getAdresses()).toEqual([]);
-  });
-
-  it('devrait retourner les rôles de l’utilisateur', () => {
-    component.utilisateur.set(utilisateurMock);
-
-    expect(component.getRolesUtilisateur()).toBe('ADMIN');
-  });
-
-  it('devrait retourner Aucun rôle si l’utilisateur n’a pas de rôle', () => {
-    component.utilisateur.set({
-      ...utilisateurMock,
-      utilisateur_role: [],
-    });
-
-    expect(component.getRolesUtilisateur()).toBe('Aucun rôle');
-  });
-
-  it('devrait mettre à jour le message avec une erreur d’adresse', () => {
-    component.afficherErreurAdresse('Erreur adresse test');
-
-    expect(component.message()).toBe('Erreur adresse test');
   });
 });

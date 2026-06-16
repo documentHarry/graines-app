@@ -55,7 +55,6 @@ describe('App', () => {
     expect(element.textContent).toContain('Variétés');
 
     expect(element.textContent).not.toContain('Utilisateurs');
-    expect(element.textContent).not.toContain('Modération des avis');
     expect(element.textContent).not.toContain('Propriétés médicinales');
   });
 

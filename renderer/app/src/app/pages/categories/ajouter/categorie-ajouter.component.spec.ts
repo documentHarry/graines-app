@@ -4,18 +4,38 @@ import { vi } from 'vitest';
 
 import { CategorieAjouterComponent } from './categorie-ajouter.component';
 import { CategorieService } from '../../../services/categorie.service';
+import { CategorieCreateInput } from '../../../types/electron';
 
 describe('CategorieAjouterComponent', () => {
   let component: CategorieAjouterComponent;
   let fixture: ComponentFixture<CategorieAjouterComponent>;
+
   let categorieServiceMock: {
     createCategorie: ReturnType<typeof vi.fn>;
+    construireCategorieCreateInput: ReturnType<typeof vi.fn>;
+    getMessageErreurCreation: ReturnType<typeof vi.fn>;
   };
+
   let router: Router;
 
   beforeEach(async () => {
     categorieServiceMock = {
       createCategorie: vi.fn().mockResolvedValue(undefined),
+      construireCategorieCreateInput: vi.fn().mockImplementation((valeurFormulaire) => {
+        return {
+          nom_categorie: valeurFormulaire.nom_categorie?.trim() ?? '',
+          descriptif: valeurFormulaire.descriptif?.trim() || null,
+        } as CategorieCreateInput;
+      }),
+      getMessageErreurCreation: vi.fn().mockImplementation((error: unknown) => {
+        const message = String(error);
+
+        if (message.includes('DUPLICATE_CATEGORY')) {
+          return 'Une catégorie avec ce nom existe déjà.';
+        }
+
+        return 'Une erreur technique est survenue pendant la création de la catégorie.';
+      }),
     };
 
     await TestBed.configureTestingModule({
@@ -29,6 +49,10 @@ describe('CategorieAjouterComponent', () => {
     router = TestBed.inject(Router);
     fixture = TestBed.createComponent(CategorieAjouterComponent);
     component = fixture.componentInstance;
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   it('devrait créer le composant', () => {
@@ -71,10 +95,11 @@ describe('CategorieAjouterComponent', () => {
     await component.enregistrer();
 
     expect(component.message()).toBe('Veuillez remplir les champs obligatoires.');
+    expect(categorieServiceMock.construireCategorieCreateInput).not.toHaveBeenCalled();
     expect(categorieServiceMock.createCategorie).not.toHaveBeenCalled();
   });
 
-  it('devrait créer une catégorie et rediriger vers la liste', async () => {
+  it('devrait construire puis créer une catégorie et rediriger vers la liste', async () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     component.categorieForm.patchValue({
@@ -84,6 +109,11 @@ describe('CategorieAjouterComponent', () => {
 
     await component.enregistrer();
 
+    expect(categorieServiceMock.construireCategorieCreateInput).toHaveBeenCalledWith({
+      nom_categorie: ' Aromates ',
+      descriptif: ' Plantes aromatiques ',
+    });
+
     expect(categorieServiceMock.createCategorie).toHaveBeenCalledWith({
       nom_categorie: 'Aromates',
       descriptif: 'Plantes aromatiques',
@@ -92,7 +122,7 @@ describe('CategorieAjouterComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/categories']);
   });
 
-  it('devrait convertir un descriptif vide en null', async () => {
+  it('devrait convertir un descriptif vide en null via le service', async () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     component.categorieForm.patchValue({
@@ -101,6 +131,11 @@ describe('CategorieAjouterComponent', () => {
     });
 
     await component.enregistrer();
+
+    expect(categorieServiceMock.construireCategorieCreateInput).toHaveBeenCalledWith({
+      nom_categorie: 'Aromates',
+      descriptif: '   ',
+    });
 
     expect(categorieServiceMock.createCategorie).toHaveBeenCalledWith({
       nom_categorie: 'Aromates',
@@ -120,11 +155,15 @@ describe('CategorieAjouterComponent', () => {
 
     await component.enregistrer();
 
-    expect(component.message()).toBe('Une catégorie avec ce nom existe déjà.');
+    expect(categorieServiceMock.getMessageErreurCreation).toHaveBeenCalled();
+    expect(component.message()).toBe(
+      'Une erreur technique est survenue pendant la création de la catégorie.'
+    );
   });
 
   it('devrait afficher un message si la création échoue techniquement', async () => {
-    categorieServiceMock.createCategorie.mockRejectedValue(new Error('Erreur technique'));
+    const error = new Error('Erreur technique');
+    categorieServiceMock.createCategorie.mockRejectedValue(error);
 
     component.categorieForm.patchValue({
       nom_categorie: 'Aromates',
@@ -133,6 +172,9 @@ describe('CategorieAjouterComponent', () => {
 
     await component.enregistrer();
 
-    expect(component.message()).toBe('Une erreur technique est survenue pendant la création de la catégorie.');
+    expect(categorieServiceMock.getMessageErreurCreation).toHaveBeenCalled();
+    expect(component.message()).toBe(
+      'Une erreur technique est survenue pendant la création de la catégorie.'
+    );
   });
 });

@@ -70,11 +70,10 @@ describe('NavigationComponent', () => {
     const element: HTMLElement = fixture.nativeElement;
 
     expect(element.textContent).not.toContain('Propriétés médicinales');
-    expect(element.textContent).not.toContain('Modération des avis');
     expect(element.textContent).not.toContain('Utilisateurs');
   });
 
-  it('devrait afficher les initiales de l’utilisateur connecté', () => {
+  it('devrait retourner les initiales de l’utilisateur', () => {
     const utilisateur: UtilisateurConnecte = {
       id_utilisateur: 1,
       prenom: 'Marie',
@@ -83,15 +82,9 @@ describe('NavigationComponent', () => {
       roles: ['CLIENT'],
     };
 
-    authServiceMock.isLoggedIn.mockReturnValue(true);
     authServiceMock.getUtilisateur.mockReturnValue(utilisateur);
 
-    fixture.detectChanges();
-
-    const element: HTMLElement = fixture.nativeElement;
-
-    expect(element.textContent).toContain('M. D.');
-    expect(element.textContent).toContain('Déconnexion');
+    expect(component.getInitiales()).toBe('M. D.');
   });
 
   it('devrait afficher Propriétés médicinales pour un gestionnaire catalogue', () => {
@@ -107,19 +100,6 @@ describe('NavigationComponent', () => {
     expect(element.textContent).toContain('Propriétés médicinales');
   });
 
-  it('devrait afficher Modération des avis pour un modérateur', () => {
-    authServiceMock.isLoggedIn.mockReturnValue(true);
-    authServiceMock.hasAnyRole.mockImplementation((roles: string[]) => {
-      return roles.includes('MODERATEUR');
-    });
-
-    fixture.detectChanges();
-
-    const element: HTMLElement = fixture.nativeElement;
-
-    expect(element.textContent).toContain('Modération des avis');
-  });
-
   it('devrait afficher Utilisateurs pour un administrateur', () => {
     authServiceMock.isLoggedIn.mockReturnValue(true);
     authServiceMock.hasRole.mockImplementation((role: string) => {
@@ -133,12 +113,18 @@ describe('NavigationComponent', () => {
     expect(element.textContent).toContain('Utilisateurs');
   });
 
-  it('devrait déconnecter l’utilisateur et rediriger vers la connexion', async () => {
+  it('devrait déconnecter l’utilisateur et rediriger vers la connexion', () => {
     const navigateSpy = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
 
     component.deconnexion();
 
     expect(authServiceMock.logout).toHaveBeenCalled();
     expect(navigateSpy).toHaveBeenCalledWith('/connexion');
+  });
+
+  it('devrait retourner une chaîne vide si aucun utilisateur n’est connecté', () => {
+    authServiceMock.getUtilisateur.mockReturnValue(null);
+
+    expect(component.getInitiales()).toBe('');
   });
 });

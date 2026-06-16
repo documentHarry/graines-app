@@ -9,6 +9,7 @@
   <a routerLink="/categories" routerLinkActive="active">Catégories</a>
   <a routerLink="/especes" routerLinkActive="active">Espèces</a>
   <a routerLink="/varietes" routerLinkActive="active">Variétés</a>
+  <a routerLink="/aromates" routerLinkActive="active">Aromates</a>
 
   @if (authService.hasAnyRole(['GESTIONNAIRE_CATALOGUE', 'ADMIN'])) {
     <a routerLink="/proprietes-medicinales" routerLinkActive="active">Propriétés médicinales</a>
@@ -16,11 +17,8 @@
 
   <a routerLink="/produits" routerLinkActive="active">Produits</a>
 
-  @if (authService.hasAnyRole(['MODERATEUR', 'ADMIN'])) {
-    <a routerLink="/avis" routerLinkActive="active">Modération des avis</a>
-  }
-
   @if (authService.hasRole('ADMIN')) {
     <a routerLink="/utilisateurs" routerLinkActive="active">Utilisateurs</a>
+    <a routerLink="/roles" routerLinkActive="active">Roles</a>
   }
 </nav>

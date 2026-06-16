@@ -138,17 +138,3 @@ CREATE TABLE IF NOT EXISTS produit (
         ON DELETE RESTRICT
         ON UPDATE NO ACTION
 );
-
-CREATE TABLE IF NOT EXISTS avis (
-    id_avis INTEGER PRIMARY KEY AUTOINCREMENT,
-    note INTEGER DEFAULT 5 CHECK(note BETWEEN 1 AND 10),
-    titre TEXT,
-    commentaire TEXT,
-    date_depot TEXT DEFAULT CURRENT_TIMESTAMP,
-    statut TEXT DEFAULT 'nouveau' CHECK(statut IN ('nouveau', 'modifié', 'supprimé')),
-    nombre_jaime INTEGER DEFAULT 0 CHECK(nombre_jaime >= 0),
-    utilisateur_id INTEGER NOT NULL,
-    produit_id INTEGER NOT NULL,
-    FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id_utilisateur) ON DELETE CASCADE,
-    FOREIGN KEY (produit_id) REFERENCES produit(id_produit) ON DELETE CASCADE
-);

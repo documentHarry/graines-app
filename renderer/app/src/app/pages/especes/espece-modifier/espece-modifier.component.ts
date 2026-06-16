@@ -1,7 +1,7 @@
 import { Component, inject, input, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Espece, EspeceUpdateInput } from '../../../types/electron';
+import { Espece } from '../../../types/electron';
 import { EspeceService } from '../../../services/espece.service';
 
 @Component({
@@ -10,6 +10,7 @@ import { EspeceService } from '../../../services/espece.service';
   templateUrl: './espece-modifier.component.html',
   styleUrl: './espece-modifier.component.css',
 })
+
 export class EspeceModifierComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly especeService = inject(EspeceService);
@@ -56,7 +57,8 @@ export class EspeceModifierComponent {
 
       this.message.set('');
     }
-    catch {
+    catch (error) {
+      console.error('Erreur chargement espèce', { error, idEspece });
       this.message.set('Erreur pendant le chargement de l’espèce.');
     }
     finally {
@@ -71,28 +73,18 @@ export class EspeceModifierComponent {
       return;
     }
 
-    const valeurFormulaire = this.especeForm.getRawValue();
-
-    const espece: EspeceUpdateInput = {
-      id_espece: this.espece()!.id_espece,
-      nom_commun: valeurFormulaire.nom_commun?.trim() ?? '',
-      nom_scientifique: valeurFormulaire.nom_scientifique?.trim() ?? '',
-    };
+    const espece = this.especeService.construireEspeceUpdateInput(
+      this.espece()!.id_espece,
+      this.especeForm.getRawValue()
+    );
 
     try {
       await this.especeService.updateEspece(espece);
       await this.router.navigate(['/especes']);
     }
     catch (error) {
-      const message = String(error);
-
-      if (message.includes('DUPLICATE_ESPECE')) {
-        this.message.set('Une espèce avec ce nom commun ou ce nom scientifique existe déjà.');
-        return;
-      }
-
-      console.error(error);
-      this.message.set('Une erreur technique est survenue pendant la modification de l’espèce.');
+      console.error('Erreur modification espèce', { error, formulaire: this.especeForm.getRawValue(), espece });
+      this.message.set(this.especeService.getMessageErreurModification());
     }
   }
 }

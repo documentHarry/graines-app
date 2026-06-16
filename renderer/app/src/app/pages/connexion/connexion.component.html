@@ -11,10 +11,10 @@
   </div>
 
   <div>
-    <label for="motDePasse">Mot de passe</label>
-    <input id="motDePasse" type="password" formControlName="motDePasse" required>
+    <label for="mot_de_passe">Mot de passe</label>
+    <input id="mot_de_passe" type="password" formControlName="mot_de_passe" required>
 
-    @if (connexionForm.controls.motDePasse.invalid && connexionForm.controls.motDePasse.touched) {
+    @if (connexionForm.controls.mot_de_passe.invalid && connexionForm.controls.mot_de_passe.touched) {
       <p class="erreur">Le mot de passe est obligatoire.</p>
     }
   </div>

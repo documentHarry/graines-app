@@ -24,6 +24,11 @@ describe('ProprieteMedicinaleService', () => {
     nom_propriete: 'Digestive',
   };
 
+  const proprietesMock: ProprieteMedicinale[] = [
+    { id_propriete: 1, nom_propriete: 'Digestive' },
+    { id_propriete: 2, nom_propriete: 'Antioxydante' },
+  ];
+
   beforeEach(() => {
     apiMock = {
       getProprietesMedicinales: vi.fn().mockResolvedValue([proprieteMock]),
@@ -89,5 +94,50 @@ describe('ProprieteMedicinaleService', () => {
     expect(electronServiceMock.getApi).toHaveBeenCalled();
     expect(apiMock.deleteProprieteMedicinale).toHaveBeenCalledWith(1);
     expect(result).toEqual(proprieteMock);
+  });
+
+  it('devrait construire un input de création', () => {
+    expect(service.construireProprieteMedicinaleCreateInput({
+      nom_propriete: ' Digestive ',
+    })).toEqual({
+      nom_propriete: 'Digestive',
+    });
+  });
+
+  it('devrait construire un input de modification', () => {
+    expect(service.construireProprieteMedicinaleUpdateInput(1, {
+      nom_propriete: ' Digestive modifiée ',
+    })).toEqual({
+      id_propriete: 1,
+      nom_propriete: 'Digestive modifiée',
+    });
+  });
+
+  it('devrait filtrer les propriétés médicinales', () => {
+    expect(service.filtrerProprietesMedicinales(proprietesMock, 'anti')).toEqual([
+      proprietesMock[1],
+    ]);
+  });
+
+  it('devrait retourner toutes les propriétés si la recherche est vide', () => {
+    expect(service.filtrerProprietesMedicinales(proprietesMock, '')).toEqual(proprietesMock);
+  });
+
+  it('devrait nettoyer le nom de la propriété', () => {
+    expect(service.getNomProprieteNettoye({
+      nom_propriete: ' Digestive ',
+    })).toBe('Digestive');
+  });
+
+  it('devrait retourner le message d’erreur d’enregistrement', () => {
+    expect(service.getMessageErreurEnregistrement()).toBe(
+      'Erreur pendant l’enregistrement de la propriété médicinale.'
+    );
+  });
+
+  it('devrait retourner le message d’erreur de suppression', () => {
+    expect(service.getMessageErreurSuppression()).toBe(
+      'Erreur pendant la suppression de la propriété médicinale.'
+    );
   });
 });

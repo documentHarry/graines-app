@@ -9,10 +9,15 @@ import { Utilisateur } from '../../../types/electron';
 describe('UtilisateurSupprimerComponent', () => {
   let component: UtilisateurSupprimerComponent;
   let fixture: ComponentFixture<UtilisateurSupprimerComponent>;
+
   let utilisateurServiceMock: {
     getUtilisateurById: ReturnType<typeof vi.fn>;
     deleteUtilisateur: ReturnType<typeof vi.fn>;
+    getNomComplet: ReturnType<typeof vi.fn>;
+    getNombreAdresses: ReturnType<typeof vi.fn>;
+    getMessageErreurSuppression: ReturnType<typeof vi.fn>;
   };
+
   let router: Router;
 
   const utilisateurMock: Utilisateur = {
@@ -45,6 +50,22 @@ describe('UtilisateurSupprimerComponent', () => {
     utilisateurServiceMock = {
       getUtilisateurById: vi.fn().mockResolvedValue(utilisateurMock),
       deleteUtilisateur: vi.fn().mockResolvedValue(undefined),
+
+      getNomComplet: vi.fn().mockImplementation((utilisateur: Utilisateur | null) => {
+        if (!utilisateur) {
+          return '';
+        }
+
+        return `${utilisateur.prenom} ${utilisateur.nom}`;
+      }),
+
+      getNombreAdresses: vi.fn().mockImplementation((utilisateur: Utilisateur | null) => {
+        return utilisateur?.adresse_livraison?.length ?? 0;
+      }),
+
+      getMessageErreurSuppression: vi.fn().mockReturnValue(
+        'Une erreur est survenue pendant la suppression de l’utilisateur.'
+      ),
     };
 
     await TestBed.configureTestingModule({
@@ -58,6 +79,11 @@ describe('UtilisateurSupprimerComponent', () => {
     router = TestBed.inject(Router);
     fixture = TestBed.createComponent(UtilisateurSupprimerComponent);
     component = fixture.componentInstance;
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
   it('devrait créer le composant', () => {
@@ -105,31 +131,37 @@ describe('UtilisateurSupprimerComponent', () => {
     expect(component.isLoading()).toBe(false);
   });
 
-  it('devrait retourner le nom complet', () => {
+  it('devrait retourner le nom complet via le service', () => {
     component.utilisateur.set(utilisateurMock);
 
     expect(component.getNomComplet()).toBe('Marie Dupont');
+    expect(utilisateurServiceMock.getNomComplet).toHaveBeenCalledWith(utilisateurMock);
   });
 
-  it('devrait retourner une chaîne vide si aucun utilisateur n’est chargé', () => {
+  it('devrait retourner une chaîne vide si aucun utilisateur n’est chargé via le service', () => {
     component.utilisateur.set(null);
 
     expect(component.getNomComplet()).toBe('');
+    expect(utilisateurServiceMock.getNomComplet).toHaveBeenCalledWith(null);
   });
 
-  it('devrait retourner le nombre d’adresses', () => {
+  it('devrait retourner le nombre d’adresses via le service', () => {
     component.utilisateur.set(utilisateurMock);
 
     expect(component.getNombreAdresses()).toBe(1);
+    expect(utilisateurServiceMock.getNombreAdresses).toHaveBeenCalledWith(utilisateurMock);
   });
 
-  it('devrait retourner 0 si aucune adresse n’existe', () => {
-    component.utilisateur.set({
+  it('devrait retourner 0 si aucune adresse n’existe via le service', () => {
+    const utilisateurSansAdresse = {
       ...utilisateurMock,
       adresse_livraison: [],
-    });
+    } as Utilisateur;
+
+    component.utilisateur.set(utilisateurSansAdresse);
 
     expect(component.getNombreAdresses()).toBe(0);
+    expect(utilisateurServiceMock.getNombreAdresses).toHaveBeenCalledWith(utilisateurSansAdresse);
   });
 
   it('ne devrait pas supprimer si aucun utilisateur n’est chargé', async () => {
@@ -147,8 +179,6 @@ describe('UtilisateurSupprimerComponent', () => {
 
     expect(confirmSpy).toHaveBeenCalledWith('Voulez-vous vraiment désactiver cet utilisateur ?');
     expect(utilisateurServiceMock.deleteUtilisateur).not.toHaveBeenCalled();
-
-    confirmSpy.mockRestore();
   });
 
   it('devrait désactiver l’utilisateur et rediriger vers la liste', async () => {
@@ -159,10 +189,9 @@ describe('UtilisateurSupprimerComponent', () => {
 
     await component.supprimerUtilisateur();
 
+    expect(confirmSpy).toHaveBeenCalledWith('Voulez-vous vraiment désactiver cet utilisateur ?');
     expect(utilisateurServiceMock.deleteUtilisateur).toHaveBeenCalledWith(1);
     expect(navigateSpy).toHaveBeenCalledWith(['/utilisateurs']);
-
-    confirmSpy.mockRestore();
   });
 
   it('devrait afficher un message si la suppression échoue', async () => {
@@ -173,6 +202,7 @@ describe('UtilisateurSupprimerComponent', () => {
 
     await component.supprimerUtilisateur();
 
+    expect(utilisateurServiceMock.getMessageErreurSuppression).toHaveBeenCalled();
     expect(component.message()).toBe('Une erreur est survenue pendant la suppression de l’utilisateur.');
   });
 

@@ -13,6 +13,8 @@ describe('EspecesComponent', () => {
 
   let especeServiceMock: {
     getEspeces: ReturnType<typeof vi.fn>;
+    filtrerEspeces: ReturnType<typeof vi.fn>;
+    getNombreVarietes: ReturnType<typeof vi.fn>;
   };
 
   let authServiceMock: {
@@ -41,6 +43,29 @@ describe('EspecesComponent', () => {
   beforeEach(async () => {
     especeServiceMock = {
       getEspeces: vi.fn().mockResolvedValue(especesTest),
+
+      filtrerEspeces: vi.fn().mockImplementation((
+        especes: Espece[],
+        rechercheNomCommun: string,
+        rechercheNomScientifique: string
+      ) => {
+        const nomCommun = rechercheNomCommun.toLowerCase().trim();
+        const nomScientifique = rechercheNomScientifique.toLowerCase().trim();
+
+        return especes.filter(espece => {
+          const correspondNomCommun =
+            nomCommun === '' || espece.nom_commun.toLowerCase().includes(nomCommun);
+
+          const correspondNomScientifique =
+            nomScientifique === '' || espece.nom_scientifique.toLowerCase().includes(nomScientifique);
+
+          return correspondNomCommun && correspondNomScientifique;
+        });
+      }),
+
+      getNombreVarietes: vi.fn().mockImplementation((espece: Espece | null) => {
+        return espece?._count?.variete ?? 0;
+      }),
     };
 
     authServiceMock = {
@@ -87,20 +112,35 @@ describe('EspecesComponent', () => {
     expect(component.isLoading()).toBe(false);
   });
 
-  it('devrait filtrer les espèces par nom commun', () => {
+  it('devrait filtrer les espèces par nom commun via le service', () => {
     component.rechercheNomCommun.set('camo');
 
     expect(component.especesFiltrees()).toEqual([especesTest[0]]);
+    expect(especeServiceMock.filtrerEspeces).toHaveBeenCalledWith(
+      especesTest,
+      'camo',
+      ''
+    );
   });
 
-  it('devrait filtrer les espèces par nom scientifique', () => {
+  it('devrait filtrer les espèces par nom scientifique via le service', () => {
     component.rechercheNomScientifique.set('solanum');
 
     expect(component.especesFiltrees()).toEqual([especesTest[1]]);
+    expect(especeServiceMock.filtrerEspeces).toHaveBeenCalledWith(
+      especesTest,
+      '',
+      'solanum'
+    );
   });
 
   it('devrait retourner toutes les espèces si les recherches sont vides', () => {
     expect(component.especesFiltrees()).toEqual(especesTest);
+    expect(especeServiceMock.filtrerEspeces).toHaveBeenCalledWith(
+      especesTest,
+      '',
+      ''
+    );
   });
 
   it('devrait mettre à jour la recherche par nom commun', () => {
@@ -123,11 +163,12 @@ describe('EspecesComponent', () => {
     expect(component.rechercheNomScientifique()).toBe('solanum');
   });
 
-  it('devrait retourner le nombre de variétés associées à une espèce', () => {
+  it('devrait retourner le nombre de variétés associées à une espèce via le service', () => {
     expect(component.getNombreVarietes(especesTest[0])).toBe(2);
+    expect(especeServiceMock.getNombreVarietes).toHaveBeenCalledWith(especesTest[0]);
   });
 
-  it('devrait retourner 0 si le compteur de variétés est absent', () => {
+  it('devrait retourner 0 si le compteur de variétés est absent via le service', () => {
     const especeSansCompteur: Espece = {
       id_espece: 3,
       nom_scientifique: 'Ocimum basilicum',
@@ -135,5 +176,6 @@ describe('EspecesComponent', () => {
     } as Espece;
 
     expect(component.getNombreVarietes(especeSansCompteur)).toBe(0);
+    expect(especeServiceMock.getNombreVarietes).toHaveBeenCalledWith(especeSansCompteur);
   });
 });

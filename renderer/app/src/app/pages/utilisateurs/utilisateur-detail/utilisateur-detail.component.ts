@@ -1,7 +1,6 @@
 import { Component, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AdresseLivraison, Localite, Utilisateur } from '../../../types/electron';
-import { LocaliteService } from '../../../services/localite.service';
+import { AdresseLivraison, Utilisateur } from '../../../types/electron';
 import { UtilisateurService } from '../../../services/utilisateur.service';
 import { UtilisateurAdresseLivraisonComponent } from '../utilisateur-adresse-livraison/utilisateur-adresse-livraison.component';
 
@@ -14,31 +13,17 @@ import { UtilisateurAdresseLivraisonComponent } from '../utilisateur-adresse-liv
 
 export class UtilisateurDetailComponent {
   private readonly utilisateurService = inject(UtilisateurService);
-  private readonly localiteService = inject(LocaliteService);
 
   id = input<string>();
   utilisateur = signal<Utilisateur | null>(null);
-  localites = signal<Localite[]>([]);
   isLoading = signal(true);
   message = signal('');
 
   async ngOnInit(): Promise<void> {
     await this.chargerUtilisateur();
-    await this.chargerLocalites();
   }
 
-  async chargerLocalites(): Promise<void> {
-    try {
-      const localites = await this.localiteService.getLocalites();
-      this.localites.set(localites);
-    }
-    catch (error) {
-      console.error(error);
-      this.message.set('Erreur pendant le chargement des localités.');
-    }
-  }
-
-  async chargerUtilisateur(): Promise<void> {
+  chargerUtilisateur = async (): Promise<void> => {
     const idUtilisateur = Number(this.id());
 
     if (!idUtilisateur) {
@@ -58,49 +43,29 @@ export class UtilisateurDetailComponent {
       this.utilisateur.set(utilisateur);
       this.message.set('');
     }
-    catch {
+    catch (error) {
+      console.error('Erreur chargement utilisateur', { error, idUtilisateur });
       this.message.set('Erreur pendant le chargement de l’utilisateur.');
     }
     finally {
       this.isLoading.set(false);
     }
-  }
+  };
 
   getStatutUtilisateur(): string {
-    if (this.utilisateur()?.actif === 1) {
-      return 'Actif';
-    }
-
-    return 'Inactif';
+    return this.utilisateurService.getStatutUtilisateur(this.utilisateur());
   }
 
   getNomComplet(): string {
-    const utilisateur = this.utilisateur();
+    return this.utilisateurService.getNomComplet(this.utilisateur());
+  }
 
-    if (!utilisateur) {
-      return '';
-    }
-
-    return `${utilisateur.prenom} ${utilisateur.nom}`;
+  getRolesUtilisateur(): string {
+    return this.utilisateurService.getRolesUtilisateur(this.utilisateur());
   }
 
   getAdresses(): AdresseLivraison[] {
     return this.utilisateur()?.adresse_livraison ?? [];
-  }
-
-  getRolesUtilisateur(): string {
-    const roles = this.utilisateur()?.utilisateur_role ?? [];
-
-    if (roles.length === 0) {
-      return 'Aucun rôle';
-    }
-
-    return roles.map(utilisateurRole => utilisateurRole.role.nom_role)
-      .join(', ');
-  }
-
-  afficherErreurAdresse(message: string): void {
-    this.message.set(message);
   }
 
 }

@@ -14,7 +14,6 @@ describe('ProduitFiltresComponent', () => {
     fixture = TestBed.createComponent(ProduitFiltresComponent);
     component = fixture.componentInstance;
 
-    fixture.componentRef.setInput('categories', ['Légumes', 'Aromates']);
     fixture.componentRef.setInput('varietes', ['Tomate Roma', 'Basilic']);
     fixture.componentRef.setInput('especes', ['Tomate', 'Basilic']);
     fixture.componentRef.setInput('prixMinimumDisponible', 2);
@@ -45,26 +44,6 @@ describe('ProduitFiltresComponent', () => {
     component.changerStockRecherche(event);
 
     expect(component.stockRecherche()).toBe('en-stock');
-  });
-
-  it('devrait mettre à jour le filtre aromate', () => {
-    const event = {
-      target: { value: 'aromate' },
-    } as unknown as Event;
-
-    component.changerAromateRecherche(event);
-
-    expect(component.aromateRecherche()).toBe('aromate');
-  });
-
-  it('devrait mettre à jour le filtre catégorie', () => {
-    const event = {
-      target: { value: 'Légumes' },
-    } as unknown as Event;
-
-    component.changerCategorieRecherche(event);
-
-    expect(component.categorieRecherche()).toBe('Légumes');
   });
 
   it('devrait mettre à jour le filtre variété', () => {
@@ -174,10 +153,8 @@ describe('ProduitFiltresComponent', () => {
   it('devrait réinitialiser tous les filtres', () => {
     component.recherche.set('tomate');
     component.stockRecherche.set('en-stock');
-    component.aromateRecherche.set('aromate');
     component.prixMinRecherche.set('3');
     component.prixMaxRecherche.set('8');
-    component.categorieRecherche.set('Légumes');
     component.varieteRecherche.set('Tomate Roma');
     component.especeRecherche.set('Tomate');
 
@@ -185,10 +162,8 @@ describe('ProduitFiltresComponent', () => {
 
     expect(component.recherche()).toBe('');
     expect(component.stockRecherche()).toBe('');
-    expect(component.aromateRecherche()).toBe('');
     expect(component.prixMinRecherche()).toBe('');
     expect(component.prixMaxRecherche()).toBe('');
-    expect(component.categorieRecherche()).toBe('');
     expect(component.varieteRecherche()).toBe('');
     expect(component.especeRecherche()).toBe('');
   });

@@ -1,0 +1,36 @@
+<div class="page-header">
+  <h2>Rôles</h2>
+
+  <a class="add-link" routerLink="/roles/ajouter">Ajouter un rôle</a>
+</div>
+
+@if (isLoading()) {
+  <p>Chargement des rôles...</p>
+}
+@else if (message()) {
+  <p class="message">{{ message() }}</p>
+}
+@else {
+  <section class="roles-card">
+    <input class="search-input" type="text" placeholder="Rechercher un rôle"
+     [value]="recherche()" (input)="changerRecherche($event)">
+
+    @if (rolesFiltres().length === 0) {
+      <p>Aucun rôle trouvé.</p>
+    }
+    @else {
+      <div class="roles-grid">
+        @for (role of rolesFiltres(); track role.id_role) {
+          <article class="role-item">
+            <strong>{{ role.nom_role }}</strong>
+
+            <div class="actions">
+              <a class="edit-link" [routerLink]="['/roles/modifier', role.id_role]">Modifier</a>
+              <a class="delete-link" [routerLink]="['/roles/supprimer', role.id_role]">Supprimer</a>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </section>
+}

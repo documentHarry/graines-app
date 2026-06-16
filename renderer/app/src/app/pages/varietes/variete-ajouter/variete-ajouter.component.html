@@ -170,41 +170,6 @@
       </div>
     </section>
 
-    <section>
-      <h2>Aromate</h2>
-
-      <div class="form-grid">
-        <div class="form-field">
-          <label for="partie_utilisee">Partie utilisée</label>
-          <input id="partie_utilisee" type="text" formControlName="partie_utilisee">
-        </div>
-
-        <div class="form-field">
-          <label for="propriete_aromate">Propriété</label>
-          <input id="propriete_aromate" type="text" formControlName="propriete_aromate">
-        </div>
-
-        <div class="form-field">
-          <label for="usage_culinaire">Usage culinaire</label>
-          <input id="usage_culinaire" type="text" formControlName="usage_culinaire">
-        </div>
-      </div>
-
-      @if (proprietesMedicinales().length > 0) {
-        <div class="form-field">
-          <label>Propriétés médicinales</label>
-
-          <div class="checkbox-grid">
-            @for (propriete of proprietesMedicinales(); track propriete.id_propriete) {
-              <label class="checkbox-field">
-                <input type="checkbox" (change)="changerPropriete($event, propriete.id_propriete)">{{ propriete.nom_propriete }}
-              </label>
-            }
-          </div>
-        </div>
-      }
-    </section>
-
     <button type="submit">Enregistrer</button>
   </form>
 }

@@ -4,15 +4,19 @@ import { vi } from 'vitest';
 
 import { CategorieModifierComponent } from './categorie-modifier.component';
 import { CategorieService } from '../../../services/categorie.service';
-import { Categorie } from '../../../types/electron';
+import { Categorie, CategorieUpdateInput } from '../../../types/electron';
 
 describe('CategorieModifierComponent', () => {
   let component: CategorieModifierComponent;
   let fixture: ComponentFixture<CategorieModifierComponent>;
+
   let categorieServiceMock: {
     getCategorieById: ReturnType<typeof vi.fn>;
     updateCategorie: ReturnType<typeof vi.fn>;
+    construireCategorieUpdateInput: ReturnType<typeof vi.fn>;
+    getMessageErreurModification: ReturnType<typeof vi.fn>;
   };
+
   let router: Router;
 
   const categorieMock: Categorie = {
@@ -25,6 +29,25 @@ describe('CategorieModifierComponent', () => {
     categorieServiceMock = {
       getCategorieById: vi.fn().mockResolvedValue(categorieMock),
       updateCategorie: vi.fn().mockResolvedValue(undefined),
+      construireCategorieUpdateInput: vi.fn().mockImplementation((
+        idCategorie: number,
+        valeurFormulaire
+      ) => {
+        return {
+          id_categorie: idCategorie,
+          nom_categorie: valeurFormulaire.nom_categorie?.trim() ?? '',
+          descriptif: valeurFormulaire.descriptif?.trim() || null,
+        } as CategorieUpdateInput;
+      }),
+      getMessageErreurModification: vi.fn().mockImplementation((error: unknown) => {
+        const message = String(error);
+
+        if (message.includes('DUPLICATE_CATEGORY')) {
+          return 'Une catégorie avec ce nom existe déjà.';
+        }
+
+        return 'Une erreur technique est survenue pendant la modification de la catégorie.';
+      }),
     };
 
     await TestBed.configureTestingModule({
@@ -38,6 +61,10 @@ describe('CategorieModifierComponent', () => {
     router = TestBed.inject(Router);
     fixture = TestBed.createComponent(CategorieModifierComponent);
     component = fixture.componentInstance;
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   it('devrait créer le composant', () => {
@@ -125,6 +152,7 @@ describe('CategorieModifierComponent', () => {
     await component.enregistrer();
 
     expect(component.message()).toBe('Veuillez remplir les champs obligatoires.');
+    expect(categorieServiceMock.construireCategorieUpdateInput).not.toHaveBeenCalled();
     expect(categorieServiceMock.updateCategorie).not.toHaveBeenCalled();
   });
 
@@ -137,10 +165,11 @@ describe('CategorieModifierComponent', () => {
     await component.enregistrer();
 
     expect(component.message()).toBe('Veuillez remplir les champs obligatoires.');
+    expect(categorieServiceMock.construireCategorieUpdateInput).not.toHaveBeenCalled();
     expect(categorieServiceMock.updateCategorie).not.toHaveBeenCalled();
   });
 
-  it('devrait modifier la catégorie et rediriger vers la liste', async () => {
+  it('devrait construire puis modifier la catégorie et rediriger vers la liste', async () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     component.categorie.set(categorieMock);
@@ -151,6 +180,14 @@ describe('CategorieModifierComponent', () => {
 
     await component.enregistrer();
 
+    expect(categorieServiceMock.construireCategorieUpdateInput).toHaveBeenCalledWith(
+      1,
+      {
+        nom_categorie: ' Boissons chaudes ',
+        descriptif: ' Café et thé ',
+      }
+    );
+
     expect(categorieServiceMock.updateCategorie).toHaveBeenCalledWith({
       id_categorie: 1,
       nom_categorie: 'Boissons chaudes',
@@ -160,7 +197,7 @@ describe('CategorieModifierComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/categories']);
   });
 
-  it('devrait convertir un descriptif vide en null', async () => {
+  it('devrait convertir un descriptif vide en null via le service', async () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     component.categorie.set(categorieMock);
@@ -170,6 +207,14 @@ describe('CategorieModifierComponent', () => {
     });
 
     await component.enregistrer();
+
+    expect(categorieServiceMock.construireCategorieUpdateInput).toHaveBeenCalledWith(
+      1,
+      {
+        nom_categorie: 'Boissons',
+        descriptif: '   ',
+      }
+    );
 
     expect(categorieServiceMock.updateCategorie).toHaveBeenCalledWith({
       id_categorie: 1,
@@ -191,11 +236,15 @@ describe('CategorieModifierComponent', () => {
 
     await component.enregistrer();
 
-    expect(component.message()).toBe('Une catégorie avec ce nom existe déjà.');
+    expect(categorieServiceMock.getMessageErreurModification).toHaveBeenCalled();
+    expect(component.message()).toBe(
+      'Une erreur technique est survenue pendant la modification de la catégorie.'
+    );
   });
 
   it('devrait afficher un message si la modification échoue techniquement', async () => {
-    categorieServiceMock.updateCategorie.mockRejectedValue(new Error('Erreur technique'));
+    const error = new Error('Erreur technique');
+    categorieServiceMock.updateCategorie.mockRejectedValue(error);
 
     component.categorie.set(categorieMock);
     component.categorieForm.patchValue({
@@ -205,6 +254,9 @@ describe('CategorieModifierComponent', () => {
 
     await component.enregistrer();
 
-    expect(component.message()).toBe('Une erreur technique est survenue pendant la modification de la catégorie.');
+    expect(categorieServiceMock.getMessageErreurModification).toHaveBeenCalled();
+    expect(component.message()).toBe(
+      'Une erreur technique est survenue pendant la modification de la catégorie.'
+    );
   });
 });

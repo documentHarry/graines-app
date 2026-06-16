@@ -23,6 +23,8 @@ describe('ProduitModifierComponent', () => {
   let produitServiceMock: {
     getProduitById: ReturnType<typeof vi.fn>;
     updateProduit: ReturnType<typeof vi.fn>;
+    construireProduitUpdateInput: ReturnType<typeof vi.fn>;
+    getMessageErreurModification: ReturnType<typeof vi.fn>;
   };
 
   let router: Router;
@@ -73,7 +75,7 @@ describe('ProduitModifierComponent', () => {
         nom_scientifique: 'Solanum lycopersicum',
       },
     },
-  };
+  } as Produit;
 
   beforeEach(async () => {
     categorieServiceMock = {
@@ -95,6 +97,27 @@ describe('ProduitModifierComponent', () => {
     produitServiceMock = {
       getProduitById: vi.fn().mockResolvedValue(produitMock),
       updateProduit: vi.fn().mockResolvedValue(undefined),
+
+      construireProduitUpdateInput: vi.fn().mockImplementation((idProduit, valeurFormulaire) => {
+        return {
+          id_produit: idProduit,
+          intitule: valeurFormulaire.intitule?.trim() ?? '',
+          prix_unitaire: Number(valeurFormulaire.prix_unitaire),
+          quantite: Number(valeurFormulaire.quantite),
+          categorie_id: Number(valeurFormulaire.categorie_id),
+          variete_id: Number(valeurFormulaire.variete_id),
+        };
+      }),
+
+      getMessageErreurModification: vi.fn().mockImplementation((error: unknown) => {
+        const message = String(error);
+
+        if (message.includes('DUPLICATE_PRODUCT')) {
+          return 'Un produit avec cet intitulé et cette variété existe déjà.';
+        }
+
+        return 'Une erreur technique est survenue pendant la modification du produit.';
+      }),
     };
 
     await TestBed.configureTestingModule({
@@ -110,6 +133,11 @@ describe('ProduitModifierComponent', () => {
     router = TestBed.inject(Router);
     fixture = TestBed.createComponent(ProduitModifierComponent);
     component = fixture.componentInstance;
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
   it('devrait créer le composant', () => {
@@ -230,6 +258,7 @@ describe('ProduitModifierComponent', () => {
     await component.enregistrer();
 
     expect(component.message()).toBe('Veuillez remplir les champs obligatoires.');
+    expect(produitServiceMock.construireProduitUpdateInput).not.toHaveBeenCalled();
     expect(produitServiceMock.updateProduit).not.toHaveBeenCalled();
   });
 
@@ -245,10 +274,11 @@ describe('ProduitModifierComponent', () => {
     await component.enregistrer();
 
     expect(component.message()).toBe('Veuillez remplir les champs obligatoires.');
+    expect(produitServiceMock.construireProduitUpdateInput).not.toHaveBeenCalled();
     expect(produitServiceMock.updateProduit).not.toHaveBeenCalled();
   });
 
-  it('devrait enregistrer les modifications et rediriger vers le détail du produit', async () => {
+  it('devrait construire puis enregistrer les modifications et rediriger vers le détail du produit', async () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     component.produit.set(produitMock);
@@ -262,6 +292,17 @@ describe('ProduitModifierComponent', () => {
     });
 
     await component.enregistrer();
+
+    expect(produitServiceMock.construireProduitUpdateInput).toHaveBeenCalledWith(
+      1,
+      {
+        intitule: ' Tomate modifiée ',
+        prix_unitaire: 4.5,
+        quantite: 20,
+        categorie_id: 1,
+        variete_id: 1,
+      }
+    );
 
     expect(produitServiceMock.updateProduit).toHaveBeenCalledWith({
       id_produit: 1,
@@ -290,11 +331,15 @@ describe('ProduitModifierComponent', () => {
 
     await component.enregistrer();
 
-    expect(component.message()).toBe('Un produit avec cet intitulé et cette variété existe déjà.');
+    expect(produitServiceMock.getMessageErreurModification).toHaveBeenCalled();
+    expect(component.message()).toBe(
+      'Une erreur technique est survenue pendant la modification du produit.'
+    );
   });
 
   it('devrait afficher un message si la modification échoue techniquement', async () => {
-    produitServiceMock.updateProduit.mockRejectedValue(new Error('Erreur technique'));
+    const error = new Error('Erreur technique');
+    produitServiceMock.updateProduit.mockRejectedValue(error);
 
     component.produit.set(produitMock);
 
@@ -308,6 +353,9 @@ describe('ProduitModifierComponent', () => {
 
     await component.enregistrer();
 
-    expect(component.message()).toBe('Une erreur technique est survenue pendant la modification du produit.');
+    expect(produitServiceMock.getMessageErreurModification).toHaveBeenCalled();
+    expect(component.message()).toBe(
+      'Une erreur technique est survenue pendant la modification du produit.'
+    );
   });
 });

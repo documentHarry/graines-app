@@ -1,0 +1,20 @@
+<a class="back-link" routerLink="/proprietes-medicinales">← Retour aux propriétés médicinales</a>
+
+<h1>Ajouter une propriété médicinale</h1>
+
+@if (message()) {
+  <p class="message">{{ message() }}</p>
+}
+
+<form class="propriete-form" [formGroup]="proprieteForm" (ngSubmit)="enregistrer()">
+  <div class="form-field">
+    <label for="nom_propriete">Nom de la propriété</label>
+    <input id="nom_propriete" type="text" formControlName="nom_propriete" placeholder="Exemple : digestive, antioxydante...">
+
+    @if (proprieteForm.controls.nom_propriete.invalid && proprieteForm.controls.nom_propriete.touched) {
+      <p class="error">Le nom de la propriété est obligatoire.</p>
+    }
+  </div>
+
+  <button type="submit" class="save-button">Enregistrer</button>
+</form>

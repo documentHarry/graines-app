@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
   templateUrl: './not-found.component.html',
   styleUrl: './not-found.component.css',
 })
+
 export class NotFoundComponent {
   private readonly router = inject(Router);
 

@@ -8,14 +8,31 @@ import { UtilisateurService } from '../../../services/utilisateur.service';
 describe('UtilisateurAjouterComponent', () => {
   let component: UtilisateurAjouterComponent;
   let fixture: ComponentFixture<UtilisateurAjouterComponent>;
+
   let utilisateurServiceMock: {
     createUtilisateur: ReturnType<typeof vi.fn>;
+    construireUtilisateurCreateInput: ReturnType<typeof vi.fn>;
+    getMessageErreurCreation: ReturnType<typeof vi.fn>;
   };
+
   let router: Router;
 
   beforeEach(async () => {
     utilisateurServiceMock = {
       createUtilisateur: vi.fn().mockResolvedValue(undefined),
+
+      construireUtilisateurCreateInput: vi.fn().mockImplementation((valeurFormulaire) => {
+        return {
+          nom: valeurFormulaire.nom?.trim() ?? '',
+          prenom: valeurFormulaire.prenom?.trim() ?? '',
+          email: valeurFormulaire.email?.trim() ?? '',
+          mot_de_passe: valeurFormulaire.mot_de_passe ?? '',
+        };
+      }),
+
+      getMessageErreurCreation: vi.fn().mockReturnValue(
+        'Une erreur est survenue pendant la création de l’utilisateur.'
+      ),
     };
 
     await TestBed.configureTestingModule({
@@ -29,6 +46,11 @@ describe('UtilisateurAjouterComponent', () => {
     router = TestBed.inject(Router);
     fixture = TestBed.createComponent(UtilisateurAjouterComponent);
     component = fixture.componentInstance;
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
   it('devrait créer le composant', () => {
@@ -79,20 +101,28 @@ describe('UtilisateurAjouterComponent', () => {
     await component.enregistrer();
 
     expect(component.message()).toBe('Veuillez remplir les champs obligatoires.');
+    expect(utilisateurServiceMock.construireUtilisateurCreateInput).not.toHaveBeenCalled();
     expect(utilisateurServiceMock.createUtilisateur).not.toHaveBeenCalled();
   });
 
-  it('devrait créer un utilisateur et rediriger vers la liste', async () => {
+  it('devrait construire puis créer un utilisateur et rediriger vers la liste', async () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     component.utilisateurForm.patchValue({
       nom: ' Dupont ',
       prenom: ' Marie ',
-      email: 'marie@example.com' ,
+      email: 'marie@example.com',
       mot_de_passe: 'secret',
     });
 
     await component.enregistrer();
+
+    expect(utilisateurServiceMock.construireUtilisateurCreateInput).toHaveBeenCalledWith({
+      nom: ' Dupont ',
+      prenom: ' Marie ',
+      email: 'marie@example.com',
+      mot_de_passe: 'secret',
+    });
 
     expect(utilisateurServiceMock.createUtilisateur).toHaveBeenCalledWith({
       nom: 'Dupont',
@@ -104,8 +134,8 @@ describe('UtilisateurAjouterComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/utilisateurs']);
   });
 
-  it('devrait afficher un message si l’email existe déjà', async () => {
-    utilisateurServiceMock.createUtilisateur.mockRejectedValue('DUPLICATE_USER_EMAIL');
+  it('devrait afficher un message si la création échoue', async () => {
+    utilisateurServiceMock.createUtilisateur.mockRejectedValue(new Error('Erreur'));
 
     component.utilisateurForm.patchValue({
       nom: 'Dupont',
@@ -116,21 +146,9 @@ describe('UtilisateurAjouterComponent', () => {
 
     await component.enregistrer();
 
-    expect(component.message()).toBe('Un utilisateur avec cet email existe déjà.');
-  });
-
-  it('devrait afficher un message si la création échoue techniquement', async () => {
-    utilisateurServiceMock.createUtilisateur.mockRejectedValue(new Error('Erreur technique'));
-
-    component.utilisateurForm.patchValue({
-      nom: 'Dupont',
-      prenom: 'Marie',
-      email: 'marie@example.com',
-      mot_de_passe: 'secret',
-    });
-
-    await component.enregistrer();
-
-    expect(component.message()).toBe('Une erreur technique est survenue pendant la création de l’utilisateur.');
+    expect(utilisateurServiceMock.getMessageErreurCreation).toHaveBeenCalled();
+    expect(component.message()).toBe(
+      'Une erreur est survenue pendant la création de l’utilisateur.'
+    );
   });
 });

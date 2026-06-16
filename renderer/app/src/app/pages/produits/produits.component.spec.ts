@@ -4,8 +4,8 @@ import { vi } from 'vitest';
 
 import { ProduitsComponent } from './produits.component';
 import { ProduitService } from '../../services/produit.service';
-import { CategorieService } from '../../services/categorie.service';
-import { Produit, Categorie } from '../../types/electron';
+import { AuthService } from '../../services/auth.service';
+import { Produit } from '../../types/electron';
 
 describe('ProduitsComponent', () => {
   let component: ProduitsComponent;
@@ -14,17 +14,13 @@ describe('ProduitsComponent', () => {
   let produitServiceMock: {
     getProduits: ReturnType<typeof vi.fn>;
     getProduitsByCategorie: ReturnType<typeof vi.fn>;
+    filtrerProduits: ReturnType<typeof vi.fn>;
+    getStatutProduit: ReturnType<typeof vi.fn>;
   };
 
-  let categorieServiceMock: {
-    getCategorieById: ReturnType<typeof vi.fn>;
+  let authServiceMock: {
+    hasAnyRole: ReturnType<typeof vi.fn>;
   };
-
-  const categorieMock: Categorie = {
-    id_categorie: 1,
-    nom_categorie: 'Légumes',
-    descriptif: 'Catégorie légumes',
-  } as Categorie;
 
   const produitsMock: Produit[] = [
     {
@@ -36,43 +32,16 @@ describe('ProduitsComponent', () => {
       date_ajout: null,
       categorie_id: 1,
       variete_id: 1,
-      categorie: {
-        id_categorie: 1,
-        nom_categorie: 'Légumes',
-        descriptif: null,
-      },
       variete: {
         id_variete: 1,
         nom: 'Marmande',
-        descriptif: null,
         bio: 1,
-        cycle_jours: null,
-        cycle_de_vie: null,
-        type_ensoleillement: null,
-        type_feuillage: null,
-        date_semis_min: null,
-        date_semis_max: null,
-        duree_avant_recolte: null,
-        type_de_sol: null,
-        duree_de_germination: null,
-        temperature_min_de_germination: null,
-        rusticite_plante: null,
-        conseil_plantation: null,
-        couleur_legume: null,
-        taille_fixe_legume: null,
-        taille_min_legume: null,
-        taille_max_legume: null,
-        espacement_entre_les_plants: null,
-        espacement_entre_les_lignes: null,
-        hauteur_adulte_min: null,
-        hauteur_adulte_max: null,
         espece_id: 1,
         espece: {
           id_espece: 1,
           nom_commun: 'Tomate',
           nom_scientifique: 'Solanum lycopersicum',
         },
-        aromate: [],
       },
     } as Produit,
     {
@@ -84,51 +53,16 @@ describe('ProduitsComponent', () => {
       date_ajout: null,
       categorie_id: 2,
       variete_id: 2,
-      categorie: {
-        id_categorie: 2,
-        nom_categorie: 'Aromatiques',
-        descriptif: null,
-      },
       variete: {
         id_variete: 2,
         nom: 'Grand Vert',
-        descriptif: null,
         bio: 1,
-        cycle_jours: null,
-        cycle_de_vie: null,
-        type_ensoleillement: null,
-        type_feuillage: null,
-        date_semis_min: null,
-        date_semis_max: null,
-        duree_avant_recolte: null,
-        type_de_sol: null,
-        duree_de_germination: null,
-        temperature_min_de_germination: null,
-        rusticite_plante: null,
-        conseil_plantation: null,
-        couleur_legume: null,
-        taille_fixe_legume: null,
-        taille_min_legume: null,
-        taille_max_legume: null,
-        espacement_entre_les_plants: null,
-        espacement_entre_les_lignes: null,
-        hauteur_adulte_min: null,
-        hauteur_adulte_max: null,
         espece_id: 2,
         espece: {
           id_espece: 2,
           nom_commun: 'Basilic',
           nom_scientifique: 'Ocimum basilicum',
         },
-        aromate: [
-          {
-            id_aromate: 1,
-            partie_utilisee: 'Feuille',
-            propriete: 'Parfumé',
-            usage_culinaire: 'Cuisine',
-            variete_id: 2,
-          },
-        ],
       },
     } as Produit,
   ];
@@ -137,10 +71,63 @@ describe('ProduitsComponent', () => {
     produitServiceMock = {
       getProduits: vi.fn().mockResolvedValue(produitsMock),
       getProduitsByCategorie: vi.fn().mockResolvedValue([produitsMock[0]]),
+
+      filtrerProduits: vi.fn().mockImplementation((
+        produits: Produit[],
+        rechercheTexte: string,
+        stockRecherche: string,
+        prixMinRecherche: string,
+        prixMaxRecherche: string,
+        varieteRecherche: string,
+        especeRecherche: string
+      ) => {
+        const recherche = rechercheTexte.toLowerCase().trim();
+
+        return produits.filter(produit => {
+          const correspondRecherche =
+            recherche === '' ||
+            produit.intitule.toLowerCase().includes(recherche) ||
+            produit.variete.nom.toLowerCase().includes(recherche) ||
+            produit.variete.espece.nom_commun.toLowerCase().includes(recherche) ||
+            produit.variete.espece.nom_scientifique.toLowerCase().includes(recherche);
+
+          const correspondStock =
+            stockRecherche === '' ||
+            stockRecherche === 'en-stock' && produit.quantite > 0 ||
+            stockRecherche === 'rupture' && produit.quantite === 0;
+
+          const prixMin = prixMinRecherche === '' ? null : Number(prixMinRecherche);
+          const prixMax = prixMaxRecherche === '' ? null : Number(prixMaxRecherche);
+
+          const correspondPrixMin = prixMin === null || produit.prix_unitaire >= prixMin;
+          const correspondPrixMax = prixMax === null || produit.prix_unitaire <= prixMax;
+
+          const correspondVariete =
+            varieteRecherche === '' || produit.variete.nom === varieteRecherche;
+
+          const correspondEspece =
+            especeRecherche === '' || produit.variete.espece.nom_commun === especeRecherche;
+
+          return correspondRecherche
+            && correspondStock
+            && correspondPrixMin
+            && correspondPrixMax
+            && correspondVariete
+            && correspondEspece;
+        });
+      }),
+
+      getStatutProduit: vi.fn().mockImplementation((produit: Produit | null) => {
+        if (produit?.quantite && produit.quantite > 0) {
+          return 'En stock';
+        }
+
+        return 'Rupture de stock';
+      }),
     };
 
-    categorieServiceMock = {
-      getCategorieById: vi.fn().mockResolvedValue(categorieMock),
+    authServiceMock = {
+      hasAnyRole: vi.fn().mockReturnValue(false),
     };
 
     await TestBed.configureTestingModule({
@@ -148,12 +135,16 @@ describe('ProduitsComponent', () => {
       providers: [
         provideRouter([]),
         { provide: ProduitService, useValue: produitServiceMock },
-        { provide: CategorieService, useValue: categorieServiceMock },
+        { provide: AuthService, useValue: authServiceMock },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProduitsComponent);
     component = fixture.componentInstance;
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   it('devrait créer le composant', () => {
@@ -166,7 +157,6 @@ describe('ProduitsComponent', () => {
     expect(produitServiceMock.getProduits).toHaveBeenCalled();
     expect(produitServiceMock.getProduitsByCategorie).not.toHaveBeenCalled();
     expect(component.produits()).toEqual(produitsMock);
-    expect(component.categorie()).toBeNull();
     expect(component.message()).toBe('');
     expect(component.isLoading()).toBe(false);
   });
@@ -176,9 +166,7 @@ describe('ProduitsComponent', () => {
 
     await component.chargerProduits();
 
-    expect(categorieServiceMock.getCategorieById).toHaveBeenCalledWith(1);
     expect(produitServiceMock.getProduitsByCategorie).toHaveBeenCalledWith(1);
-    expect(component.categorie()).toEqual(categorieMock);
     expect(component.produits()).toEqual([produitsMock[0]]);
     expect(component.isLoading()).toBe(false);
   });
@@ -192,30 +180,14 @@ describe('ProduitsComponent', () => {
     expect(component.isLoading()).toBe(false);
   });
 
-  it('devrait retourner le titre général de la page', () => {
-    component.categorie.set(null);
-
-    expect(component.getTitrePage()).toBe('Produits');
-  });
-
-  it('devrait retourner le titre avec la catégorie', () => {
-    component.categorie.set(categorieMock);
-
-    expect(component.getTitrePage()).toBe('Produits - Légumes');
-  });
-
-  it('devrait afficher En stock si la quantité est supérieure à 0', () => {
+  it('devrait afficher En stock si la quantité est supérieure à 0 via le service', () => {
     expect(component.getStatutProduit(produitsMock[0])).toBe('En stock');
+    expect(produitServiceMock.getStatutProduit).toHaveBeenCalledWith(produitsMock[0]);
   });
 
-  it('devrait afficher Rupture de stock si la quantité est égale à 0', () => {
+  it('devrait afficher Rupture de stock si la quantité est égale à 0 via le service', () => {
     expect(component.getStatutProduit(produitsMock[1])).toBe('Rupture de stock');
-  });
-
-  it('devrait retourner les catégories disponibles triées', () => {
-    component.produits.set(produitsMock);
-
-    expect(component.categoriesDisponibles()).toEqual(['Aromatiques', 'Légumes']);
+    expect(produitServiceMock.getStatutProduit).toHaveBeenCalledWith(produitsMock[1]);
   });
 
   it('devrait retourner les variétés disponibles triées', () => {
@@ -254,70 +226,58 @@ describe('ProduitsComponent', () => {
     expect(component.prixMaximumDisponible()).toBe(0);
   });
 
-  it('devrait filtrer les produits par recherche texte', () => {
+  it('devrait filtrer les produits par recherche texte via le service', () => {
     component.produits.set(produitsMock);
     component.recherche.set('basilic');
 
     expect(component.produitsFiltres()).toEqual([produitsMock[1]]);
+    expect(produitServiceMock.filtrerProduits).toHaveBeenCalledWith(
+      produitsMock,
+      'basilic',
+      '',
+      '',
+      '',
+      '',
+      ''
+    );
   });
 
-  it('devrait filtrer les produits en stock', () => {
+  it('devrait filtrer les produits en stock via le service', () => {
     component.produits.set(produitsMock);
     component.stockRecherche.set('en-stock');
 
     expect(component.produitsFiltres()).toEqual([produitsMock[0]]);
   });
 
-  it('devrait filtrer les produits en rupture', () => {
+  it('devrait filtrer les produits en rupture via le service', () => {
     component.produits.set(produitsMock);
     component.stockRecherche.set('rupture');
 
     expect(component.produitsFiltres()).toEqual([produitsMock[1]]);
   });
 
-  it('devrait filtrer les aromates', () => {
-    component.produits.set(produitsMock);
-    component.aromateRecherche.set('oui');
-
-    expect(component.produitsFiltres()).toEqual([produitsMock[1]]);
-  });
-
-  it('devrait filtrer les non-aromates', () => {
-    component.produits.set(produitsMock);
-    component.aromateRecherche.set('non');
-
-    expect(component.produitsFiltres()).toEqual([produitsMock[0]]);
-  });
-
-  it('devrait filtrer par prix minimum', () => {
+  it('devrait filtrer par prix minimum via le service', () => {
     component.produits.set(produitsMock);
     component.prixMinRecherche.set('2');
 
     expect(component.produitsFiltres()).toEqual([produitsMock[0]]);
   });
 
-  it('devrait filtrer par prix maximum', () => {
+  it('devrait filtrer par prix maximum via le service', () => {
     component.produits.set(produitsMock);
     component.prixMaxRecherche.set('2');
 
     expect(component.produitsFiltres()).toEqual([produitsMock[1]]);
   });
 
-  it('devrait filtrer par catégorie', () => {
-    component.produits.set(produitsMock);
-    component.categorieRecherche.set('Légumes');
-
-    expect(component.produitsFiltres()).toEqual([produitsMock[0]]);
-  });
-
-  it('devrait filtrer par variété', () => {
+  it('devrait filtrer par variété via le service', () => {
     component.produits.set(produitsMock);
     component.varieteRecherche.set('Grand Vert');
 
     expect(component.produitsFiltres()).toEqual([produitsMock[1]]);
   });
 
-  it('devrait filtrer par espèce', () => {
+  it('devrait filtrer par espèce via le service', () => {
     component.produits.set(produitsMock);
     component.especeRecherche.set('Tomate');
 

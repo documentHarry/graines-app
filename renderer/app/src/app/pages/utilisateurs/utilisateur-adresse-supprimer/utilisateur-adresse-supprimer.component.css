@@ -1,0 +1,73 @@
+.back-link {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: #f2a65a;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: #8fd694;
+  text-decoration: underline;
+}
+
+h1 {
+  margin-bottom: 16px;
+  color: #ffb86b;
+}
+
+.delete-card {
+  max-width: 700px;
+  padding: 20px;
+  border: 1px solid #8a5a36;
+  border-radius: 12px;
+  background-color: #f8ead8;
+  color: #2a1a10;
+}
+
+.delete-card h2 {
+  margin-top: 0;
+  color: #c96f2d;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.delete-button,
+.cancel-button {
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.delete-button {
+  background-color: #9b1c1c;
+  color: #ffffff;
+}
+
+.delete-button:hover {
+  background-color: #b32626;
+}
+
+.cancel-button {
+  background-color: #f2a65a;
+  color: #2a1a10;
+}
+
+.cancel-button:hover {
+  background-color: #ffb86b;
+}
+
+.message {
+  color: #f8ead8;
+}
+
+.message-card {
+  color: #9b1c1c;
+  font-weight: bold;
+}

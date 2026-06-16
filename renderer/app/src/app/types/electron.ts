@@ -72,7 +72,6 @@ export interface Variete {
   espece_id: number;
   espece: Espece;
   _count?: { produit: number; };
-  aromate?: Aromate[];
 }
 
 export interface VarieteCreateInput {
@@ -100,7 +99,6 @@ export interface VarieteCreateInput {
   duree_avant_recolte: string | null;
   type_de_sol: string | null;
   conseil_plantation: string | null;
-  aromate: AromateInput | null;
 }
 
 export interface VarieteUpdateInput {
@@ -129,20 +127,21 @@ export interface VarieteUpdateInput {
   duree_avant_recolte: string | null;
   type_de_sol: string | null;
   conseil_plantation: string | null;
-  aromate: AromateInput | null;
 }
 
 //#endregion
 
-export interface ProprieteMedicinale {
-  id_propriete: number;
-  nom_propriete: string;
-}
+//#region AromatePropriete
 
 export interface AromatePropriete {
   aromate_id: number;
   propriete_id: number;
   propriete_medicinale: ProprieteMedicinale;
+}
+
+export interface ProprieteMedicinale {
+  id_propriete: number;
+  nom_propriete: string;
 }
 
 export interface ProprieteMedicinaleCreateInput {
@@ -154,6 +153,8 @@ export interface ProprieteMedicinaleUpdateInput {
   nom_propriete: string;
 }
 
+//#endregion
+
 //#region Aromate
 
 export interface Aromate {
@@ -162,7 +163,25 @@ export interface Aromate {
   propriete: string | null;
   usage_culinaire: string | null;
   variete_id: number;
+  variete?: Variete;
   aromate_propriete?: AromatePropriete[];
+}
+
+export interface AromateCreateInput {
+  partie_utilisee: string | null;
+  propriete: string | null;
+  usage_culinaire: string | null;
+  variete_id: number;
+  proprietes_ids: number[];
+}
+
+export interface AromateUpdateInput {
+  id_aromate: number;
+  partie_utilisee: string | null;
+  propriete: string | null;
+  usage_culinaire: string | null;
+  variete_id: number;
+  proprietes_ids: number[];
 }
 
 export interface AromateInput {
@@ -185,7 +204,7 @@ export interface Produit {
   date_ajout: string | null;
   variete_id: number;
   categorie_id: number;
-  categorie: Categorie;
+  categorie?: Categorie;
   variete: Variete;
 }
 
@@ -288,12 +307,7 @@ export interface UtilisateurUpdateInput {
 
 //#endregion
 
-//#region Role
-
-export interface Role {
-  id_role: number;
-  nom_role: string;
-}
+//#region UtilisateurRole
 
 export interface UtilisateurRole {
   utilisateur_id: number;
@@ -308,46 +322,23 @@ export interface UtilisateurRoleUpdateInput {
 
 //#endregion
 
-//#region Avis
+//#region Role
 
-export interface AvisUtilisateur {
-  id_utilisateur: number;
-  nom: string;
-  prenom: string;
-  email: string;
+export interface Role {
+  id_role: number;
+  nom_role: string;
 }
 
-export interface Avis {
-  id_avis: number;
-  note: number | null;
-  titre: string | null;
-  commentaire: string | null;
-  date_depot: string | null;
-  statut: string | null;
-  nombre_jaime: number | null;
-  utilisateur_id: number;
-  produit_id: number;
-  utilisateur: AvisUtilisateur;
-  produit: Produit;
+export interface RoleCreateInput {
+  nom_role: string;
 }
 
-export interface AvisCreateInput {
-  note: number;
-  titre: string | null;
-  commentaire: string | null;
-  utilisateur_id: number;
-  produit_id: number;
-}
-
-export interface AvisUpdateInput {
-  id_avis: number;
-  note: number;
-  titre: string | null;
-  commentaire: string | null;
+export interface RoleUpdateInput {
+  id_role: number;
+  nom_role: string;
 }
 
 //#endregion
-
 
 export interface ElectronAPI {
   getCategories: () => Promise<Categorie[]>;
@@ -371,6 +362,12 @@ export interface ElectronAPI {
   updateVariete: (variete: VarieteUpdateInput) => Promise<Variete>;
   deleteVariete: (id: number) => Promise<Variete>;
 
+  getAromates: () => Promise<Aromate[]>;
+  getAromateById: (id: number) => Promise<Aromate | null>;
+  createAromate: (aromate: AromateCreateInput) => Promise<Aromate>;
+  updateAromate: (aromate: AromateUpdateInput) => Promise<Aromate>;
+  deleteAromate: (id: number) => Promise<Aromate>;
+
   getProprietesMedicinales: () => Promise<ProprieteMedicinale[]>;
   createProprieteMedicinale: (propriete: ProprieteMedicinaleCreateInput) => Promise<ProprieteMedicinale>;
   updateProprieteMedicinale: (propriete: ProprieteMedicinaleUpdateInput) => Promise<ProprieteMedicinale>;
@@ -379,7 +376,6 @@ export interface ElectronAPI {
   getProduits: () => Promise<Produit[]>;
   getProduitById: (id: number) => Promise<Produit | null>;
   getProduitsByCategorie: (categorieId: number) => Promise<Produit[]>;
-  getProduitsSimilaires: (id: number) => Promise<Produit[]>;
   createProduit: (produit: ProduitCreateInput) => Promise<Produit>;
   updateProduit: (produit: ProduitUpdateInput) => Promise<Produit>;
   deleteProduit: (id: number) => Promise<Produit>;
@@ -400,16 +396,13 @@ export interface ElectronAPI {
   deleteAdresseLivraison: (id: number) => Promise<AdresseLivraison>;
 
   getRoles: () => Promise<Role[]>;
+  createRole: (role: RoleCreateInput) => Promise<Role>;
+  updateRole: (role: RoleUpdateInput) => Promise<Role>;
+  deleteRole: (id: number) => Promise<Role>;
+
   getUtilisateurRoles: (idUtilisateur: number) => Promise<UtilisateurRole[]>;
   updateUtilisateurRoles: (donnees: UtilisateurRoleUpdateInput) => Promise<Utilisateur>;
 
-  getAvis: () => Promise<Avis[]>;
-  getAvisById: (id: number) => Promise<Avis | null>;
-  getAvisByProduit: (produitId: number) => Promise<Avis[]>;
-  createAvis: (avis: AvisCreateInput) => Promise<Avis>;
-  updateAvis: (avis: AvisUpdateInput) => Promise<Avis>;
-  deleteAvis: (id: number) => Promise<Avis>;
-  likeAvis: (id: number) => Promise<Avis>;
 }
 
 declare global {

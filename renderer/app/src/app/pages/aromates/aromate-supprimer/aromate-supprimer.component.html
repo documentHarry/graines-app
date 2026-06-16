@@ -1,0 +1,46 @@
+@if (aromate()) {
+  <a class="back-link" [routerLink]="['/aromates', aromate()?.id_aromate]">← Détail de l’aromate</a>
+}
+@else {
+  <a class="back-link" routerLink="/aromates">← Retour aux aromates</a>
+}
+
+<h1>Supprimer un aromate</h1>
+
+@if (isLoading()) {
+  <p>Chargement de l’aromate...</p>
+}
+@else if (message() && !aromate()) {
+  <p class="message">{{ message() }}</p>
+}
+@else if (aromate()) {
+  <section class="delete-card">
+    <h2>{{ aromate()?.variete?.nom }}</h2>
+
+    <p class="scientifique">{{ aromate()?.variete?.espece?.nom_scientifique }}</p>
+    <p><strong>Espèce: </strong>{{ aromate()?.variete?.espece?.nom_commun }}</p>
+
+    @if (aromate()?.partie_utilisee) {
+      <p><strong>Partie utilisée: </strong>{{ aromate()?.partie_utilisee }}</p>
+    }
+
+    @if (aromate()?.propriete) {
+      <p><strong>Propriété: </strong>{{ aromate()?.propriete }}</p>
+    }
+
+    @if (aromate()?.usage_culinaire) {
+      <p><strong>Usage culinaire: </strong>{{ aromate()?.usage_culinaire }}</p>
+    }
+
+    @if (message()) {
+      <p class="message-card">{{ message() }}</p>
+    }
+
+    <p>Cet aromate peut être supprimé. Les liens avec ses propriétés médicinales seront supprimés automatiquement.</p>
+
+    <div class="actions">
+      <button type="button" class="delete-button" (click)="supprimerAromate()">Supprimer</button>
+      <button type="button" class="cancel-button" (click)="annuler()">Annuler</button>
+    </div>
+  </section>
+}

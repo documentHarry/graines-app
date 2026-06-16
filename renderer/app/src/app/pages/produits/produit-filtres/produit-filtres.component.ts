@@ -6,17 +6,15 @@ import { Component, input, model } from '@angular/core';
   templateUrl: './produit-filtres.component.html',
   styleUrl: './produit-filtres.component.css'
 })
+
 export class ProduitFiltresComponent {
   recherche = model<string>('');
   stockRecherche = model<string>('');
-  aromateRecherche = model<string>('');
   prixMinRecherche = model<string>('');
   prixMaxRecherche = model<string>('');
-  categorieRecherche = model<string>('');
   varieteRecherche = model<string>('');
   especeRecherche = model<string>('');
 
-  categories = input<string[]>([]);
   varietes = input<string[]>([]);
   especes = input<string[]>([]);
   prixMinimumDisponible = input<number>(0);
@@ -25,10 +23,8 @@ export class ProduitFiltresComponent {
   resetFiltres(): void {
     this.recherche.set('');
     this.stockRecherche.set('');
-    this.aromateRecherche.set('');
     this.prixMinRecherche.set('');
     this.prixMaxRecherche.set('');
-    this.categorieRecherche.set('');
     this.varieteRecherche.set('');
     this.especeRecherche.set('');
   }
@@ -41,16 +37,6 @@ export class ProduitFiltresComponent {
   changerStockRecherche(event: Event): void {
     const select = event.target as HTMLSelectElement;
     this.stockRecherche.set(select.value);
-  }
-
-  changerCategorieRecherche(event: Event): void {
-    const select = event.target as HTMLSelectElement;
-    this.categorieRecherche.set(select.value);
-  }
-
-  changerAromateRecherche(event: Event): void {
-    const select = event.target as HTMLSelectElement;
-    this.aromateRecherche.set(select.value);
   }
 
   changerPrixMinRecherche(event: Event): void {

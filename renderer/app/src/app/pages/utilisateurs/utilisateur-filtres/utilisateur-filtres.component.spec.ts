@@ -12,7 +12,7 @@ describe('UtilisateurFiltresComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(UtilisateurFiltresComponent);
-    fixture.componentRef.setInput('roles', ['ADMIN', 'CLIENT', 'MODERATEUR']);
+    fixture.componentRef.setInput('roles', ['ADMIN', 'CLIENT', 'GESTIONNAIRE_CATALOGUE']);
 
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -23,7 +23,7 @@ describe('UtilisateurFiltresComponent', () => {
   });
 
   it('devrait recevoir la liste des rôles', () => {
-    expect(component.roles()).toEqual(['ADMIN', 'CLIENT', 'MODERATEUR']);
+    expect(component.roles()).toEqual(['ADMIN', 'CLIENT', 'GESTIONNAIRE_CATALOGUE']);
   });
 
   it('devrait mettre à jour la recherche par nom', () => {

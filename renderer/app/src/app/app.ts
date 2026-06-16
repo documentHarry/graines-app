@@ -8,6 +8,7 @@ import { NavigationComponent } from './components/navigation/navigation.componen
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
+
 export class App {
 
 }

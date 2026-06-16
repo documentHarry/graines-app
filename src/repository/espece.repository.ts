@@ -18,23 +18,6 @@ export class EspeceRepository {
     });
   }
 
-  getDoublonCreate(espece: EspeceCreateInput) {
-    return this.prisma.espece.findFirst({
-      where: {
-        OR: [ { nom_commun: espece.nom_commun }, { nom_scientifique: espece.nom_scientifique } ],
-      },
-    });
-  }
-
-  getDoublonUpdate(espece: EspeceUpdateInput) {
-    return this.prisma.espece.findFirst({
-      where: {
-        OR: [ { nom_commun: espece.nom_commun }, { nom_scientifique: espece.nom_scientifique } ],
-        NOT: { id_espece: espece.id_espece },
-      },
-    });
-  }
-
   create(espece: EspeceCreateInput) {
     return this.prisma.espece.create({
       data: {

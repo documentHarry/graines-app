@@ -1,0 +1,65 @@
+<a class="back-link" routerLink="/aromates">← Retour aux aromates</a>
+
+@if (isLoading()) {
+  <p>Chargement de l’aromate...</p>
+}
+@else if (message()) {
+  <p class="message">{{ message() }}</p>
+}
+@else if (aromate()) {
+  <article class="detail-card">
+    <header class="detail-header">
+      <div>
+        <h1>{{ aromate()?.variete?.nom }}</h1>
+        <p class="scientifique">{{ aromate()?.variete?.espece?.nom_scientifique }}</p>
+      </div>
+    </header>
+
+    @if (authService.hasAnyRole(['GESTIONNAIRE_CATALOGUE', 'ADMIN'])) {
+      <div class="actions">
+        <a class="edit-link" [routerLink]="['/aromates/modifier', aromate()?.id_aromate]">Modifier l’aromate</a>
+        <a class="delete-link" [routerLink]="['/aromates/supprimer', aromate()?.id_aromate]">Supprimer l’aromate</a>
+      </div>
+    }
+
+    <section>
+      <h2>Variété associée</h2>
+
+      <div class="info-grid">
+        <p><strong>Variété: </strong>{{ aromate()?.variete?.nom }}</p>
+        <p><strong>Nom commun: </strong>{{ aromate()?.variete?.espece?.nom_commun }}</p>
+        <p><strong>Nom scientifique: </strong><span class="italic">{{ aromate()?.variete?.espece?.nom_scientifique }}</span></p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Informations aromatiques</h2>
+
+      <div class="info-grid">
+        @if (aromate()?.partie_utilisee) {
+          <p><strong>Partie utilisée: </strong>{{ aromate()?.partie_utilisee }}</p>
+        }
+
+        @if (aromate()?.propriete) {
+          <p><strong>Propriété: </strong>{{ aromate()?.propriete }}</p>
+        }
+
+        @if (aromate()?.usage_culinaire) {
+          <p><strong>Usage culinaire: </strong>{{ aromate()?.usage_culinaire }}</p>
+        }
+      </div>
+    </section>
+
+    @if (getProprietesMedicinales().length > 0) {
+      <section>
+        <h2>Propriétés médicinales</h2>
+
+        <ul>
+          @for (propriete of getProprietesMedicinales(); track propriete) {
+            <li>{{ propriete }}</li>
+          }
+        </ul>
+      </section>
+    }
+  </article>
+}

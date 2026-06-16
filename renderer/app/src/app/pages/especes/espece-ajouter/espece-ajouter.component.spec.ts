@@ -8,14 +8,35 @@ import { EspeceService } from '../../../services/espece.service';
 describe('EspeceAjouterComponent', () => {
   let component: EspeceAjouterComponent;
   let fixture: ComponentFixture<EspeceAjouterComponent>;
+
   let especeServiceMock: {
     createEspece: ReturnType<typeof vi.fn>;
+    construireEspeceCreateInput: ReturnType<typeof vi.fn>;
+    getMessageErreurCreation: ReturnType<typeof vi.fn>;
   };
+
   let router: Router;
 
   beforeEach(async () => {
     especeServiceMock = {
       createEspece: vi.fn().mockResolvedValue(undefined),
+
+      construireEspeceCreateInput: vi.fn().mockImplementation((valeurFormulaire) => {
+        return {
+          nom_commun: valeurFormulaire.nom_commun?.trim() ?? '',
+          nom_scientifique: valeurFormulaire.nom_scientifique?.trim() ?? '',
+        };
+      }),
+
+      getMessageErreurCreation: vi.fn().mockImplementation((error: unknown) => {
+        const message = String(error);
+
+        if (message.includes('DUPLICATE_ESPECE')) {
+          return 'Une espèce avec ce nom commun ou ce nom scientifique existe déjà.';
+        }
+
+        return 'Une erreur technique est survenue pendant la création de l’espèce.';
+      }),
     };
 
     await TestBed.configureTestingModule({
@@ -29,6 +50,11 @@ describe('EspeceAjouterComponent', () => {
     router = TestBed.inject(Router);
     fixture = TestBed.createComponent(EspeceAjouterComponent);
     component = fixture.componentInstance;
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
   it('devrait créer le composant', () => {
@@ -80,10 +106,11 @@ describe('EspeceAjouterComponent', () => {
     await component.enregistrer();
 
     expect(component.message()).toBe('Veuillez remplir les champs obligatoires.');
+    expect(especeServiceMock.construireEspeceCreateInput).not.toHaveBeenCalled();
     expect(especeServiceMock.createEspece).not.toHaveBeenCalled();
   });
 
-  it('devrait créer une espèce et rediriger vers la liste', async () => {
+  it('devrait construire puis créer une espèce et rediriger vers la liste', async () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     component.especeForm.patchValue({
@@ -92,6 +119,11 @@ describe('EspeceAjouterComponent', () => {
     });
 
     await component.enregistrer();
+
+    expect(especeServiceMock.construireEspeceCreateInput).toHaveBeenCalledWith({
+      nom_commun: ' Camomille ',
+      nom_scientifique: ' Matricaria chamomilla ',
+    });
 
     expect(especeServiceMock.createEspece).toHaveBeenCalledWith({
       nom_commun: 'Camomille',
@@ -111,11 +143,15 @@ describe('EspeceAjouterComponent', () => {
 
     await component.enregistrer();
 
-    expect(component.message()).toBe('Une espèce avec ce nom commun ou ce nom scientifique existe déjà.');
+    expect(especeServiceMock.getMessageErreurCreation).toHaveBeenCalled();
+    expect(component.message()).toBe(
+      'Une erreur technique est survenue pendant la création de l’espèce.'
+    );
   });
 
   it('devrait afficher un message si la création échoue techniquement', async () => {
-    especeServiceMock.createEspece.mockRejectedValue(new Error('Erreur technique'));
+    const error = new Error('Erreur technique');
+    especeServiceMock.createEspece.mockRejectedValue(error);
 
     component.especeForm.patchValue({
       nom_commun: 'Camomille',
@@ -124,6 +160,9 @@ describe('EspeceAjouterComponent', () => {
 
     await component.enregistrer();
 
-    expect(component.message()).toBe('Une erreur technique est survenue pendant la création de l’espèce.');
+    expect(especeServiceMock.getMessageErreurCreation).toHaveBeenCalled();
+    expect(component.message()).toBe(
+      'Une erreur technique est survenue pendant la création de l’espèce.'
+    );
   });
 });

@@ -4,16 +4,27 @@ import { vi } from 'vitest';
 
 import { ProduitDetailComponent } from './produit-detail.component';
 import { ProduitService } from '../../../services/produit.service';
+import { AuthService } from '../../../services/auth.service';
 import { Produit } from '../../../types/electron';
 
 describe('ProduitDetailComponent', () => {
   let component: ProduitDetailComponent;
   let fixture: ComponentFixture<ProduitDetailComponent>;
+
   let produitServiceMock: {
     getProduitById: ReturnType<typeof vi.fn>;
-    getProduitsSimilaires: ReturnType<typeof vi.fn>;
     deleteProduit: ReturnType<typeof vi.fn>;
+    getLabelBio: ReturnType<typeof vi.fn>;
+    getImageProduit: ReturnType<typeof vi.fn>;
+    getStatutProduit: ReturnType<typeof vi.fn>;
+    getConseilsPlantation: ReturnType<typeof vi.fn>;
+    getMessageErreurSuppression: ReturnType<typeof vi.fn>;
   };
+
+  let authServiceMock: {
+    hasAnyRole: ReturnType<typeof vi.fn>;
+  };
+
   let router: Router;
 
   const produitMock: Produit = {
@@ -62,13 +73,54 @@ describe('ProduitDetailComponent', () => {
         nom_commun: 'Tomate',
       },
     },
-  };
+  } as Produit;
 
   beforeEach(async () => {
     produitServiceMock = {
       getProduitById: vi.fn().mockResolvedValue(produitMock),
-      getProduitsSimilaires: vi.fn().mockResolvedValue([]),
       deleteProduit: vi.fn().mockResolvedValue(undefined),
+
+      getLabelBio: vi.fn().mockImplementation((produit: Produit | null) => {
+        if (produit?.variete?.bio === 1) {
+          return 'Oui';
+        }
+
+        return 'Non';
+      }),
+
+      getImageProduit: vi.fn().mockImplementation((produit: Produit | null) => {
+        return produit?.image_produit ?? null;
+      }),
+
+      getStatutProduit: vi.fn().mockImplementation((produit: Produit | null) => {
+        if (produit?.quantite && produit.quantite > 0) {
+          return 'En stock';
+        }
+
+        return 'Rupture de stock';
+      }),
+
+      getConseilsPlantation: vi.fn().mockImplementation((produit: Produit | null) => {
+        const conseil = produit?.variete?.conseil_plantation;
+
+        if (!conseil) {
+          return [];
+        }
+
+        return conseil
+          .split('.')
+          .map(phrase => phrase.trim())
+          .filter(phrase => phrase.length > 0)
+          .map(phrase => phrase + '.');
+      }),
+
+      getMessageErreurSuppression: vi.fn().mockReturnValue(
+        'Une erreur est survenue pendant la suppression du produit.'
+      ),
+    };
+
+    authServiceMock = {
+      hasAnyRole: vi.fn().mockReturnValue(false),
     };
 
     await TestBed.configureTestingModule({
@@ -76,6 +128,7 @@ describe('ProduitDetailComponent', () => {
       providers: [
         provideRouter([]),
         { provide: ProduitService, useValue: produitServiceMock },
+        { provide: AuthService, useValue: authServiceMock },
       ],
     }).compileComponents();
 
@@ -84,28 +137,13 @@ describe('ProduitDetailComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('devrait créer le composant', () => {
-    expect(component).toBeTruthy();
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
-  it('devrait charger le produit et les produits similaires', async () => {
-    const produitSimilaire: Produit = {
-      ...produitMock,
-      id_produit: 2,
-      intitule: 'Tomate similaire',
-    };
-
-    produitServiceMock.getProduitsSimilaires.mockResolvedValue([produitSimilaire]);
-    fixture.componentRef.setInput('id', '1');
-
-    await component.chargerProduit();
-
-    expect(produitServiceMock.getProduitById).toHaveBeenCalledWith(1);
-    expect(produitServiceMock.getProduitsSimilaires).toHaveBeenCalledWith(1);
-    expect(component.produit()).toEqual(produitMock);
-    expect(component.produitsSimilaires()).toEqual([produitSimilaire]);
-    expect(component.message()).toBe('');
-    expect(component.isLoading()).toBe(false);
+  it('devrait créer le composant', () => {
+    expect(component).toBeTruthy();
   });
 
   it('devrait afficher un message si l’identifiant du produit est invalide', async () => {
@@ -138,77 +176,64 @@ describe('ProduitDetailComponent', () => {
     expect(component.isLoading()).toBe(false);
   });
 
-  it('devrait afficher Oui quand la variété est bio', () => {
+  it('devrait afficher Oui quand la variété est bio via le service', () => {
     component.produit.set(produitMock);
 
     expect(component.getLabelBio()).toBe('Oui');
+    expect(produitServiceMock.getLabelBio).toHaveBeenCalledWith(produitMock);
   });
 
-  it('devrait afficher Non quand la variété n’est pas bio', () => {
-    component.produit.set({
+  it('devrait afficher Non quand la variété n’est pas bio via le service', () => {
+    const produitNonBio = {
       ...produitMock,
       variete: {
         ...produitMock.variete,
         bio: 0,
       },
-    });
+    } as Produit;
+
+    component.produit.set(produitNonBio);
 
     expect(component.getLabelBio()).toBe('Non');
+    expect(produitServiceMock.getLabelBio).toHaveBeenCalledWith(produitNonBio);
   });
 
-  it('devrait retourner null quand le produit n’a pas d’image', () => {
+  it('devrait retourner null quand le produit n’a pas d’image via le service', () => {
     component.produit.set(produitMock);
 
     expect(component.getImageProduit()).toBe(null);
+    expect(produitServiceMock.getImageProduit).toHaveBeenCalledWith(produitMock);
   });
 
-  it('devrait retourner l’image du produit quand elle existe', () => {
-    component.produit.set({
+  it('devrait retourner l’image du produit quand elle existe via le service', () => {
+    const produitAvecImage = {
       ...produitMock,
       image_produit: 'image-test.jpg',
-    });
+    } as Produit;
+
+    component.produit.set(produitAvecImage);
 
     expect(component.getImageProduit()).toBe('image-test.jpg');
+    expect(produitServiceMock.getImageProduit).toHaveBeenCalledWith(produitAvecImage);
   });
 
-  it('devrait afficher En stock quand la quantité est supérieure à 0', () => {
+  it('devrait afficher En stock quand la quantité est supérieure à 0 via le service', () => {
     component.produit.set(produitMock);
 
     expect(component.getStatutProduit()).toBe('En stock');
+    expect(produitServiceMock.getStatutProduit).toHaveBeenCalledWith(produitMock);
   });
 
-  it('devrait afficher Rupture de stock quand la quantité est égale à 0', () => {
-    component.produit.set({
+  it('devrait afficher Rupture de stock quand la quantité est égale à 0 via le service', () => {
+    const produitRupture = {
       ...produitMock,
       quantite: 0,
-    });
+    } as Produit;
+
+    component.produit.set(produitRupture);
 
     expect(component.getStatutProduit()).toBe('Rupture de stock');
-  });
-
-  it('devrait découper les conseils de plantation en plusieurs phrases', () => {
-    component.produit.set({
-      ...produitMock,
-      variete: {
-        ...produitMock.variete,
-        conseil_plantation: 'Semer en godet. Repiquer après les gelées.',
-      },
-    });
-
-    expect(component.getConseilsPlantation()).toEqual([
-      'Semer en godet.',
-      'Repiquer après les gelées.',
-    ]);
-  });
-
-  it('devrait retourner une liste vide si aucun conseil de plantation n’existe', () => {
-    component.produit.set(produitMock);
-
-    expect(component.getConseilsPlantation()).toEqual([]);
-  });
-
-  it('devrait initialiser la liste des produits similaires vide', () => {
-    expect(component.produitsSimilaires()).toEqual([]);
+    expect(produitServiceMock.getStatutProduit).toHaveBeenCalledWith(produitRupture);
   });
 
   it('ne devrait pas supprimer si aucun produit n’est chargé', async () => {
@@ -226,8 +251,6 @@ describe('ProduitDetailComponent', () => {
 
     expect(confirmSpy).toHaveBeenCalledWith('Voulez-vous vraiment supprimer ce produit ?');
     expect(produitServiceMock.deleteProduit).not.toHaveBeenCalled();
-
-    confirmSpy.mockRestore();
   });
 
   it('devrait supprimer le produit et rediriger vers la liste', async () => {
@@ -238,10 +261,9 @@ describe('ProduitDetailComponent', () => {
 
     await component.supprimerProduit();
 
+    expect(confirmSpy).toHaveBeenCalledWith('Voulez-vous vraiment supprimer ce produit ?');
     expect(produitServiceMock.deleteProduit).toHaveBeenCalledWith(1);
     expect(navigateSpy).toHaveBeenCalledWith(['/produits']);
-
-    confirmSpy.mockRestore();
   });
 
   it('devrait afficher un message si la suppression échoue', async () => {
@@ -252,6 +274,7 @@ describe('ProduitDetailComponent', () => {
 
     await component.supprimerProduit();
 
+    expect(produitServiceMock.getMessageErreurSuppression).toHaveBeenCalled();
     expect(component.message()).toBe('Une erreur est survenue pendant la suppression du produit.');
   });
 });

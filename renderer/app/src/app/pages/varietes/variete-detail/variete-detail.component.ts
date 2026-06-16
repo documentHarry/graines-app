@@ -1,6 +1,6 @@
 import { Component, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Aromate, Variete } from '../../../types/electron';
+import { Variete } from '../../../types/electron';
 import { VarieteService } from '../../../services/variete.service';
 import { AuthService } from '../../../services/auth.service';
 
@@ -10,6 +10,7 @@ import { AuthService } from '../../../services/auth.service';
   templateUrl: './variete-detail.component.html',
   styleUrl: './variete-detail.component.css',
 })
+
 export class VarieteDetailComponent {
   private readonly varieteService = inject(VarieteService);
   readonly authService = inject(AuthService);
@@ -44,7 +45,8 @@ export class VarieteDetailComponent {
       this.variete.set(variete);
       this.message.set('');
     }
-    catch {
+    catch (error) {
+      console.error('Erreur chargement variété', { error, idVariete });
       this.message.set('Erreur pendant le chargement de la variété.');
     }
     finally {
@@ -53,40 +55,14 @@ export class VarieteDetailComponent {
   }
 
   getLabelBio(): string {
-    if (this.variete()?.bio === 1) {
-      return 'Bio';
-    }
-
-    return 'Non bio';
+    return this.varieteService.getLabelBio(this.variete());
   }
 
   getNombreProduits(): number {
-    return this.variete()?._count?.produit ?? 0;
-  }
-
-  estAromate(): boolean {
-    return this.getAromates().length > 0;
-  }
-
-  getAromates(): Aromate[] {
-    return this.variete()?.aromate ?? [];
-  }
-
-  getProprietesMedicinales(aromate: Aromate): string[] {
-    return aromate.aromate_propriete
-      ?.map(item => item.propriete_medicinale.nom_propriete)
-      ?? [];
+    return this.varieteService.getNombreProduits(this.variete());
   }
 
   getConseilsPlantation(): string[] {
-    const conseil = this.variete()?.conseil_plantation;
-
-    if (!conseil) {
-      return [];
-    }
-
-    return conseil.split('.').map(phrase => phrase.trim())
-      .filter(phrase => phrase.length > 0)
-      .map(phrase => phrase + '.');
+    return this.varieteService.getConseilsPlantation(this.variete());
   }
 }

@@ -36,26 +36,7 @@ export class UtilisateurRepository {
     });
   }
 
-  getByEmail(email: string) {
-    return this.prisma.utilisateur.findFirst({
-      where: { email: email },
-    });
-  }
-
-  getDoublonUpdate(utilisateur: UtilisateurUpdateInput) {
-    return this.prisma.utilisateur.findFirst({
-      where: {
-        email: utilisateur.email,
-        NOT: { id_utilisateur: utilisateur.id_utilisateur },
-      },
-    });
-  }
-
-
-
   create(utilisateur: UtilisateurCreateInput, motDePasse: { hash: string; salt: Uint8Array<ArrayBuffer>; }) {
-    const dateInscription = new Date().toISOString().slice(0, 19).replace('T', ' ');
-
     return this.prisma.utilisateur.create({
       data: {
         nom: utilisateur.nom,
@@ -63,7 +44,7 @@ export class UtilisateurRepository {
         email: utilisateur.email,
         mot_de_passe_hash: motDePasse.hash,
         mot_de_passe_salt: motDePasse.salt,
-        date_inscription: dateInscription,
+        date_inscription: new Date().toISOString().slice(0, 19).replace('T', ' '),
         actif: 1,
       },
       select: {

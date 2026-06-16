@@ -1,0 +1,26 @@
+<a class="back-link" routerLink="/roles">← Retour aux rôles</a>
+
+<h1>Supprimer un rôle</h1>
+
+@if (isLoading()) {
+  <p>Chargement du rôle...</p>
+}
+@else if (message() && !role()) {
+  <p class="message">{{ message() }}</p>
+}
+@else if (role()) {
+  <section class="delete-card">
+    <h2>{{ role()?.nom_role }}</h2>
+
+    @if (message()) {
+      <p class="message-card">{{ message() }}</p>
+    }
+
+    <p>Ce rôle sera supprimé définitivement.</p>
+
+    <div class="actions">
+      <button type="button" class="delete-button" (click)="supprimerRole()">Supprimer</button>
+      <button type="button" class="cancel-button" (click)="annuler()">Annuler</button>
+    </div>
+  </section>
+}

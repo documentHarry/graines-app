@@ -1,9 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { Role, UtilisateurRole, UtilisateurRoleUpdateInput, Utilisateur } from '../types/electron';
+import { Role, RoleCreateInput, RoleUpdateInput } from '../types/electron';
 import { ElectronService } from './electron.service';
 
 @Injectable({ providedIn: 'root' })
-
 export class RoleService {
   private readonly electronService = inject(ElectronService);
 
@@ -11,11 +10,48 @@ export class RoleService {
     return this.electronService.getApi().getRoles();
   }
 
-  getUtilisateurRoles(idUtilisateur: number): Promise<UtilisateurRole[]> {
-    return this.electronService.getApi().getUtilisateurRoles(idUtilisateur);
+  createRole(role: RoleCreateInput): Promise<Role> {
+    return this.electronService.getApi().createRole(role);
   }
 
-  updateUtilisateurRoles(donnees: UtilisateurRoleUpdateInput): Promise<Utilisateur> {
-    return this.electronService.getApi().updateUtilisateurRoles(donnees);
+  updateRole(role: RoleUpdateInput): Promise<Role> {
+    return this.electronService.getApi().updateRole(role);
+  }
+
+  deleteRole(id: number): Promise<Role> {
+    return this.electronService.getApi().deleteRole(id);
+  }
+
+  construireRoleCreateInput(valeurFormulaire: { nom_role: string | null }): RoleCreateInput {
+    return {
+      nom_role: valeurFormulaire.nom_role?.trim() ?? '',
+    };
+  }
+
+  construireRoleUpdateInput(idRole: number, valeurFormulaire: { nom_role: string | null }): RoleUpdateInput {
+    return {
+      id_role: idRole,
+      nom_role: valeurFormulaire.nom_role?.trim() ?? '',
+    };
+  }
+
+  filtrerRoles(roles: Role[], recherche: string): Role[] {
+    const rechercheNettoyee = recherche.toLowerCase().trim();
+
+    return roles.filter(role => {
+      return rechercheNettoyee === '' || role.nom_role.toLowerCase().includes(rechercheNettoyee);
+    });
+  }
+
+  getMessageErreurCreationRole(): string {
+    return 'Une erreur est survenue pendant la création du rôle.';
+  }
+
+  getMessageErreurModificationRole(): string {
+    return 'Une erreur est survenue pendant la modification du rôle.';
+  }
+
+  getMessageErreurSuppressionRole(): string {
+    return 'Une erreur est survenue pendant la suppression du rôle.';
   }
 }

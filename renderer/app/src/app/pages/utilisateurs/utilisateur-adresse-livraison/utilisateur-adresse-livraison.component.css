@@ -1,3 +1,15 @@
+.add-address-button,
+.edit-address-button,
+.delete-address-button {
+  text-decoration: none;
+}
+
+.add-address-button:hover,
+.edit-address-button:hover,
+.delete-address-button:hover {
+  text-decoration: none;
+}
+
 .adresse-card {
   margin-top: 12px;
   padding: 14px;

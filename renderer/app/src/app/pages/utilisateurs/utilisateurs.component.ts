@@ -37,7 +37,8 @@ export class UtilisateursComponent {
       this.utilisateurs.set(result);
       this.message.set('');
     }
-    catch {
+    catch (error) {
+      console.error('Erreur chargement utilisateurs', { error });
       this.message.set('Erreur pendant le chargement des utilisateurs.');
     }
     finally {
@@ -54,67 +55,31 @@ export class UtilisateursComponent {
   });
 
   getRolesUtilisateur(utilisateur: Utilisateur): string {
-    const roles = utilisateur.utilisateur_role ?? [];
-
-    if (roles.length === 0) {
-      return 'Aucun rôle';
-    }
-
-    return roles.map(utilisateurRole => utilisateurRole.role.nom_role)
-      .join(', ');
+    return this.utilisateurService.getRolesUtilisateur(utilisateur);
   }
 
   utilisateursFiltres = computed(() => {
-    const nomRecherche = this.nomRecherche().toLowerCase().trim();
-    const prenomRecherche = this.prenomRecherche().toLowerCase().trim();
-    const emailRecherche = this.emailRecherche().toLowerCase().trim();
-    const statutRecherche = this.statutRecherche();
-    const roleRecherche = this.roleRecherche();
-    const adresseRecherche = this.adresseRecherche();
-
-    return this.utilisateurs().filter(utilisateur => {
-
-      const correspondNom = nomRecherche === '' ||
-        utilisateur.nom.toLowerCase().includes(nomRecherche);
-
-      const correspondPrenom = prenomRecherche === '' ||
-        utilisateur.prenom.toLowerCase().includes(prenomRecherche);
-
-      const correspondEmail = emailRecherche === '' ||
-        utilisateur.email.toLowerCase().includes(emailRecherche);
-
-      const correspondStatut = statutRecherche === '' ||
-        statutRecherche === 'actif' && utilisateur.actif === 1 ||
-        statutRecherche === 'inactif' && utilisateur.actif === 0;
-
-      const correspondRole = roleRecherche === '' ||
-        (utilisateur.utilisateur_role ?? [])
-          .some(utilisateurRole => utilisateurRole.role.nom_role === roleRecherche);
-
-      const nombreAdresses = this.getNombreAdresses(utilisateur);
-
-      const correspondAdresse = adresseRecherche === '' ||
-        adresseRecherche === 'avec-adresse' && nombreAdresses > 0 ||
-        adresseRecherche === 'sans-adresse' && nombreAdresses === 0;
-
-      return correspondNom && correspondPrenom && correspondEmail && correspondStatut && correspondRole && correspondAdresse;
-    });
+    return this.utilisateurService.filtrerUtilisateurs(
+      this.utilisateurs(),
+      this.nomRecherche(),
+      this.prenomRecherche(),
+      this.emailRecherche(),
+      this.statutRecherche(),
+      this.roleRecherche(),
+      this.adresseRecherche()
+    );
   });
 
   getNomComplet(utilisateur: Utilisateur): string {
-    return `${utilisateur.prenom} ${utilisateur.nom}`;
+    return this.utilisateurService.getNomComplet(utilisateur);
   }
 
   getStatutUtilisateur(utilisateur: Utilisateur): string {
-    if (utilisateur.actif === 1) {
-      return 'Actif';
-    }
-
-    return 'Inactif';
+    return this.utilisateurService.getStatutUtilisateur(utilisateur);
   }
 
   getNombreAdresses(utilisateur: Utilisateur): number {
-    return utilisateur.adresse_livraison?.length ?? 0;
+    return this.utilisateurService.getNombreAdresses(utilisateur);
   }
 
 }

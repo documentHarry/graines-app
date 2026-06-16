@@ -10,20 +10,6 @@ export class LocaliteRepository {
     });
   }
 
-  getDoublonCreate(localite: LocaliteCreateInput) {
-    return this.prisma.localite.findFirst({
-      where: { code_postal: localite.code_postal, localite: localite.localite },
-    });
-  }
-
-  getDoublonUpdate(localite: LocaliteUpdateInput) {
-    return this.prisma.localite.findFirst({
-      where: { code_postal: localite.code_postal, localite: localite.localite,
-        NOT: { id_localite: localite.id_localite }
-      },
-    });
-  }
-
   create(localite: LocaliteCreateInput) {
     return this.prisma.localite.create({
       data: {

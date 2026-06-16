@@ -1,0 +1,86 @@
+@if (aromate()) {
+  <a class="back-link" [routerLink]="['/aromates', aromate()?.id_aromate]">← Détail de l’aromate</a>
+}
+@else {
+  <a class="back-link" routerLink="/aromates">← Retour aux aromates</a>
+}
+
+<h1>Modifier un aromate</h1>
+
+@if (isLoading()) {
+  <p>Chargement de l’aromate...</p>
+}
+@else {
+  @if (message()) {
+    <p class="message">{{ message() }}</p>
+  }
+
+  <form [formGroup]="aromateForm" (ngSubmit)="enregistrer()">
+    <p class="form-help">La variété associée est obligatoire.</p>
+
+    <section>
+      <h2>Variété associée</h2>
+
+      <div class="form-field">
+        <label for="variete_id">Variété</label>
+        <select id="variete_id" formControlName="variete_id" required>
+          <option [value]="0">Sélectionner une variété</option>
+
+          @for (variete of varietes(); track variete.id_variete) {
+            <option [value]="variete.id_variete">
+              {{ variete.nom }} - {{ variete.espece.nom_commun }}
+            </option>
+          }
+        </select>
+
+        @if (aromateForm.controls.variete_id.invalid && aromateForm.controls.variete_id.touched) {
+          <p class="error">La variété est obligatoire.</p>
+        }
+      </div>
+    </section>
+
+    <section>
+      <h2>Informations aromatiques</h2>
+
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="partie_utilisee">Partie utilisée</label>
+          <input id="partie_utilisee" type="text" formControlName="partie_utilisee">
+        </div>
+
+        <div class="form-field">
+          <label for="propriete">Propriété</label>
+          <input id="propriete" type="text" formControlName="propriete">
+        </div>
+
+        <div class="form-field">
+          <label for="usage_culinaire">Usage culinaire</label>
+          <input id="usage_culinaire" type="text" formControlName="usage_culinaire">
+        </div>
+      </div>
+    </section>
+
+    @if (proprietesMedicinales().length > 0) {
+      <section>
+        <h2>Propriétés médicinales</h2>
+
+        <div class="form-field">
+          <label>Propriétés médicinales</label>
+
+          <div class="checkbox-grid">
+            @for (propriete of proprietesMedicinales(); track propriete.id_propriete) {
+              <label class="checkbox-field">
+                <input type="checkbox"
+                  [checked]="estProprieteSelectionnee(propriete.id_propriete)"
+                  (change)="changerPropriete($event, propriete.id_propriete)">
+                {{ propriete.nom_propriete }}
+              </label>
+            }
+          </div>
+        </div>
+      </section>
+    }
+
+    <button type="submit">Enregistrer les modifications</button>
+  </form>
+}

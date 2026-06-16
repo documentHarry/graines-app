@@ -9,12 +9,18 @@ import { Categorie } from '../../../types/electron';
 describe('CategorieSupprimerComponent', () => {
   let component: CategorieSupprimerComponent;
   let fixture: ComponentFixture<CategorieSupprimerComponent>;
+
   let categorieServiceMock: {
     getCategorieById: ReturnType<typeof vi.fn>;
     getCategories: ReturnType<typeof vi.fn>;
     deleteCategorie: ReturnType<typeof vi.fn>;
     deleteCategorieWithReaffectation: ReturnType<typeof vi.fn>;
+    exclureCategorie: ReturnType<typeof vi.fn>;
+    getNombreProduits: ReturnType<typeof vi.fn>;
+    getMessageErreurSuppression: ReturnType<typeof vi.fn>;
+    getMessageErreurReaffectation: ReturnType<typeof vi.fn>;
   };
+
   let router: Router;
 
   const categorieMock: Categorie = {
@@ -51,6 +57,43 @@ describe('CategorieSupprimerComponent', () => {
       getCategories: vi.fn().mockResolvedValue(categoriesMock),
       deleteCategorie: vi.fn().mockResolvedValue(undefined),
       deleteCategorieWithReaffectation: vi.fn().mockResolvedValue(undefined),
+
+      exclureCategorie: vi.fn().mockImplementation((
+        categories: Categorie[],
+        categorieAExclure: Categorie
+      ) => {
+        return categories.filter(categorie => {
+          return categorie.id_categorie !== categorieAExclure.id_categorie;
+        });
+      }),
+
+      getNombreProduits: vi.fn().mockImplementation((categorie: Categorie | null) => {
+        return categorie?._count?.produit ?? 0;
+      }),
+
+      getMessageErreurSuppression: vi.fn().mockImplementation((error: unknown) => {
+        const message = String(error);
+
+        if (message.includes('CATEGORY_HAS_PRODUCTS')) {
+          return 'Cette catégorie contient des produits. Veuillez choisir une catégorie de réaffectation.';
+        }
+
+        return 'Une erreur est survenue pendant la suppression de la catégorie.';
+      }),
+
+      getMessageErreurReaffectation: vi.fn().mockImplementation((error: unknown) => {
+        const message = String(error);
+
+        if (message.includes('SAME_CATEGORY')) {
+          return 'La catégorie de destination doit être différente.';
+        }
+
+        if (message.includes('DESTINATION_CATEGORY_NOT_FOUND')) {
+          return 'La catégorie de destination est introuvable.';
+        }
+
+        return 'Une erreur est survenue pendant la réaffectation.';
+      }),
     };
 
     await TestBed.configureTestingModule({
@@ -66,6 +109,11 @@ describe('CategorieSupprimerComponent', () => {
     component = fixture.componentInstance;
   });
 
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.clearAllMocks();
+  });
+
   it('devrait créer le composant', () => {
     expect(component).toBeTruthy();
   });
@@ -77,6 +125,8 @@ describe('CategorieSupprimerComponent', () => {
 
     expect(categorieServiceMock.getCategorieById).toHaveBeenCalledWith(1);
     expect(categorieServiceMock.getCategories).toHaveBeenCalled();
+    expect(categorieServiceMock.exclureCategorie).toHaveBeenCalledWith(categoriesMock, categorieMock);
+
     expect(component.categorie()).toEqual(categorieMock);
     expect(component.categories()).toEqual([categoriesMock[1]]);
     expect(component.isLoading()).toBe(false);
@@ -113,16 +163,18 @@ describe('CategorieSupprimerComponent', () => {
     expect(component.isLoading()).toBe(false);
   });
 
-  it('devrait retourner le nombre de produits associés', () => {
+  it('devrait retourner le nombre de produits associés via le service', () => {
     component.categorie.set(categorieAvecProduitsMock);
 
     expect(component.getNombreProduits()).toBe(3);
+    expect(categorieServiceMock.getNombreProduits).toHaveBeenCalledWith(categorieAvecProduitsMock);
   });
 
-  it('devrait retourner 0 si aucune catégorie n’est chargée', () => {
+  it('devrait retourner 0 si aucune catégorie n’est chargée via le service', () => {
     component.categorie.set(null);
 
     expect(component.getNombreProduits()).toBe(0);
+    expect(categorieServiceMock.getNombreProduits).toHaveBeenCalledWith(null);
   });
 
   it('devrait rendre le formulaire de réaffectation invalide si aucune catégorie n’est sélectionnée', () => {
@@ -156,8 +208,6 @@ describe('CategorieSupprimerComponent', () => {
 
     expect(confirmSpy).toHaveBeenCalledWith('Voulez-vous vraiment supprimer cette catégorie ?');
     expect(categorieServiceMock.deleteCategorie).not.toHaveBeenCalled();
-
-    confirmSpy.mockRestore();
   });
 
   it('devrait supprimer la catégorie et rediriger vers la liste', async () => {
@@ -168,10 +218,9 @@ describe('CategorieSupprimerComponent', () => {
 
     await component.supprimerCategorie();
 
+    expect(confirmSpy).toHaveBeenCalledWith('Voulez-vous vraiment supprimer cette catégorie ?');
     expect(categorieServiceMock.deleteCategorie).toHaveBeenCalledWith(1);
     expect(navigateSpy).toHaveBeenCalledWith(['/categories']);
-
-    confirmSpy.mockRestore();
   });
 
   it('devrait afficher un message si la catégorie contient des produits', async () => {
@@ -182,17 +231,20 @@ describe('CategorieSupprimerComponent', () => {
 
     await component.supprimerCategorie();
 
+    expect(categorieServiceMock.getMessageErreurSuppression).toHaveBeenCalledWith('CATEGORY_HAS_PRODUCTS');
     expect(component.message()).toBe('Cette catégorie contient des produits. Veuillez choisir une catégorie de réaffectation.');
   });
 
   it('devrait afficher un message si la suppression échoue techniquement', async () => {
+    const error = new Error('Erreur technique');
     vi.spyOn(window, 'confirm').mockReturnValue(true);
-    categorieServiceMock.deleteCategorie.mockRejectedValue(new Error('Erreur technique'));
+    categorieServiceMock.deleteCategorie.mockRejectedValue(error);
 
     component.categorie.set(categorieMock);
 
     await component.supprimerCategorie();
 
+    expect(categorieServiceMock.getMessageErreurSuppression).toHaveBeenCalledWith(error);
     expect(component.message()).toBe('Une erreur est survenue pendant la suppression de la catégorie.');
   });
 
@@ -228,10 +280,10 @@ describe('CategorieSupprimerComponent', () => {
 
     await component.supprimerAvecReaffectation();
 
-    expect(confirmSpy).toHaveBeenCalledWith('Les produits seront réaffectés à la catégorie choisie. Confirmer la suppression ?');
+    expect(confirmSpy).toHaveBeenCalledWith(
+      'Les produits seront réaffectés à la catégorie choisie. Confirmer la suppression ?'
+    );
     expect(categorieServiceMock.deleteCategorieWithReaffectation).not.toHaveBeenCalled();
-
-    confirmSpy.mockRestore();
   });
 
   it('devrait réaffecter les produits, supprimer la catégorie et rediriger', async () => {
@@ -245,10 +297,11 @@ describe('CategorieSupprimerComponent', () => {
 
     await component.supprimerAvecReaffectation();
 
+    expect(confirmSpy).toHaveBeenCalledWith(
+      'Les produits seront réaffectés à la catégorie choisie. Confirmer la suppression ?'
+    );
     expect(categorieServiceMock.deleteCategorieWithReaffectation).toHaveBeenCalledWith(1, 2);
     expect(navigateSpy).toHaveBeenCalledWith(['/categories']);
-
-    confirmSpy.mockRestore();
   });
 
   it('devrait afficher un message si la catégorie de destination est identique', async () => {
@@ -262,12 +315,15 @@ describe('CategorieSupprimerComponent', () => {
 
     await component.supprimerAvecReaffectation();
 
+    expect(categorieServiceMock.getMessageErreurReaffectation).toHaveBeenCalledWith('SAME_CATEGORY');
     expect(component.message()).toBe('La catégorie de destination doit être différente.');
   });
 
   it('devrait afficher un message si la catégorie de destination est introuvable', async () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true);
-    categorieServiceMock.deleteCategorieWithReaffectation.mockRejectedValue('DESTINATION_CATEGORY_NOT_FOUND');
+    categorieServiceMock.deleteCategorieWithReaffectation.mockRejectedValue(
+      'DESTINATION_CATEGORY_NOT_FOUND'
+    );
 
     component.categorie.set(categorieAvecProduitsMock);
     component.reaffectationForm.patchValue({
@@ -276,12 +332,16 @@ describe('CategorieSupprimerComponent', () => {
 
     await component.supprimerAvecReaffectation();
 
+    expect(categorieServiceMock.getMessageErreurReaffectation).toHaveBeenCalledWith(
+      'DESTINATION_CATEGORY_NOT_FOUND'
+    );
     expect(component.message()).toBe('La catégorie de destination est introuvable.');
   });
 
   it('devrait afficher un message si la réaffectation échoue techniquement', async () => {
+    const error = new Error('Erreur technique');
     vi.spyOn(window, 'confirm').mockReturnValue(true);
-    categorieServiceMock.deleteCategorieWithReaffectation.mockRejectedValue(new Error('Erreur technique'));
+    categorieServiceMock.deleteCategorieWithReaffectation.mockRejectedValue(error);
 
     component.categorie.set(categorieAvecProduitsMock);
     component.reaffectationForm.patchValue({
@@ -290,6 +350,7 @@ describe('CategorieSupprimerComponent', () => {
 
     await component.supprimerAvecReaffectation();
 
+    expect(categorieServiceMock.getMessageErreurReaffectation).toHaveBeenCalledWith(error);
     expect(component.message()).toBe('Une erreur est survenue pendant la réaffectation.');
   });
 

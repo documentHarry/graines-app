@@ -6,6 +6,7 @@ import { Component, input, model } from '@angular/core';
   templateUrl: './utilisateur-filtres.component.html',
   styleUrl: './utilisateur-filtres.component.css',
 })
+
 export class UtilisateurFiltresComponent {
   nomRecherche = model<string>('');
   prenomRecherche = model<string>('');

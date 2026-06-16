@@ -9,10 +9,14 @@ import { Espece } from '../../../types/electron';
 describe('EspeceSupprimerComponent', () => {
   let component: EspeceSupprimerComponent;
   let fixture: ComponentFixture<EspeceSupprimerComponent>;
+
   let especeServiceMock: {
     getEspeceById: ReturnType<typeof vi.fn>;
     deleteEspece: ReturnType<typeof vi.fn>;
+    getNombreVarietes: ReturnType<typeof vi.fn>;
+    getMessageErreurSuppression: ReturnType<typeof vi.fn>;
   };
+
   let router: Router;
 
   const especeMock: Espece = {
@@ -28,6 +32,20 @@ describe('EspeceSupprimerComponent', () => {
     especeServiceMock = {
       getEspeceById: vi.fn().mockResolvedValue(especeMock),
       deleteEspece: vi.fn().mockResolvedValue(undefined),
+
+      getNombreVarietes: vi.fn().mockImplementation((espece: Espece | null) => {
+        return espece?._count?.variete ?? 0;
+      }),
+
+      getMessageErreurSuppression: vi.fn().mockImplementation((error: unknown) => {
+        const message = String(error);
+
+        if (message.includes('ESPECE_HAS_VARIETES')) {
+          return 'Cette espèce possède des variétés associées. Elle ne peut pas être supprimée.';
+        }
+
+        return 'Une erreur est survenue pendant la suppression de l’espèce.';
+      }),
     };
 
     await TestBed.configureTestingModule({
@@ -41,6 +59,11 @@ describe('EspeceSupprimerComponent', () => {
     router = TestBed.inject(Router);
     fixture = TestBed.createComponent(EspeceSupprimerComponent);
     component = fixture.componentInstance;
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
   it('devrait créer le composant', () => {
@@ -90,23 +113,28 @@ describe('EspeceSupprimerComponent', () => {
 
   it('devrait retourner 0 quand aucune espèce n’est chargée', () => {
     expect(component.getNombreVarietes()).toBe(0);
+    expect(especeServiceMock.getNombreVarietes).toHaveBeenCalledWith(null);
   });
 
   it('devrait retourner le nombre de variétés associées à l’espèce', () => {
     component.espece.set(especeMock);
 
     expect(component.getNombreVarietes()).toBe(3);
+    expect(especeServiceMock.getNombreVarietes).toHaveBeenCalledWith(especeMock);
   });
 
   it('devrait retourner 0 quand l’espèce ne possède aucune variété associée', () => {
-    component.espece.set({
+    const especeSansVarietes = {
       ...especeMock,
       _count: {
         variete: 0,
       },
-    });
+    } as Espece;
+
+    component.espece.set(especeSansVarietes);
 
     expect(component.getNombreVarietes()).toBe(0);
+    expect(especeServiceMock.getNombreVarietes).toHaveBeenCalledWith(especeSansVarietes);
   });
 
   it('ne devrait pas supprimer si aucune espèce n’est chargée', async () => {
@@ -124,8 +152,6 @@ describe('EspeceSupprimerComponent', () => {
 
     expect(confirmSpy).toHaveBeenCalledWith('Voulez-vous vraiment supprimer cette espèce ?');
     expect(especeServiceMock.deleteEspece).not.toHaveBeenCalled();
-
-    confirmSpy.mockRestore();
   });
 
   it('devrait supprimer l’espèce et rediriger vers la liste', async () => {
@@ -136,10 +162,9 @@ describe('EspeceSupprimerComponent', () => {
 
     await component.supprimerEspece();
 
+    expect(confirmSpy).toHaveBeenCalledWith('Voulez-vous vraiment supprimer cette espèce ?');
     expect(especeServiceMock.deleteEspece).toHaveBeenCalledWith(1);
     expect(navigateSpy).toHaveBeenCalledWith(['/especes']);
-
-    confirmSpy.mockRestore();
   });
 
   it('devrait afficher un message si l’espèce possède des variétés', async () => {
@@ -150,19 +175,22 @@ describe('EspeceSupprimerComponent', () => {
 
     await component.supprimerEspece();
 
+    expect(especeServiceMock.getMessageErreurSuppression).toHaveBeenCalledWith('ESPECE_HAS_VARIETES');
     expect(component.message()).toBe(
       'Cette espèce possède des variétés associées. Elle ne peut pas être supprimée.'
     );
   });
 
   it('devrait afficher un message si la suppression échoue techniquement', async () => {
+    const error = new Error('Erreur technique');
     vi.spyOn(window, 'confirm').mockReturnValue(true);
-    especeServiceMock.deleteEspece.mockRejectedValue(new Error('Erreur technique'));
+    especeServiceMock.deleteEspece.mockRejectedValue(error);
 
     component.espece.set(especeMock);
 
     await component.supprimerEspece();
 
+    expect(especeServiceMock.getMessageErreurSuppression).toHaveBeenCalledWith(error);
     expect(component.message()).toBe('Une erreur est survenue pendant la suppression de l’espèce.');
   });
 

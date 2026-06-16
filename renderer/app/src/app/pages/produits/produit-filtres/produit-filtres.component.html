@@ -6,7 +6,7 @@
   </div>
 
   <label for="rechercheProduit">Recherche</label>
-  <input id="rechercheProduit" type="text" placeholder="Nom, catégorie, variété, espèce..."
+  <input id="rechercheProduit" type="text" placeholder="Nom, variété, espèce..."
     [value]="recherche()" (input)="changerRecherche($event)">
 
   <label for="filtreStock">Stock</label>
@@ -14,13 +14,6 @@
     <option value="">Tous</option>
     <option value="en-stock">En stock</option>
     <option value="rupture">Rupture de stock</option>
-  </select>
-
-  <label for="filtreAromate">Aromate</label>
-  <select id="filtreAromate" [value]="aromateRecherche()" (change)="changerAromateRecherche($event)">
-    <option value="">Tous</option>
-    <option value="oui">Aromates uniquement</option>
-    <option value="non">Non aromates</option>
   </select>
 
   <label for="prixMin">Prix minimum</label>
@@ -32,14 +25,6 @@
     <input id="prixMax" type="number" [placeholder]="prixMaximumDisponible() + ' €'"
     [min]="prixMinimumDisponible()" [max]="prixMaximumDisponible()"
     [value]="prixMaxRecherche()" (input)="changerPrixMaxRecherche($event)">
-
-  <label for="filtreCategorie">Catégorie</label>
-    <select id="filtreCategorie" [value]="categorieRecherche()" (change)="changerCategorieRecherche($event)">
-    <option value="">Toutes</option>
-    @for (categorie of categories(); track categorie) {
-        <option [value]="categorie">{{ categorie }}</option>
-    }
-    </select>
 
   <label for="filtreVariete">Variété</label>
     <select id="filtreVariete" [value]="varieteRecherche()" (change)="changerVarieteRecherche($event)">

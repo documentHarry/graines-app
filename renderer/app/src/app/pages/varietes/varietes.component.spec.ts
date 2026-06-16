@@ -13,6 +13,9 @@ describe('VarietesComponent', () => {
 
   let varieteServiceMock: {
     getVarietes: ReturnType<typeof vi.fn>;
+    filtrerVarietes: ReturnType<typeof vi.fn>;
+    getNombreProduits: ReturnType<typeof vi.fn>;
+    getLabelBio: ReturnType<typeof vi.fn>;
   };
 
   let authServiceMock: {
@@ -106,7 +109,52 @@ describe('VarietesComponent', () => {
   beforeEach(async () => {
     varieteServiceMock = {
       getVarietes: vi.fn().mockResolvedValue(varietesTest),
-    };
+
+      filtrerVarietes: vi.fn().mockImplementation((
+        varietes: Variete[],
+        rechercheNom: string,
+        bioRecherche: string,
+        especeRecherche: string,
+        ensoleillementRecherche: string,
+        cycleVieRecherche: string
+      ) => {
+        const nom = rechercheNom.toLowerCase().trim();
+
+        return varietes.filter(variete => {
+          const correspondNom =
+            nom === '' || variete.nom.toLowerCase().includes(nom);
+
+          const correspondBio =
+            bioRecherche === '' ||
+            bioRecherche === 'bio' && variete.bio === 1 ||
+            bioRecherche === 'non-bio' && variete.bio !== 1;
+
+          const correspondEspece =
+            especeRecherche === '' || variete.espece.nom_commun === especeRecherche;
+
+          const correspondEnsoleillement =
+            ensoleillementRecherche === '' || variete.type_ensoleillement === ensoleillementRecherche;
+
+          const correspondCycleVie =
+            cycleVieRecherche === '' || variete.cycle_de_vie === cycleVieRecherche;
+
+          return correspondNom
+            && correspondBio
+            && correspondEspece
+            && correspondEnsoleillement
+            && correspondCycleVie;
+      });
+    }),
+
+    getNombreProduits: vi.fn().mockImplementation((variete: Variete | null) => {
+      return variete?._count?.produit ?? 0;
+    }),
+
+    getLabelBio: vi.fn().mockImplementation((variete: Variete | null) => {
+      return variete?.bio === 1 ? 'Bio' : 'Non bio';
+    }),
+
+  };
 
     authServiceMock = {
       hasAnyRole: vi.fn().mockReturnValue(false),
@@ -168,14 +216,6 @@ describe('VarietesComponent', () => {
     expect(component.getLabelBio(varietesTest[1])).toBe('Non bio');
   });
 
-  it('devrait détecter une variété aromate', () => {
-    expect(component.estAromate(varietesTest[1])).toBe(true);
-  });
-
-  it('devrait détecter une variété non aromate', () => {
-    expect(component.estAromate(varietesTest[0])).toBe(false);
-  });
-
   it('devrait filtrer les variétés par nom', () => {
     component.varietes.set(varietesTest);
     component.rechercheNom.set('marmande');
@@ -197,20 +237,6 @@ describe('VarietesComponent', () => {
     expect(component.varietesFiltrees()).toEqual([varietesTest[1]]);
   });
 
-  it('devrait filtrer les aromates', () => {
-    component.varietes.set(varietesTest);
-    component.typeRecherche.set('aromate');
-
-    expect(component.varietesFiltrees()).toEqual([varietesTest[1]]);
-  });
-
-  it('devrait filtrer les légumes', () => {
-    component.varietes.set(varietesTest);
-    component.typeRecherche.set('legume');
-
-    expect(component.varietesFiltrees()).toEqual([varietesTest[0]]);
-  });
-
   it('devrait filtrer par espèce', () => {
     component.varietes.set(varietesTest);
     component.especeRecherche.set('Tomate');
@@ -221,13 +247,6 @@ describe('VarietesComponent', () => {
   it('devrait filtrer par ensoleillement', () => {
     component.varietes.set(varietesTest);
     component.ensoleillementRecherche.set('Mi-ombre');
-
-    expect(component.varietesFiltrees()).toEqual([varietesTest[1]]);
-  });
-
-  it('devrait filtrer par cycle de vie', () => {
-    component.varietes.set(varietesTest);
-    component.cycleVieRecherche.set('Vivace');
 
     expect(component.varietesFiltrees()).toEqual([varietesTest[1]]);
   });

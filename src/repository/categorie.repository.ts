@@ -18,21 +18,6 @@ export class CategorieRepository {
     });
   }
 
-  getByNom(nomCategorie: string) {
-    return this.prisma.categorie.findFirst({
-      where: { nom_categorie: nomCategorie },
-    });
-  }
-
-  getDoublonUpdate(categorie: CategorieUpdateInput) {
-    return this.prisma.categorie.findFirst({
-      where: {
-        nom_categorie: categorie.nom_categorie,
-        NOT: { id_categorie: categorie.id_categorie }
-      },
-    });
-  }
-
   create(categorie: CategorieCreateInput) {
     return this.prisma.categorie.create({
       data: {

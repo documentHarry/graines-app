@@ -17,11 +17,11 @@ export class ConnexionComponent {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
-   messageErreur = '';
+  messageErreur = '';
 
   connexionForm = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
-    motDePasse: ['', Validators.required]
+    mot_de_passe: ['', Validators.required],
   });
 
   async seConnecter(): Promise<void> {
@@ -29,20 +29,17 @@ export class ConnexionComponent {
 
     if (this.connexionForm.invalid) {
       this.connexionForm.markAllAsTouched();
-      this.messageErreur = 'Veuillez remplir correctement les champs.';
+      this.messageErreur = this.authService.getMessageErreurFormulaireConnexion();
       return;
     }
 
-    const valeurFormulaire = this.connexionForm.getRawValue();
+    const identifiants = this.authService.construireIdentifiantsConnexion(this.connexionForm.getRawValue());
 
     try {
-      const utilisateur = await this.authService.login(
-        valeurFormulaire.email?.trim() ?? '',
-        valeurFormulaire.motDePasse ?? ''
-      );
+      const utilisateur = await this.authService.login(identifiants.email, identifiants.mot_de_passe);
 
       if (!utilisateur) {
-        this.messageErreur = 'Email ou mot de passe incorrect.';
+        this.messageErreur = this.authService.getMessageErreurIdentifiants();
         return;
       }
 
@@ -50,10 +47,31 @@ export class ConnexionComponent {
       await this.router.navigateByUrl(returnUrl);
     }
     catch (error) {
-      console.error('Erreur pendant la connexion :', error);
-      this.messageErreur = 'Une erreur est survenue pendant la connexion.';
+      console.error('Erreur connexion', { error, formulaire: this.connexionForm.getRawValue(), identifiants });
+      this.messageErreur = this.authService.getMessageErreurConnexion();
     }
   }
 
-}
+  construireIdentifiantsConnexion(valeurFormulaire: {
+    email: string | null;
+    mot_de_passe: string | null;
+  }): { email: string; mot_de_passe: string } {
+    return {
+      email: valeurFormulaire.email?.trim() ?? '',
+      mot_de_passe: valeurFormulaire.mot_de_passe ?? '',
+    };
+  }
 
+  getMessageErreurFormulaireConnexion(): string {
+    return 'Veuillez remplir correctement les champs.';
+  }
+
+  getMessageErreurIdentifiants(): string {
+    return 'Email ou mot de passe incorrect.';
+  }
+
+  getMessageErreurConnexion(): string {
+    return 'Une erreur est survenue pendant la connexion.';
+  }
+
+}

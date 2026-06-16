@@ -6,10 +6,10 @@ import { Component, input, model } from '@angular/core';
   templateUrl: './variete-filtres.component.html',
   styleUrl: './variete-filtres.component.css',
 })
+
 export class VarieteFiltresComponent {
   rechercheNom = model<string>('');
   bioRecherche = model<string>('');
-  typeRecherche = model<string>('');
   especeRecherche = model<string>('');
   ensoleillementRecherche = model<string>('');
   cycleVieRecherche = model<string>('');
@@ -21,7 +21,6 @@ export class VarieteFiltresComponent {
   resetFiltres(): void {
     this.rechercheNom.set('');
     this.bioRecherche.set('');
-    this.typeRecherche.set('');
     this.especeRecherche.set('');
     this.ensoleillementRecherche.set('');
     this.cycleVieRecherche.set('');
@@ -35,11 +34,6 @@ export class VarieteFiltresComponent {
   changerBioRecherche(event: Event): void {
     const select = event.target as HTMLSelectElement;
     this.bioRecherche.set(select.value);
-  }
-
-  changerTypeRecherche(event: Event): void {
-    const select = event.target as HTMLSelectElement;
-    this.typeRecherche.set(select.value);
   }
 
   changerEspeceRecherche(event: Event): void {

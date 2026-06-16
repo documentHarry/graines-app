@@ -1,7 +1,7 @@
 import { Component, inject, input, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Utilisateur, UtilisateurUpdateInput } from '../../../types/electron';
+import { Utilisateur } from '../../../types/electron';
 import { UtilisateurService } from '../../../services/utilisateur.service';
 
 @Component({
@@ -61,7 +61,8 @@ export class UtilisateurModifierComponent {
 
       this.message.set('');
     }
-    catch {
+    catch (error) {
+      console.error('Erreur chargement utilisateur', { error, idUtilisateur });
       this.message.set('Erreur pendant le chargement de l’utilisateur.');
     }
     finally {
@@ -76,29 +77,18 @@ export class UtilisateurModifierComponent {
       return;
     }
 
-    const valeurFormulaire = this.utilisateurForm.getRawValue();
-
-    const utilisateur: UtilisateurUpdateInput = {
-      id_utilisateur: this.utilisateur()!.id_utilisateur,
-      nom: valeurFormulaire.nom?.trim() ?? '',
-      prenom: valeurFormulaire.prenom?.trim() ?? '',
-      email: valeurFormulaire.email?.trim() ?? ''
-    };
+    const utilisateur = this.utilisateurService.construireUtilisateurUpdateInput(
+      this.utilisateur()!.id_utilisateur,
+      this.utilisateurForm.getRawValue()
+    );
 
     try {
       await this.utilisateurService.updateUtilisateur(utilisateur);
       await this.router.navigate(['/utilisateurs', utilisateur.id_utilisateur]);
     }
     catch (error) {
-      const message = String(error);
-
-      if (message.includes('DUPLICATE_USER_EMAIL')) {
-        this.message.set('Un utilisateur avec cet email existe déjà.');
-        return;
-      }
-
-      console.error(error);
-      this.message.set('Une erreur technique est survenue pendant la modification de l’utilisateur.');
+      console.error('Erreur modification utilisateur', { error, formulaire: this.utilisateurForm.getRawValue(), utilisateur });
+      this.message.set(this.utilisateurService.getMessageErreurModification());
     }
   }
 

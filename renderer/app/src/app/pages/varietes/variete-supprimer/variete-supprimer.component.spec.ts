@@ -12,6 +12,8 @@ describe('VarieteSupprimerComponent', () => {
   let varieteServiceMock: {
     getVarieteById: ReturnType<typeof vi.fn>;
     deleteVariete: ReturnType<typeof vi.fn>;
+    getNombreProduits: ReturnType<typeof vi.fn>;
+    getMessageErreurSuppression: ReturnType<typeof vi.fn>;
   };
   let router: Router;
 
@@ -51,10 +53,26 @@ describe('VarieteSupprimerComponent', () => {
     },
   } as Variete;
 
+
+
   beforeEach(async () => {
     varieteServiceMock = {
       getVarieteById: vi.fn().mockResolvedValue(varieteMock),
       deleteVariete: vi.fn().mockResolvedValue(undefined),
+
+      getNombreProduits: vi.fn().mockImplementation((variete: Variete | null) => {
+        return variete?._count?.produit ?? 0;
+      }),
+
+      getMessageErreurSuppression: vi.fn().mockImplementation((error: unknown) => {
+        const message = String(error);
+
+        if (message.includes('VARIETE_HAS_PRODUCTS')) {
+          return 'Cette variété possède des produits associés. Elle ne peut pas être supprimée.';
+        }
+
+        return 'Une erreur est survenue pendant la suppression de la variété.';
+      }),
     };
 
     await TestBed.configureTestingModule({

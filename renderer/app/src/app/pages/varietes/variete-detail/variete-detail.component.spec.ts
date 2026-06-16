@@ -13,6 +13,9 @@ describe('VarieteDetailComponent', () => {
 
   let varieteServiceMock: {
     getVarieteById: ReturnType<typeof vi.fn>;
+    getLabelBio: ReturnType<typeof vi.fn>;
+    getNombreProduits: ReturnType<typeof vi.fn>;
+    getConseilsPlantation: ReturnType<typeof vi.fn>;
   };
 
   let authServiceMock: {
@@ -52,39 +55,34 @@ describe('VarieteDetailComponent', () => {
     },
     _count: {
       produit: 4,
-    },
-    aromate: [],
+    }
   } as Variete;
-
-  const aromateMock: Aromate = {
-    id_aromate: 1,
-    partie_utilisee: 'Feuilles',
-    propriete: 'Parfumée',
-    usage_culinaire: 'Sauces et salades',
-    variete_id: 1,
-    aromate_propriete: [
-      {
-        aromate_id: 1,
-        propriete_id: 1,
-        propriete_medicinale: {
-          id_propriete: 1,
-          nom_propriete: 'Digestive',
-        },
-      },
-      {
-        aromate_id: 1,
-        propriete_id: 2,
-        propriete_medicinale: {
-          id_propriete: 2,
-          nom_propriete: 'Antioxydante',
-        },
-      },
-    ],
-  } as Aromate;
 
   beforeEach(async () => {
     varieteServiceMock = {
       getVarieteById: vi.fn().mockResolvedValue(varieteMock),
+
+      getLabelBio: vi.fn().mockImplementation((variete: Variete | null) => {
+        return variete?.bio === 1 ? 'Bio' : 'Non bio';
+      }),
+
+      getNombreProduits: vi.fn().mockImplementation((variete: Variete | null) => {
+        return variete?._count?.produit ?? 0;
+      }),
+
+      getConseilsPlantation: vi.fn().mockImplementation((variete: Variete | null) => {
+        const conseil = variete?.conseil_plantation;
+
+        if (!conseil) {
+          return [];
+        }
+
+        return conseil
+          .split('.')
+          .map(phrase => phrase.trim())
+          .filter(phrase => phrase.length > 0)
+          .map(phrase => phrase + '.');
+      }),
     };
 
     authServiceMock = {
@@ -197,34 +195,4 @@ describe('VarieteDetailComponent', () => {
     expect(component.getConseilsPlantation()).toEqual([]);
   });
 
-  it('devrait retourner une liste vide quand aucune information aromatique n’est disponible', () => {
-    component.variete.set(varieteMock);
-
-    expect(component.getAromates()).toEqual([]);
-    expect(component.estAromate()).toBe(false);
-  });
-
-  it('devrait détecter une variété aromate', () => {
-    component.variete.set({
-      ...varieteMock,
-      aromate: [aromateMock],
-    } as Variete);
-
-    expect(component.getAromates()).toEqual([aromateMock]);
-    expect(component.estAromate()).toBe(true);
-  });
-
-  it('devrait retourner les propriétés médicinales d’un aromate', () => {
-    expect(component.getProprietesMedicinales(aromateMock)).toEqual([
-      'Digestive',
-      'Antioxydante',
-    ]);
-  });
-
-  it('devrait retourner une liste vide si un aromate n’a aucune propriété médicinale', () => {
-    expect(component.getProprietesMedicinales({
-      ...aromateMock,
-      aromate_propriete: [],
-    } as Aromate)).toEqual([]);
-  });
 });

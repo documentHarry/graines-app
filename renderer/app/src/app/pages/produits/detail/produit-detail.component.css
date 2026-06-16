@@ -121,36 +121,6 @@ p {
   color: #7a3e13;
 }
 
-.avis-list {
-  display: grid;
-  gap: 12px;
-}
-
-.avis-card {
-  padding: 12px;
-  border: 1px solid #8a5a36;
-  border-radius: 12px;
-  color: #2a1a10;
-  background-color: #fff7ec;
-}
-
-.avis-header {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  color: #d9782d;
-}
-
-.avis-auteur {
-  color: #5f4b3b;
-  font-style: italic;
-}
-
-.avis-like {
-  font-weight: bold;
-  color: #2a1a10;
-}
-
 .similar-products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));

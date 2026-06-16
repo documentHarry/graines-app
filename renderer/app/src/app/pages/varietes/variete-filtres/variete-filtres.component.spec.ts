@@ -56,16 +56,6 @@ describe('VarieteFiltresComponent', () => {
     expect(component.bioRecherche()).toBe('bio');
   });
 
-  it('devrait mettre à jour la recherche par type', () => {
-    const event = {
-      target: { value: 'aromate' },
-    } as unknown as Event;
-
-    component.changerTypeRecherche(event);
-
-    expect(component.typeRecherche()).toBe('aromate');
-  });
-
   it('devrait mettre à jour la recherche par espèce', () => {
     const event = {
       target: { value: 'Tomate' },
@@ -99,7 +89,6 @@ describe('VarieteFiltresComponent', () => {
   it('devrait réinitialiser tous les filtres', () => {
     component.rechercheNom.set('marmande');
     component.bioRecherche.set('bio');
-    component.typeRecherche.set('aromate');
     component.especeRecherche.set('Tomate');
     component.ensoleillementRecherche.set('Soleil');
     component.cycleVieRecherche.set('Vivace');
@@ -108,7 +97,6 @@ describe('VarieteFiltresComponent', () => {
 
     expect(component.rechercheNom()).toBe('');
     expect(component.bioRecherche()).toBe('');
-    expect(component.typeRecherche()).toBe('');
     expect(component.especeRecherche()).toBe('');
     expect(component.ensoleillementRecherche()).toBe('');
     expect(component.cycleVieRecherche()).toBe('');

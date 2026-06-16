@@ -2,15 +2,15 @@ import { Component, effect, inject, input, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Produit } from '../../../types/electron';
 import { ProduitService } from '../../../services/produit.service';
-import { ProduitAvisComponent } from '../avis/produit-avis.component';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-produit-detail',
-  imports: [RouterLink, ProduitAvisComponent],
+  imports: [RouterLink],
   templateUrl: './produit-detail.component.html',
   styleUrl: './produit-detail.component.css',
 })
+
 export class ProduitDetailComponent {
 
   private readonly produitService = inject(ProduitService);
@@ -20,7 +20,6 @@ export class ProduitDetailComponent {
   id = input<string>();
 
   produit = signal<Produit | null>(null);
-  produitsSimilaires = signal<Produit[]>([]);
   isLoading = signal(true);
   message = signal('');
 
@@ -37,7 +36,6 @@ export class ProduitDetailComponent {
   async chargerProduit(): Promise<void> {
     this.isLoading.set(true);
     this.message.set('');
-    this.produitsSimilaires.set([]);
 
     const idProduit = Number(this.id());
 
@@ -48,21 +46,18 @@ export class ProduitDetailComponent {
     }
 
     try {
-      const result = await this.produitService.getProduitById(idProduit);
+      const produit = await this.produitService.getProduitById(idProduit);
 
-      if (!result) {
+      if (!produit) {
         this.message.set('Produit introuvable.');
         return;
       }
 
-      const produitsSimilaires = await this.produitService.getProduitsSimilaires(idProduit);
-
-      this.produit.set(result);
-      this.produitsSimilaires.set(produitsSimilaires);
+      this.produit.set(produit);
       this.message.set('');
     }
-    catch(error) {
-      console.error(error);
+    catch (error) {
+      console.error('Erreur chargement produit', { error, idProduit });
       this.message.set('Erreur pendant le chargement du produit.');
     }
     finally {
@@ -71,35 +66,15 @@ export class ProduitDetailComponent {
   }
 
   getLabelBio(): string {
-    if (this.produit()?.variete?.bio === 1) {
-      return 'Oui';
-    }
-
-    return 'Non';
+    return this.produitService.getLabelBio(this.produit());
   }
 
   getImageProduit(): string | null {
-    return this.produit()?.image_produit ?? null;
+    return this.produitService.getImageProduit(this.produit());
   }
 
   getStatutProduit(): string {
-    if (this.produit()?.quantite && this.produit()!.quantite > 0) {
-      return 'En stock';
-    }
-
-    return 'Rupture de stock';
-  }
-
-  getConseilsPlantation(): string[] {
-    const conseil = this.produit()?.variete?.conseil_plantation;
-
-    if (!conseil) {
-      return [];
-    }
-
-    return conseil.split('.').map(phrase => phrase.trim())
-      .filter(phrase => phrase.length > 0)
-      .map(phrase => phrase + '.');
+    return this.produitService.getStatutProduit(this.produit());
   }
 
   async supprimerProduit(): Promise<void> {
@@ -120,8 +95,8 @@ export class ProduitDetailComponent {
       await this.router.navigate(['/produits']);
     }
     catch (error) {
-      console.error(error);
-      this.message.set('Une erreur est survenue pendant la suppression du produit.');
+      console.error('Erreur suppression produit', { error, produit });
+      this.message.set(this.produitService.getMessageErreurSuppression());
     }
   }
 

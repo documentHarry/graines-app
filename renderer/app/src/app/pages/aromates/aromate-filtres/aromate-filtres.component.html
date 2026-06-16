@@ -1,0 +1,34 @@
+<aside class="filtres-panel">
+  <div class="filtres-header">
+    <h3>Filtres</h3>
+
+    <button type="button" class="reset-filtres-button" title="Réinitialiser les filtres" (click)="resetFiltres()"> ✕ </button>
+  </div>
+
+  <label for="rechercheNom">Nom</label>
+  <input id="rechercheNom" type="text" placeholder="Rechercher par nom" [value]="rechercheNom()" (input)="changerRechercheNom($event)">
+
+  <label for="filtreEspece">Espèce</label>
+  <select id="filtreEspece" [value]="especeRecherche()" (change)="changerEspeceRecherche($event)">
+    <option value="">Toutes</option>
+    @for (espece of especes(); track espece) {
+      <option [value]="espece">{{ espece }}</option>
+    }
+  </select>
+
+  <label for="filtrePartieUtilisee">Partie utilisée</label>
+  <select id="filtrePartieUtilisee" [value]="partieUtiliseeRecherche()" (change)="changerPartieUtiliseeRecherche($event)">
+    <option value="">Toutes</option>
+    @for (partie of partiesUtilisees(); track partie) {
+      <option [value]="partie">{{ partie }}</option>
+    }
+  </select>
+
+  <label for="filtreUsageCulinaire">Usage culinaire</label>
+  <select id="filtreUsageCulinaire" [value]="usageCulinaireRecherche()" (change)="changerUsageCulinaireRecherche($event)">
+    <option value="">Tous</option>
+    @for (usage of usagesCulinaires(); track usage) {
+      <option [value]="usage">{{ usage }}</option>
+    }
+  </select>
+</aside>

@@ -40,141 +40,25 @@
         </div>
       </div>
     </section>
-      
-    <section>
-      <h3>Informations générales</h3>
-
-      <div class="info-grid">
-        <p><strong>Catégorie: </strong>{{ produit()?.categorie?.nom_categorie }}</p>
-        <p><strong>Variété: </strong>{{ produit()?.variete?.nom }}</p>
-        <p><strong>Nom commun: </strong>{{ produit()?.variete?.espece?.nom_commun }}</p>
-        <p><strong>Nom scientifique: </strong><span class="italic">{{ produit()?.variete?.espece?.nom_scientifique }}</span></p>
-        @if (produit()?.variete?.couleur_legume) {
-          <p><strong>Couleur: </strong>{{ produit()?.variete?.couleur_legume }}</p>
-        }
-      </div>
-    </section>
 
     <section>
       <h3>Culture</h3>
 
       <div class="info-grid">
-        @if (produit()?.variete?.cycle_de_vie) {
-          <p><strong>Cycle de vie: </strong>{{ produit()?.variete?.cycle_de_vie }}</p>
+        @if (produit()?.variete?.nom) {
+          <p><strong>Variété: </strong>{{ produit()?.variete?.nom }}</p>
         }
 
-        @if (produit()?.variete?.cycle_jours != null) {
-          <p><strong>Cycle en jours: </strong>{{ produit()?.variete?.cycle_jours }}</p>
+        @if (produit()?.variete?.espece?.nom_commun) {
+          <p><strong>Nom commun: </strong>{{ produit()?.variete?.espece?.nom_commun }}</p>
         }
 
-        @if (produit()?.variete?.type_ensoleillement) {
-          <p><strong>Ensoleillement: </strong>{{ produit()?.variete?.type_ensoleillement }}</p>
-        }
-
-        @if (produit()?.variete?.date_semis_min) {
-          <p><strong>Semis min: </strong>{{ produit()?.variete?.date_semis_min }}</p>
-        }
-
-        @if (produit()?.variete?.date_semis_max) {
-          <p><strong>Semis max: </strong>{{ produit()?.variete?.date_semis_max }}</p>
-        }
-
-        @if (produit()?.variete?.duree_avant_recolte) {
-          <p><strong>Durée avant récolte: </strong>{{ produit()?.variete?.duree_avant_recolte }}</p>
-        }
-
-        @if (produit()?.variete?.type_de_sol) {
-          <p><strong>Sol: </strong>{{ produit()?.variete?.type_de_sol }}</p>
-        }
-
-        @if (produit()?.variete?.duree_de_germination) {
-          <p><strong>Germination: </strong>{{ produit()?.variete?.duree_de_germination }}</p>
-        }
-
-        @if (produit()?.variete?.temperature_min_de_germination != null) {
-          <p><strong>Température min. germination: </strong>{{ produit()?.variete?.temperature_min_de_germination }}°</p>
-        }
-
-        @if (produit()?.variete?.rusticite_plante) {
-          <p><strong>Rusticité: </strong>{{ produit()?.variete?.rusticite_plante }}</p>
+        @if (produit()?.variete?.espece?.nom_scientifique) {
+          <p><strong>Nom scientifique: </strong><span class="italic">{{ produit()?.variete?.espece?.nom_scientifique }}</span></p>
         }
       </div>
     </section>
 
-    <section>
-      <h3>Dimensions et distances</h3>
-
-      <div class="info-grid">
-        @if (produit()?.variete?.espacement_entre_les_plants != null) {
-          <p><strong>Espacement plants: </strong>{{ produit()?.variete?.espacement_entre_les_plants }} cm</p>
-        }
-
-        @if (produit()?.variete?.espacement_entre_les_lignes != null) {
-          <p><strong>Espacement lignes: </strong>{{ produit()?.variete?.espacement_entre_les_lignes }} cm</p>
-        }
-
-        @if (produit()?.variete?.hauteur_adulte_min != null) {
-          <p><strong>Hauteur adulte min: </strong>{{ produit()?.variete?.hauteur_adulte_min }} cm</p>
-        }
-
-        @if (produit()?.variete?.hauteur_adulte_max != null) {
-          <p><strong>Hauteur adulte max: </strong>{{ produit()?.variete?.hauteur_adulte_max }} cm</p>
-        }
-
-        @if (produit()?.variete?.taille_fixe_legume != null) {
-          <p><strong>Taille fixe légume: </strong>{{ produit()?.variete?.taille_fixe_legume }} cm</p>
-        }
-
-        @if (produit()?.variete?.taille_min_legume != null) {
-          <p><strong>Taille min. légume: </strong>{{ produit()?.variete?.taille_min_legume }} cm</p>
-        }
-
-        @if (produit()?.variete?.taille_max_legume != null) {
-          <p><strong>Taille max. légume: </strong>{{ produit()?.variete?.taille_max_legume }} cm</p>
-        }
-      </div>
-    </section>
-
-    @if (produit()?.variete?.descriptif) {
-      <section>
-        <h3>Descriptif de la variété</h3>
-        <p>{{ produit()?.variete?.descriptif }}</p>
-      </section>
-    }
-
-    @if (getConseilsPlantation().length > 0) {
-      <section>
-        <h3>Conseil de plantation</h3>
-
-        @for (phrase of getConseilsPlantation(); track phrase) {
-          <p>{{ phrase }}</p>
-        }
-      </section>
-    }
   </article>
 
-  <app-produit-avis [produitId]="produit()!.id_produit"></app-produit-avis>
-
-  @if (produitsSimilaires().length > 0) {
-    <section>
-      <h2>Produits similaires</h2>
-
-      <div class="similar-products-grid">
-        @for (produitSimilaire of produitsSimilaires(); track produitSimilaire.id_produit) {
-          <a class="similar-product-card" [routerLink]="['/produits', produitSimilaire.id_produit]">
-            @if (produitSimilaire.image_produit) {
-              <img [src]="produitSimilaire.image_produit" [alt]="produitSimilaire.intitule">
-            }
-            @else {
-              <div class="similar-image-placeholder">Image non disponible</div>
-            }
-
-            <h3>{{ produitSimilaire.intitule }}</h3>
-            <p class="similar-price">{{ produitSimilaire.prix_unitaire }} €</p>
-            <p>{{ produitSimilaire.variete.nom }}</p>
-          </a>
-        }
-      </div>
-    </section>
-  }
 }

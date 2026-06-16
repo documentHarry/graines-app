@@ -1,21 +1,14 @@
 <div class="categories-header">
   @if (authService.hasAnyRole(['GESTIONNAIRE_CATALOGUE', 'ADMIN'])) {
-      <a class="add-link" routerLink="/categories/ajouter">Ajouter une catégorie</a>
+    <a class="add-link" routerLink="/categories/ajouter">Ajouter une catégorie</a>
   }
 
-  <input
-    class="search-input"
-    type="text"
-    placeholder="Rechercher par nom"
-    [value]="rechercheNom()"
-    (input)="changerRechercheNom($event)">
+  <input class="search-input" type="text" placeholder="Rechercher par nom"
+    [value]="rechercheNom()" (input)="changerRechercheNom($event)">
 
   <input
-    class="search-input search-input-descriptif"
-    type="text"
-    placeholder="Rechercher par descriptif"
-    [value]="rechercheDescriptif()"
-    (input)="changerRechercheDescriptif($event)">
+    class="search-input search-input-descriptif" type="text" placeholder="Rechercher par descriptif"
+    [value]="rechercheDescriptif()" (input)="changerRechercheDescriptif($event)">
 </div>
 
 @if (isLoading()) {

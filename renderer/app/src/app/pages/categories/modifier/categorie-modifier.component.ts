@@ -1,7 +1,7 @@
 import { Component, inject, input, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Categorie, CategorieUpdateInput } from '../../../types/electron';
+import { Categorie } from '../../../types/electron';
 import { CategorieService } from '../../../services/categorie.service';
 
 @Component({
@@ -10,6 +10,7 @@ import { CategorieService } from '../../../services/categorie.service';
   templateUrl: './categorie-modifier.component.html',
   styleUrl: './categorie-modifier.component.css',
 })
+
 export class CategorieModifierComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly categorieService = inject(CategorieService);
@@ -56,7 +57,8 @@ export class CategorieModifierComponent {
 
       this.message.set('');
     }
-    catch {
+    catch (error) {
+      console.error('Erreur chargement catégorie', { error, idCategorie });
       this.message.set('Erreur pendant le chargement de la catégorie.');
     }
     finally {
@@ -65,34 +67,26 @@ export class CategorieModifierComponent {
   }
 
   async enregistrer(): Promise<void> {
-    if (this.categorieForm.invalid || !this.categorie()) {
+    const categorieActuelle = this.categorie();
+
+    if (this.categorieForm.invalid || !categorieActuelle) {
       this.categorieForm.markAllAsTouched();
       this.message.set('Veuillez remplir les champs obligatoires.');
       return;
     }
 
-    const valeurFormulaire = this.categorieForm.getRawValue();
-
-    const categorie: CategorieUpdateInput = {
-      id_categorie: this.categorie()!.id_categorie,
-      nom_categorie: valeurFormulaire.nom_categorie?.trim() ?? '',
-      descriptif: valeurFormulaire.descriptif?.trim() || null,
-    };
+    const categorie = this.categorieService.construireCategorieUpdateInput(
+      categorieActuelle.id_categorie,
+      this.categorieForm.getRawValue()
+    );
 
     try {
       await this.categorieService.updateCategorie(categorie);
       await this.router.navigate(['/categories']);
     }
     catch (error) {
-      const message = String(error);
-
-      if (message.includes('DUPLICATE_CATEGORY')) {
-        this.message.set('Une catégorie avec ce nom existe déjà.');
-        return;
-      }
-
-      console.error(error);
-      this.message.set('Une erreur technique est survenue pendant la modification de la catégorie.');
+      console.error('Erreur modification catégorie', { error, formulaire: this.categorieForm.getRawValue(), categorie });
+      this.message.set(this.categorieService.getMessageErreurModification());
     }
   }
 }

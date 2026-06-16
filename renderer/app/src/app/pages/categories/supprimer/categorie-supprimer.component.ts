@@ -10,6 +10,7 @@ import { CategorieService } from '../../../services/categorie.service';
   templateUrl: './categorie-supprimer.component.html',
   styleUrl: './categorie-supprimer.component.css',
 })
+
 export class CategorieSupprimerComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly categorieService = inject(CategorieService);
@@ -49,11 +50,14 @@ export class CategorieSupprimerComponent {
       }
 
       this.categorie.set(categorie);
-      this.categories.set(categories.filter( item => item.id_categorie !== categorie.id_categorie));
+      this.categories.set(
+        this.categorieService.exclureCategorie(categories, categorie)
+      );
 
       this.message.set('');
     }
-    catch {
+    catch (error) {
+      console.error('Erreur chargement catégorie', { error, idCategorie });
       this.message.set('Erreur pendant le chargement de la catégorie.');
     }
     finally {
@@ -62,7 +66,7 @@ export class CategorieSupprimerComponent {
   }
 
   getNombreProduits(): number {
-    return this.categorie()?._count?.produit ?? 0;
+    return this.categorieService.getNombreProduits(this.categorie());
   }
 
   async supprimerCategorie(): Promise<void> {
@@ -83,15 +87,8 @@ export class CategorieSupprimerComponent {
       await this.router.navigate(['/categories']);
     }
     catch (error) {
-      const message = String(error);
-
-      if (message.includes('CATEGORY_HAS_PRODUCTS')) {
-        this.message.set('Cette catégorie contient des produits. Veuillez choisir une catégorie de réaffectation.');
-        return;
-      }
-
-      console.error(error);
-      this.message.set('Une erreur est survenue pendant la suppression de la catégorie.');
+      console.error('Erreur suppression catégorie', { error, categorie });
+      this.message.set(this.categorieService.getMessageErreurSuppression(error));
     }
   }
 
@@ -110,6 +107,7 @@ export class CategorieSupprimerComponent {
 
     const valeurFormulaire = this.reaffectationForm.getRawValue();
     const idDestination = Number(valeurFormulaire.categorie_destination_id);
+
     const confirmation = confirm('Les produits seront réaffectés à la catégorie choisie. Confirmer la suppression ?');
 
     if (!confirmation) {
@@ -117,28 +115,12 @@ export class CategorieSupprimerComponent {
     }
 
     try {
-      await this.categorieService.deleteCategorieWithReaffectation(
-        categorie.id_categorie,
-        idDestination
-      );
-
+      await this.categorieService.deleteCategorieWithReaffectation(categorie.id_categorie, idDestination);
       await this.router.navigate(['/categories']);
     }
     catch (error) {
-      const message = String(error);
-
-      if (message.includes('SAME_CATEGORY')) {
-        this.message.set('La catégorie de destination doit être différente.');
-        return;
-      }
-
-      if (message.includes('DESTINATION_CATEGORY_NOT_FOUND')) {
-        this.message.set('La catégorie de destination est introuvable.');
-        return;
-      }
-
-      console.error(error);
-      this.message.set('Une erreur est survenue pendant la réaffectation.');
+      console.error('Erreur suppression catégorie avec réaffectation', { error, formulaire: this.reaffectationForm.getRawValue(), categorie, idDestination });
+      this.message.set(this.categorieService.getMessageErreurReaffectation(error));
     }
   }
 

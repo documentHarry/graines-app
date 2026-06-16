@@ -10,7 +10,6 @@ function trouverRoute(path: string): Route | undefined {
 describe('app.routes', () => {
   const rolesCatalogue = ['GESTIONNAIRE_CATALOGUE', 'ADMIN'];
   const rolesAdmin = ['ADMIN'];
-  const rolesModerationAvis = ['MODERATEUR', 'ADMIN'];
 
   function verifierRouteProtegee(path: string, rolesAttendus: string[]): void {
     const route = trouverRoute(path);
@@ -74,16 +73,6 @@ describe('app.routes', () => {
     verifierRouteProtegee('utilisateurs/supprimer/:id', rolesAdmin);
     verifierRouteProtegee('utilisateurs/roles/:id', rolesAdmin);
     verifierRouteProtegee('utilisateurs/:id', rolesAdmin);
-  });
-
-  it('devrait protéger la route de modération des avis', () => {
-    verifierRouteProtegee('avis', rolesModerationAvis);
-  });
-
-  it('ne devrait plus déclarer les anciennes routes CRUD globales des avis', () => {
-    verifierRouteInexistante('avis/ajouter');
-    verifierRouteInexistante('avis/modifier/:id');
-    verifierRouteInexistante('avis/supprimer/:id');
   });
 
   it('devrait placer la route wildcard en dernier', () => {

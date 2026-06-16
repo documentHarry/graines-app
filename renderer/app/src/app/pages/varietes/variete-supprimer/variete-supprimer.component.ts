@@ -44,7 +44,8 @@ export class VarieteSupprimerComponent {
       this.variete.set(variete);
       this.message.set('');
     }
-    catch {
+    catch (error) {
+      console.error('Erreur chargement variété', { error, idVariete });
       this.message.set('Erreur pendant le chargement de la variété.');
     }
     finally {
@@ -53,7 +54,7 @@ export class VarieteSupprimerComponent {
   }
 
   getNombreProduits(): number {
-    return this.variete()?._count?.produit ?? 0;
+    return this.varieteService.getNombreProduits(this.variete());
   }
 
   async supprimerVariete(): Promise<void> {
@@ -74,15 +75,8 @@ export class VarieteSupprimerComponent {
       await this.router.navigate(['/varietes']);
     }
     catch (error) {
-      const message = String(error);
-
-      if (message.includes('VARIETE_HAS_PRODUCTS')) {
-        this.message.set('Cette variété possède des produits associés. Elle ne peut pas être supprimée.');
-        return;
-      }
-
-      console.error(error);
-      this.message.set('Une erreur est survenue pendant la suppression de la variété.');
+      console.error('Erreur suppression variété', { error, variete });
+      this.message.set(this.varieteService.getMessageErreurSuppression(error));
     }
   }
 

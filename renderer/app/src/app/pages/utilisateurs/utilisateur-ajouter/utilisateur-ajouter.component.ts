@@ -1,7 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { UtilisateurCreateInput } from '../../../types/electron';
 import { UtilisateurService } from '../../../services/utilisateur.service';
 
 @Component({
@@ -32,29 +31,17 @@ export class UtilisateurAjouterComponent {
       return;
     }
 
-    const valeurFormulaire = this.utilisateurForm.getRawValue();
-
-    const utilisateur: UtilisateurCreateInput = {
-      nom: valeurFormulaire.nom?.trim() ?? '',
-      prenom: valeurFormulaire.prenom?.trim() ?? '',
-      email: valeurFormulaire.email?.trim() ?? '',
-      mot_de_passe: valeurFormulaire.mot_de_passe ?? ''
-    };
+    const utilisateur = this.utilisateurService.construireUtilisateurCreateInput(
+      this.utilisateurForm.getRawValue()
+    );
 
     try {
       await this.utilisateurService.createUtilisateur(utilisateur);
       await this.router.navigate(['/utilisateurs']);
     }
     catch (error) {
-      const message = String(error);
-
-      if (message.includes('DUPLICATE_USER_EMAIL')) {
-        this.message.set('Un utilisateur avec cet email existe déjà.');
-        return;
-      }
-
-      console.error(error);
-      this.message.set('Une erreur technique est survenue pendant la création de l’utilisateur.');
+      console.error('Erreur création utilisateur', { error, formulaire: this.utilisateurForm.getRawValue(), utilisateur });
+      this.message.set(this.utilisateurService.getMessageErreurCreation());
     }
   }
 

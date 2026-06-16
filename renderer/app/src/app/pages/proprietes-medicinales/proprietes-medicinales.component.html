@@ -9,8 +9,13 @@
   <section class="proprietes-card">
     <div class="page-header">
       <h2>Liste des propriétés</h2>
-      <input class="search-input" type="text" placeholder="Rechercher une propriété" [value]="recherche()" (input)="changerRecherche($event)">
-      <button type="button" class="add-button" (click)="afficherAjout()">Ajouter une propriété</button>
+
+      <input class="search-input" type="text" placeholder="Rechercher une propriété"
+        [value]="recherche()" (input)="changerRecherche($event)">
+
+      @if (authService.hasAnyRole(['GESTIONNAIRE_CATALOGUE', 'ADMIN'])) {
+        <a class="add-button" routerLink="/proprietes-medicinales/ajouter">Ajouter une propriété</a>
+      }
     </div>
 
     @if (proprietesFiltrees().length === 0) {
@@ -22,34 +27,15 @@
           <article class="propriete-item">
             <strong>{{ propriete.nom_propriete }}</strong>
 
-            <div class="actions">
-              <button type="button" class="edit-button" (click)="afficherModification(propriete)">Modifier</button>
-
-              <button type="button" class="delete-button" (click)="supprimer(propriete)"> ✕ </button>
-            </div>
+            @if (authService.hasAnyRole(['GESTIONNAIRE_CATALOGUE', 'ADMIN'])) {
+              <div class="actions">
+                <a class="edit-button" [routerLink]="['/proprietes-medicinales/modifier', propriete.id_propriete]">Modifier</a>
+                <a class="delete-button" [routerLink]="['/proprietes-medicinales/supprimer', propriete.id_propriete]">✕</a>
+              </div>
+            }
           </article>
         }
       </div>
-    }
-
-    @if (mode() !== 'aucun') {
-      <form class="propriete-form" [formGroup]="proprieteForm" (ngSubmit)="enregistrer()">
-        <h2>{{ getTitreFormulaire() }}</h2>
-
-        <div class="form-field">
-          <label for="nom_propriete">Nom de la propriété</label>
-          <input id="nom_propriete" type="text" formControlName="nom_propriete" placeholder="Exemple : digestive, antioxydante...">
-
-          @if (proprieteForm.controls.nom_propriete.invalid && proprieteForm.controls.nom_propriete.touched) {
-            <p class="error">Le nom de la propriété est obligatoire.</p>
-          }
-        </div>
-
-        <div class="form-actions">
-          <button type="submit" class="save-button">Enregistrer</button>
-          <button type="button" class="cancel-button" (click)="annuler()">Annuler</button>
-        </div>
-      </form>
     }
   </section>
 }

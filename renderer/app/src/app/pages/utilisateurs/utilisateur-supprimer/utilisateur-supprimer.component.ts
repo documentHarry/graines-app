@@ -44,7 +44,8 @@ export class UtilisateurSupprimerComponent {
       this.utilisateur.set(utilisateur);
       this.message.set('');
     }
-    catch {
+    catch (error) {
+      console.error('Erreur chargement utilisateur', { error, idUtilisateur });
       this.message.set('Erreur pendant le chargement de l’utilisateur.');
     }
     finally {
@@ -53,17 +54,11 @@ export class UtilisateurSupprimerComponent {
   }
 
   getNomComplet(): string {
-    const utilisateur = this.utilisateur();
-
-    if (!utilisateur) {
-      return '';
-    }
-
-    return `${utilisateur.prenom} ${utilisateur.nom}`;
+    return this.utilisateurService.getNomComplet(this.utilisateur());
   }
 
   getNombreAdresses(): number {
-    return this.utilisateur()?.adresse_livraison?.length ?? 0;
+    return this.utilisateurService.getNombreAdresses(this.utilisateur());
   }
 
   async supprimerUtilisateur(): Promise<void> {
@@ -84,8 +79,8 @@ export class UtilisateurSupprimerComponent {
       await this.router.navigate(['/utilisateurs']);
     }
     catch (error) {
-      console.error(error);
-      this.message.set('Une erreur est survenue pendant la suppression de l’utilisateur.');
+      console.error('Erreur suppression utilisateur', { error, utilisateur });
+      this.message.set(this.utilisateurService.getMessageErreurSuppression());
     }
   }
 

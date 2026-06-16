@@ -3,7 +3,6 @@ import { Localite, LocaliteCreateInput, LocaliteUpdateInput } from '../types/ele
 import { ElectronService } from './electron.service';
 
 @Injectable({ providedIn: 'root' })
-
 export class LocaliteService {
   private readonly electronService = inject(ElectronService);
 

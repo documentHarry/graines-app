@@ -2,9 +2,8 @@
   <div class="section-header">
     <h2>Adresses de livraison</h2>
 
-    <button type="button" class="add-address-button" (click)="afficherAjoutAdresse()">
-      Ajouter une adresse
-    </button>
+    <a class="add-address-button" 
+    [routerLink]="['/utilisateurs', utilisateurId(), 'adresses', 'ajouter']">Ajouter une adresse</a>
   </div>
 
   @if (adresses().length === 0) {
@@ -16,75 +15,12 @@
         <p><strong>{{ getAdresseComplete(adresse) }}</strong></p>
         <p>{{ getLabelAdresseParDefaut(adresse) }}</p>
 
-        <button type="button" class="edit-address-button" (click)="afficherModificationAdresse(adresse)">
-          Modifier l'adresse
-        </button>
+        <a class="edit-address-button" [routerLink]=
+        "['/utilisateurs', utilisateurId(), 'adresses', 'modifier', adresse.id_adresse]">Modifier l'adresse</a>
 
-        <button type="button" class="delete-address-button" (click)="supprimerAdresse(adresse)">
-          Supprimer l'adresse
-        </button>
+        <a class="delete-address-button" [routerLink]=
+        "['/utilisateurs', utilisateurId(), 'adresses', 'supprimer', adresse.id_adresse]">Supprimer l'adresse</a>
       </div>
     }
-  }
-
-  @if (modeAdresse() !== 'aucun') {
-    <form class="adresse-form" [formGroup]="adresseForm" (ngSubmit)="enregistrerAdresse()">
-      @if (modeAdresse() === 'ajout') {
-        <h3>Ajouter une adresse</h3>
-      }
-      @else {
-        <h3>Modifier une adresse</h3>
-      }
-
-      <div class="form-grid">
-        <div class="form-field">
-          <label for="rue">Rue</label>
-          <input id="rue" type="text" formControlName="rue">
-
-          @if (adresseForm.controls.rue.invalid && adresseForm.controls.rue.touched) {
-            <p class="error">La rue est obligatoire.</p>
-          }
-        </div>
-
-        <div class="form-field">
-          <label for="numero">Numéro</label>
-          <input id="numero" type="text" formControlName="numero">
-
-          @if (adresseForm.controls.numero.invalid && adresseForm.controls.numero.touched) {
-            <p class="error">Le numéro est obligatoire.</p>
-          }
-        </div>
-
-        <div class="form-field">
-          <label for="localite_id">Localité</label>
-          <select id="localite_id" formControlName="localite_id">
-            <option [ngValue]="null">Sélectionner une localité</option>
-
-            @for (localite of localites(); track localite.id_localite) {
-              <option [ngValue]="localite.id_localite">
-                {{ localite.code_postal }} {{ localite.localite }}
-              </option>
-            }
-          </select>
-
-          @if (adresseForm.controls.localite_id.invalid && adresseForm.controls.localite_id.touched) {
-            <p class="error">La localité est obligatoire.</p>
-          }
-        </div>
-
-        <div class="form-field">
-          <label for="par_defaut">Type d'adresse</label>
-          <select id="par_defaut" formControlName="par_defaut">
-            <option [ngValue]="0">Adresse secondaire</option>
-            <option [ngValue]="1">Adresse par défaut</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-actions">
-        <button type="submit">Enregistrer l'adresse</button>
-        <button type="button" class="cancel-button" (click)="annulerAdresse()">Annuler</button>
-      </div>
-    </form>
   }
 </section>

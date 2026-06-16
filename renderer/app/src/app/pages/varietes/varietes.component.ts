@@ -24,7 +24,6 @@ export class VarietesComponent {
   especeRecherche = signal('');
   ensoleillementRecherche = signal('');
   cycleVieRecherche = signal('');
-  typeRecherche = signal('');
 
   async ngOnInit(): Promise<void> {
     await this.chargerVarietes();
@@ -37,7 +36,8 @@ export class VarietesComponent {
       this.varietes.set(result);
       this.message.set('');
     }
-    catch {
+    catch (error) {
+      console.error('Erreur chargement variétés', { error });
       this.message.set('Erreur pendant le chargement des variétés.');
     }
     finally {
@@ -46,39 +46,14 @@ export class VarietesComponent {
   }
 
   varietesFiltrees = computed(() => {
-    const rechercheNom = this.rechercheNom().toLowerCase().trim();
-    const bioRecherche = this.bioRecherche();
-    const typeRecherche = this.typeRecherche();
-    const especeRecherche = this.especeRecherche();
-    const ensoleillementRecherche = this.ensoleillementRecherche();
-    const cycleVieRecherche = this.cycleVieRecherche();
-
-    return this.varietes().filter(variete => {
-      const correspondNom = rechercheNom === '' || variete.nom.toLowerCase().includes(rechercheNom);
-
-      const correspondBio =
-        bioRecherche === '' ||
-        bioRecherche === 'bio' && variete.bio === 1 ||
-        bioRecherche === 'non-bio' && variete.bio !== 1;
-
-      const correspondType =
-        typeRecherche === '' ||
-        typeRecherche === 'aromate' && this.estAromate(variete) ||
-        typeRecherche === 'legume' && !this.estAromate(variete);
-
-      const correspondEspece = especeRecherche === '' || variete.espece.nom_commun === especeRecherche;
-
-      const correspondEnsoleillement = ensoleillementRecherche === '' || variete.type_ensoleillement === ensoleillementRecherche;
-
-      const correspondCycleVie = cycleVieRecherche === '' || variete.cycle_de_vie === cycleVieRecherche;
-
-      return correspondNom
-        && correspondBio
-        && correspondType
-        && correspondEspece
-        && correspondEnsoleillement
-        && correspondCycleVie;
-    });
+    return this.varieteService.filtrerVarietes(
+      this.varietes(),
+      this.rechercheNom(),
+      this.bioRecherche(),
+      this.especeRecherche(),
+      this.ensoleillementRecherche(),
+      this.cycleVieRecherche()
+    );
   });
 
   especesDisponibles = computed(() => {
@@ -104,19 +79,10 @@ export class VarietesComponent {
   });
 
   getNombreProduits(variete: Variete): number {
-    return variete._count?.produit ?? 0;
+    return this.varieteService.getNombreProduits(variete);
   }
 
   getLabelBio(variete: Variete): string {
-    if (variete.bio === 1) {
-      return 'Bio';
-    }
-
-    return 'Non bio';
+    return this.varieteService.getLabelBio(variete);
   }
-
-  estAromate(variete: Variete): boolean {
-    return (variete.aromate?.length ?? 0) > 0;
-  }
-
 }

@@ -22,10 +22,7 @@ function hacherMotDePasse(motDePasse: string): { hash: string; saltHex: string }
   };
 }
 
-export function genererUtilisateursHashes(
-  fichierSource: string,
-  fichierDestination: string
-): void {
+export function genererUtilisateursHashes(fichierSource: string, fichierDestination: string): void {
   const contenu = fs.readFileSync(fichierSource, 'utf-8');
 
   const regex = /\('((?:''|[^'])*)', '((?:''|[^'])*)', '((?:''|[^'])*)', '((?:''|[^'])*)', randomblob\(16\)\)([,;])/g;

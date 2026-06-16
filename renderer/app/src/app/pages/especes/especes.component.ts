@@ -10,6 +10,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './especes.component.html',
   styleUrl: './especes.component.css',
 })
+
 export class EspecesComponent {
   private readonly especeService = inject(EspeceService);
   readonly authService = inject(AuthService);
@@ -31,7 +32,8 @@ export class EspecesComponent {
       this.especes.set(result);
       this.message.set('');
     }
-    catch {
+    catch (error) {
+      console.error('Erreur chargement espèces', { error });
       this.message.set('Erreur pendant le chargement des espèces.');
     }
     finally {
@@ -40,20 +42,11 @@ export class EspecesComponent {
   }
 
   especesFiltrees = computed(() => {
-    const rechercheNomScientifique = this.rechercheNomScientifique().toLowerCase().trim();
-    const rechercheNomCommun = this.rechercheNomCommun().toLowerCase().trim();
-
-    return this.especes().filter(espece => {
-      const correspondNomScientifique =
-        rechercheNomScientifique === '' ||
-        espece.nom_scientifique.toLowerCase().includes(rechercheNomScientifique);
-
-      const correspondNomCommun =
-        rechercheNomCommun === '' ||
-        espece.nom_commun.toLowerCase().includes(rechercheNomCommun);
-
-      return correspondNomScientifique && correspondNomCommun;
-    });
+    return this.especeService.filtrerEspeces(
+      this.especes(),
+      this.rechercheNomCommun(),
+      this.rechercheNomScientifique()
+    );
   });
 
   changerRechercheNomCommun(event: Event): void {
@@ -67,6 +60,6 @@ export class EspecesComponent {
   }
 
   getNombreVarietes(espece: Espece): number {
-    return espece._count?.variete ?? 0;
+    return this.especeService.getNombreVarietes(espece);
   }
 }

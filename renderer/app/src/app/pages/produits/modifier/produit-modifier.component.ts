@@ -1,7 +1,7 @@
 import { Component, inject, input, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Categorie, Produit, ProduitUpdateInput, Variete } from '../../../types/electron';
+import { Categorie, Produit, Variete } from '../../../types/electron';
 import { CategorieService } from '../../../services/categorie.service';
 import { ProduitService } from '../../../services/produit.service';
 import { VarieteService } from '../../../services/variete.service';
@@ -73,7 +73,8 @@ export class ProduitModifierComponent {
 
       this.message.set('');
     }
-    catch {
+    catch (error) {
+      console.error('Erreur chargement produit', { error, idProduit });
       this.message.set('Erreur pendant le chargement du produit.');
     }
     finally {
@@ -88,31 +89,18 @@ export class ProduitModifierComponent {
       return;
     }
 
-    const valeurFormulaire = this.produitForm.getRawValue();
-
-    const produit: ProduitUpdateInput = {
-      id_produit: this.produit()!.id_produit,
-      intitule: valeurFormulaire.intitule?.trim() ?? '',
-      prix_unitaire: Number(valeurFormulaire.prix_unitaire),
-      quantite: Number(valeurFormulaire.quantite),
-      categorie_id: Number(valeurFormulaire.categorie_id),
-      variete_id: Number(valeurFormulaire.variete_id),
-    };
+    const produit = this.produitService.construireProduitUpdateInput(
+      this.produit()!.id_produit,
+      this.produitForm.getRawValue()
+    );
 
     try {
       await this.produitService.updateProduit(produit);
       await this.router.navigate(['/produits', produit.id_produit]);
     }
     catch (error) {
-      const message = String(error);
-
-      if (message.includes('DUPLICATE_PRODUCT')) {
-        this.message.set('Un produit avec cet intitulé et cette variété existe déjà.');
-        return;
-      }
-
-      console.error(error);
-      this.message.set('Une erreur technique est survenue pendant la modification du produit.');
+      console.error('Erreur modification produit', { error, formulaire: this.produitForm.getRawValue(), produit });
+      this.message.set(this.produitService.getMessageErreurModification());
     }
   }
 }

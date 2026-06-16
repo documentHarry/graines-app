@@ -13,6 +13,8 @@ describe('CategoriesComponent', () => {
 
   let categorieServiceMock: {
     getCategories: ReturnType<typeof vi.fn>;
+    filtrerCategories: ReturnType<typeof vi.fn>;
+    getNombreProduits: ReturnType<typeof vi.fn>;
   };
 
   let authServiceMock: {
@@ -41,6 +43,27 @@ describe('CategoriesComponent', () => {
   beforeEach(async () => {
     categorieServiceMock = {
       getCategories: vi.fn().mockResolvedValue(categoriesMock),
+      filtrerCategories: vi.fn().mockImplementation((
+        categories: Categorie[],
+        rechercheNom: string,
+        rechercheDescriptif: string
+      ) => {
+        const nom = rechercheNom.toLowerCase().trim();
+        const descriptif = rechercheDescriptif.toLowerCase().trim();
+
+        return categories.filter(categorie => {
+          const correspondNom =
+            nom === '' || categorie.nom_categorie.toLowerCase().includes(nom);
+
+          const correspondDescriptif =
+            descriptif === '' || (categorie.descriptif ?? '').toLowerCase().includes(descriptif);
+
+          return correspondNom && correspondDescriptif;
+        });
+      }),
+      getNombreProduits: vi.fn().mockImplementation((categorie: Categorie | null) => {
+        return categorie?._count?.produit ?? 0;
+      }),
     };
 
     authServiceMock = {
@@ -87,20 +110,35 @@ describe('CategoriesComponent', () => {
     expect(component.isLoading()).toBe(false);
   });
 
-  it('devrait filtrer les catégories par nom', () => {
+  it('devrait filtrer les catégories par nom via le service', () => {
     component.rechercheNom.set('bois');
 
     expect(component.categoriesFiltrees()).toEqual([categoriesMock[0]]);
+    expect(categorieServiceMock.filtrerCategories).toHaveBeenCalledWith(
+      categoriesMock,
+      'bois',
+      ''
+    );
   });
 
-  it('devrait filtrer les catégories par descriptif', () => {
+  it('devrait filtrer les catégories par descriptif via le service', () => {
     component.rechercheDescriptif.set('boissons');
 
     expect(component.categoriesFiltrees()).toEqual([categoriesMock[0]]);
+    expect(categorieServiceMock.filtrerCategories).toHaveBeenCalledWith(
+      categoriesMock,
+      '',
+      'boissons'
+    );
   });
 
   it('devrait retourner toutes les catégories si les recherches sont vides', () => {
     expect(component.categoriesFiltrees()).toEqual(categoriesMock);
+    expect(categorieServiceMock.filtrerCategories).toHaveBeenCalledWith(
+      categoriesMock,
+      '',
+      ''
+    );
   });
 
   it('devrait mettre à jour la recherche par nom', () => {
@@ -123,16 +161,18 @@ describe('CategoriesComponent', () => {
     expect(component.rechercheDescriptif()).toBe('boissons');
   });
 
-  it('devrait retourner le nombre de produits', () => {
+  it('devrait retourner le nombre de produits via le service', () => {
     expect(component.getNombreProduits(categoriesMock[0])).toBe(3);
+    expect(categorieServiceMock.getNombreProduits).toHaveBeenCalledWith(categoriesMock[0]);
   });
 
-  it('devrait retourner 0 si la catégorie n’a pas de produits', () => {
+  it('devrait retourner 0 si la catégorie n’a pas de produits via le service', () => {
     const categorie = {
       id_categorie: 1,
       nom_categorie: 'Boissons',
     } as Categorie;
 
     expect(component.getNombreProduits(categorie)).toBe(0);
+    expect(categorieServiceMock.getNombreProduits).toHaveBeenCalledWith(categorie);
   });
 });

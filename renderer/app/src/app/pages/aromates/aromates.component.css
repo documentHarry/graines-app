@@ -1,0 +1,100 @@
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.page-header h2 {
+  margin: 0 0 0 16px;
+  color: #f2a65a;
+  font-size: 28px;
+}
+
+.add-link {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background-color: #f2a65a;
+  color: #2a1a10;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.add-link:hover {
+  background-color: #ffb86b;
+}
+
+.aromates-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.aromates-zone {
+  min-width: 0;
+}
+
+.aromates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  align-items: stretch;
+}
+
+.aromate-card {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  border: 1px solid #8a5a36;
+  border-radius: 16px;
+  background-color: #f8ead8;
+  color: #2a1a10;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 18%);
+}
+
+.aromate-card:hover {
+  transform: translateY(-1px);
+}
+
+.aromate-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+h2 {
+  margin: 0;
+  color: #d9782d;
+  font-size: 17px;
+  line-height: 1.2;
+}
+
+.scientifique {
+  margin: 6px 0 0;
+  color: #5f4b3b;
+  font-style: italic;
+}
+
+.infos p {
+  margin: 6px 0;
+  line-height: 1.35;
+}
+
+.details-link {
+  display: inline-block;
+  margin-top: auto;
+  padding-top: 12px;
+  color: #7a3e13;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.details-link:hover {
+  color: #3f7d20;
+  text-decoration: underline;
+}

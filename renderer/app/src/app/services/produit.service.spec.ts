@@ -12,7 +12,6 @@ describe('ProduitService', () => {
     getProduits: ReturnType<typeof vi.fn>;
     getProduitById: ReturnType<typeof vi.fn>;
     getProduitsByCategorie: ReturnType<typeof vi.fn>;
-    getProduitsSimilaires: ReturnType<typeof vi.fn>;
     createProduit: ReturnType<typeof vi.fn>;
     updateProduit: ReturnType<typeof vi.fn>;
     deleteProduit: ReturnType<typeof vi.fn>;
@@ -75,7 +74,6 @@ describe('ProduitService', () => {
       getProduits: vi.fn().mockResolvedValue([produitMock]),
       getProduitById: vi.fn().mockResolvedValue(produitMock),
       getProduitsByCategorie: vi.fn().mockResolvedValue([produitMock]),
-      getProduitsSimilaires: vi.fn().mockResolvedValue([produitMock]),
       createProduit: vi.fn().mockResolvedValue(produitMock),
       updateProduit: vi.fn().mockResolvedValue(produitMock),
       deleteProduit: vi.fn().mockResolvedValue(produitMock),
@@ -123,14 +121,6 @@ describe('ProduitService', () => {
     expect(result).toEqual([produitMock]);
   });
 
-  it('devrait récupérer les produits similaires', async () => {
-    const result = await service.getProduitsSimilaires(1);
-
-    expect(electronServiceMock.getApi).toHaveBeenCalled();
-    expect(apiMock.getProduitsSimilaires).toHaveBeenCalledWith(1);
-    expect(result).toEqual([produitMock]);
-  });
-
   it('devrait créer un produit', async () => {
     const input: ProduitCreateInput = {
       intitule: 'Graines de basilic',
@@ -170,5 +160,200 @@ describe('ProduitService', () => {
     expect(electronServiceMock.getApi).toHaveBeenCalled();
     expect(apiMock.deleteProduit).toHaveBeenCalledWith(1);
     expect(result).toEqual(produitMock);
+  });
+
+    it('devrait filtrer les produits par recherche texte', () => {
+    const result = service.filtrerProduits(
+      [produitMock],
+      'basilic',
+      '',
+      '',
+      '',
+      '',
+      ''
+    );
+
+    expect(result).toEqual([produitMock]);
+  });
+
+  it('devrait filtrer les produits en stock', () => {
+    const result = service.filtrerProduits(
+      [produitMock],
+      '',
+      'en-stock',
+      '',
+      '',
+      '',
+      ''
+    );
+
+    expect(result).toEqual([produitMock]);
+  });
+
+  it('devrait filtrer les produits en rupture', () => {
+    const produitRupture = {
+      ...produitMock,
+      quantite: 0,
+    } as Produit;
+
+    const result = service.filtrerProduits(
+      [produitMock, produitRupture],
+      '',
+      'rupture',
+      '',
+      '',
+      '',
+      ''
+    );
+
+    expect(result).toEqual([produitRupture]);
+  });
+
+  it('devrait filtrer les produits par prix minimum', () => {
+    const result = service.filtrerProduits(
+      [produitMock],
+      '',
+      '',
+      '3',
+      '',
+      '',
+      ''
+    );
+
+    expect(result).toEqual([produitMock]);
+  });
+
+  it('devrait filtrer les produits par prix maximum', () => {
+    const result = service.filtrerProduits(
+      [produitMock],
+      '',
+      '',
+      '',
+      '4',
+      '',
+      ''
+    );
+
+    expect(result).toEqual([produitMock]);
+  });
+
+  it('devrait filtrer les produits par espèce', () => {
+    const result = service.filtrerProduits(
+      [produitMock],
+      '',
+      '',
+      '',
+      '',
+      '',
+      'Basilic'
+    );
+
+    expect(result).toEqual([produitMock]);
+  });
+
+  it('devrait retourner une liste vide si aucun produit ne correspond', () => {
+    const result = service.filtrerProduits(
+      [produitMock],
+      'tomate',
+      '',
+      '',
+      '',
+      '',
+      ''
+    );
+
+    expect(result).toEqual([]);
+  });
+
+  it('devrait retourner le statut en stock', () => {
+    expect(service.getStatutProduit(produitMock)).toBe('En stock');
+  });
+
+  it('devrait retourner le statut rupture de stock', () => {
+    expect(service.getStatutProduit({ ...produitMock, quantite: 0 } as Produit)).toBe('Rupture de stock');
+  });
+
+  it('devrait retourner le label bio oui', () => {
+    expect(service.getLabelBio(produitMock)).toBe('Oui');
+  });
+
+  it('devrait retourner le label bio non', () => {
+    const produitNonBio = {
+      ...produitMock,
+      variete: {
+        ...produitMock.variete,
+        bio: 0,
+      },
+    } as Produit;
+
+    expect(service.getLabelBio(produitNonBio)).toBe('Non');
+  });
+
+  it('devrait retourner l’image du produit', () => {
+    const produitAvecImage = {
+      ...produitMock,
+      image_produit: 'image.png',
+    } as Produit;
+
+    expect(service.getImageProduit(produitAvecImage)).toBe('image.png');
+  });
+
+  it('devrait retourner null si le produit n’a pas d’image', () => {
+    expect(service.getImageProduit(produitMock)).toBeNull();
+  });
+
+  it('devrait construire un ProduitCreateInput', () => {
+    const result = service.construireProduitCreateInput({
+      intitule: ' Graines de basilic ',
+      prix_unitaire: 3.5,
+      quantite: 10,
+      categorie_id: 1,
+      variete_id: 1,
+    });
+
+    expect(result).toEqual({
+      intitule: 'Graines de basilic',
+      prix_unitaire: 3.5,
+      quantite: 10,
+      categorie_id: 1,
+      variete_id: 1,
+    });
+  });
+
+  it('devrait construire un ProduitUpdateInput', () => {
+    const result = service.construireProduitUpdateInput(1, {
+      intitule: ' Graines de basilic modifiées ',
+      prix_unitaire: 4,
+      quantite: 20,
+      categorie_id: 1,
+      variete_id: 1,
+    });
+
+    expect(result).toEqual({
+      id_produit: 1,
+      intitule: 'Graines de basilic modifiées',
+      prix_unitaire: 4,
+      quantite: 20,
+      categorie_id: 1,
+      variete_id: 1,
+    });
+  });
+
+  it('devrait retourner le message d’erreur à la création', () => {
+    expect(service.getMessageErreurCreation()).toBe(
+      'Une erreur est survenue pendant la création du produit.'
+    );
+  });
+
+  it('devrait retourner le message d’erreur à la modification', () => {
+    expect(service.getMessageErreurModification()).toBe(
+      'Une erreur est survenue pendant la modification du produit.'
+    );
+  });
+
+  it('devrait retourner le message technique à la suppression', () => {
+    expect(service.getMessageErreurSuppression()).toBe(
+      'Une erreur est survenue pendant la suppression du produit.'
+    );
   });
 });

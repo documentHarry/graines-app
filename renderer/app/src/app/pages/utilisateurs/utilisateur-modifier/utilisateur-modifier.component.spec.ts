@@ -9,10 +9,14 @@ import { Utilisateur } from '../../../types/electron';
 describe('UtilisateurModifierComponent', () => {
   let component: UtilisateurModifierComponent;
   let fixture: ComponentFixture<UtilisateurModifierComponent>;
+
   let utilisateurServiceMock: {
     getUtilisateurById: ReturnType<typeof vi.fn>;
     updateUtilisateur: ReturnType<typeof vi.fn>;
+    construireUtilisateurUpdateInput: ReturnType<typeof vi.fn>;
+    getMessageErreurModification: ReturnType<typeof vi.fn>;
   };
+
   let router: Router;
 
   const utilisateurMock: Utilisateur = {
@@ -31,6 +35,25 @@ describe('UtilisateurModifierComponent', () => {
     utilisateurServiceMock = {
       getUtilisateurById: vi.fn().mockResolvedValue(utilisateurMock),
       updateUtilisateur: vi.fn().mockResolvedValue(undefined),
+
+      construireUtilisateurUpdateInput: vi.fn().mockImplementation((idUtilisateur, valeurFormulaire) => {
+        return {
+          id_utilisateur: idUtilisateur,
+          nom: valeurFormulaire.nom?.trim() ?? '',
+          prenom: valeurFormulaire.prenom?.trim() ?? '',
+          email: valeurFormulaire.email?.trim() ?? '',
+        };
+      }),
+
+      getMessageErreurModification: vi.fn().mockImplementation((error: unknown) => {
+        const message = String(error);
+
+        if (message.includes('DUPLICATE_USER_EMAIL')) {
+          return 'Un utilisateur avec cet email existe déjà.';
+        }
+
+        return 'Une erreur technique est survenue pendant la modification de l’utilisateur.';
+      }),
     };
 
     await TestBed.configureTestingModule({
@@ -44,6 +67,11 @@ describe('UtilisateurModifierComponent', () => {
     router = TestBed.inject(Router);
     fixture = TestBed.createComponent(UtilisateurModifierComponent);
     component = fixture.componentInstance;
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
   it('devrait créer le composant', () => {
@@ -161,6 +189,7 @@ describe('UtilisateurModifierComponent', () => {
     await component.enregistrer();
 
     expect(component.message()).toBe('Veuillez remplir les champs obligatoires.');
+    expect(utilisateurServiceMock.construireUtilisateurUpdateInput).not.toHaveBeenCalled();
     expect(utilisateurServiceMock.updateUtilisateur).not.toHaveBeenCalled();
   });
 
@@ -175,10 +204,11 @@ describe('UtilisateurModifierComponent', () => {
     await component.enregistrer();
 
     expect(component.message()).toBe('Veuillez remplir les champs obligatoires.');
+    expect(utilisateurServiceMock.construireUtilisateurUpdateInput).not.toHaveBeenCalled();
     expect(utilisateurServiceMock.updateUtilisateur).not.toHaveBeenCalled();
   });
 
-  it('devrait modifier l’utilisateur et rediriger vers son détail', async () => {
+  it('devrait construire puis modifier l’utilisateur et rediriger vers son détail', async () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     component.utilisateur.set(utilisateurMock);
@@ -190,6 +220,16 @@ describe('UtilisateurModifierComponent', () => {
     });
 
     await component.enregistrer();
+
+    expect(utilisateurServiceMock.construireUtilisateurUpdateInput).toHaveBeenCalledWith(
+      1,
+      {
+        nom: ' Dupont ',
+        prenom: ' Marie ',
+        email: 'marie@example.com',
+        actif: 1,
+      }
+    );
 
     expect(utilisateurServiceMock.updateUtilisateur).toHaveBeenCalledWith({
       id_utilisateur: 1,
@@ -214,11 +254,15 @@ describe('UtilisateurModifierComponent', () => {
 
     await component.enregistrer();
 
-    expect(component.message()).toBe('Un utilisateur avec cet email existe déjà.');
+    expect(utilisateurServiceMock.getMessageErreurModification).toHaveBeenCalled();
+    expect(component.message()).toBe(
+      'Une erreur technique est survenue pendant la modification de l’utilisateur.'
+    );
   });
 
   it('devrait afficher un message si la modification échoue techniquement', async () => {
-    utilisateurServiceMock.updateUtilisateur.mockRejectedValue(new Error('Erreur technique'));
+    const error = new Error('Erreur technique');
+    utilisateurServiceMock.updateUtilisateur.mockRejectedValue(error);
 
     component.utilisateur.set(utilisateurMock);
     component.utilisateurForm.patchValue({
@@ -230,6 +274,7 @@ describe('UtilisateurModifierComponent', () => {
 
     await component.enregistrer();
 
+    expect(utilisateurServiceMock.getMessageErreurModification).toHaveBeenCalled();
     expect(component.message()).toBe('Une erreur technique est survenue pendant la modification de l’utilisateur.');
   });
 });

@@ -1,0 +1,26 @@
+<a class="back-link" routerLink="/proprietes-medicinales">← Retour aux propriétés médicinales</a>
+
+<h1>Supprimer une propriété médicinale</h1>
+
+@if (isLoading()) {
+  <p>Chargement de la propriété médicinale...</p>
+}
+@else if (message() && !propriete()) {
+  <p class="message">{{ message() }}</p>
+}
+@else if (propriete()) {
+  <section class="delete-card">
+    <h2>{{ propriete()?.nom_propriete }}</h2>
+
+    @if (message()) {
+      <p class="message-card">{{ message() }}</p>
+    }
+
+    <p>Cette propriété médicinale sera supprimée et retirée des aromates associés.</p>
+
+    <div class="actions">
+      <button type="button" class="delete-button" (click)="supprimerPropriete()">Supprimer</button>
+      <button type="button" class="cancel-button" (click)="annuler()">Annuler</button>
+    </div>
+  </section>
+}

@@ -3,7 +3,6 @@ import { provideRouter, Router } from '@angular/router';
 import { vi } from 'vitest';
 
 import { EspeceService } from '../../../services/espece.service';
-import { ProprieteMedicinaleService } from '../../../services/propriete-medicinale.service';
 import { VarieteService } from '../../../services/variete.service';
 import { VarieteAjouterComponent } from './variete-ajouter.component';
 
@@ -15,12 +14,11 @@ describe('VarieteAjouterComponent', () => {
     getEspeces: ReturnType<typeof vi.fn>;
   };
 
-  let proprieteMedicinaleServiceMock: {
-    getProprietesMedicinales: ReturnType<typeof vi.fn>;
-  };
-
   let varieteServiceMock: {
     createVariete: ReturnType<typeof vi.fn>;
+    construireVarieteCreateInput: ReturnType<typeof vi.fn>;
+    construireAromateInput: ReturnType<typeof vi.fn>;
+    getMessageErreurCreation: ReturnType<typeof vi.fn>;
   };
 
   let router: Router;
@@ -49,12 +47,64 @@ describe('VarieteAjouterComponent', () => {
       getEspeces: vi.fn().mockResolvedValue(especesMock),
     };
 
-    proprieteMedicinaleServiceMock = {
-      getProprietesMedicinales: vi.fn().mockResolvedValue(proprietesMedicinalesMock),
-    };
-
     varieteServiceMock = {
       createVariete: vi.fn().mockResolvedValue(undefined),
+
+      construireAromateInput: vi.fn().mockImplementation((valeurFormulaire, proprietesIds) => {
+        const partieUtilisee = valeurFormulaire.partie_utilisee?.trim() || null;
+        const propriete = valeurFormulaire.propriete_aromate?.trim() || null;
+        const usageCulinaire = valeurFormulaire.usage_culinaire?.trim() || null;
+
+        if (!partieUtilisee && !propriete && !usageCulinaire && proprietesIds.length === 0) {
+          return null;
+        }
+
+        return {
+          partie_utilisee: partieUtilisee,
+          propriete,
+          usage_culinaire: usageCulinaire,
+          proprietes_ids: proprietesIds,
+        };
+      }),
+
+      construireVarieteCreateInput: vi.fn().mockImplementation((valeurFormulaire, proprietesIds) => {
+        return {
+          espece_id: Number(valeurFormulaire.espece_id),
+          nom: valeurFormulaire.nom?.trim() ?? '',
+          descriptif: valeurFormulaire.descriptif?.trim() || null,
+          bio: Number(valeurFormulaire.bio),
+          cycle_jours: valeurFormulaire.cycle_jours,
+          couleur_legume: valeurFormulaire.couleur_legume?.trim() || null,
+          taille_fixe_legume: valeurFormulaire.taille_fixe_legume,
+          taille_min_legume: valeurFormulaire.taille_min_legume,
+          taille_max_legume: valeurFormulaire.taille_max_legume,
+          espacement_entre_les_plants: valeurFormulaire.espacement_entre_les_plants,
+          espacement_entre_les_lignes: valeurFormulaire.espacement_entre_les_lignes,
+          type_ensoleillement: valeurFormulaire.type_ensoleillement?.trim() || null,
+          type_feuillage: valeurFormulaire.type_feuillage?.trim() || null,
+          hauteur_adulte_min: valeurFormulaire.hauteur_adulte_min,
+          hauteur_adulte_max: valeurFormulaire.hauteur_adulte_max,
+          duree_de_germination: valeurFormulaire.duree_de_germination?.trim() || null,
+          temperature_min_de_germination: valeurFormulaire.temperature_min_de_germination,
+          cycle_de_vie: valeurFormulaire.cycle_de_vie?.trim() || null,
+          rusticite_plante: valeurFormulaire.rusticite_plante?.trim() || null,
+          date_semis_min: valeurFormulaire.date_semis_min?.trim() || null,
+          date_semis_max: valeurFormulaire.date_semis_max?.trim() || null,
+          duree_avant_recolte: valeurFormulaire.duree_avant_recolte?.trim() || null,
+          type_de_sol: valeurFormulaire.type_de_sol?.trim() || null,
+          conseil_plantation: valeurFormulaire.conseil_plantation?.trim() || null,
+        };
+      }),
+
+      getMessageErreurCreation: vi.fn().mockImplementation((error: unknown) => {
+        const message = String(error);
+
+        if (message.includes('DUPLICATE_VARIETE')) {
+          return 'Une variété avec ce nom existe déjà pour cette espèce.';
+        }
+
+        return 'Une erreur technique est survenue pendant la création de la variété.';
+      }),
     };
 
     await TestBed.configureTestingModule({
@@ -62,7 +112,6 @@ describe('VarieteAjouterComponent', () => {
       providers: [
         provideRouter([]),
         { provide: EspeceService, useValue: especeServiceMock },
-        { provide: ProprieteMedicinaleService, useValue: proprieteMedicinaleServiceMock },
         { provide: VarieteService, useValue: varieteServiceMock },
       ],
     }).compileComponents();
@@ -70,6 +119,11 @@ describe('VarieteAjouterComponent', () => {
     router = TestBed.inject(Router);
     fixture = TestBed.createComponent(VarieteAjouterComponent);
     component = fixture.componentInstance;
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
   it('devrait créer le composant', () => {
@@ -80,9 +134,7 @@ describe('VarieteAjouterComponent', () => {
     await component.chargerDonnees();
 
     expect(especeServiceMock.getEspeces).toHaveBeenCalled();
-    expect(proprieteMedicinaleServiceMock.getProprietesMedicinales).toHaveBeenCalled();
     expect(component.especes()).toEqual(especesMock);
-    expect(component.proprietesMedicinales()).toEqual(proprietesMedicinalesMock);
     expect(component.isLoading()).toBe(false);
     expect(component.message()).toBe('');
   });
@@ -150,61 +202,6 @@ describe('VarieteAjouterComponent', () => {
     expect(component.varieteForm.valid).toBe(true);
   });
 
-  it('devrait retourner null si aucune information aromatique n’est renseignée', () => {
-    component.varieteForm.patchValue({
-      partie_utilisee: '',
-      propriete_aromate: '',
-      usage_culinaire: '',
-    });
-
-    component.proprietesSelectionnees.set([]);
-
-    expect(component.getAromateInput()).toBe(null);
-  });
-
-  it('devrait construire un AromateInput quand les champs aromate sont renseignés', () => {
-    component.varieteForm.patchValue({
-      partie_utilisee: ' Feuilles ',
-      propriete_aromate: ' Parfumée ',
-      usage_culinaire: ' Sauces et salades ',
-    });
-
-    component.proprietesSelectionnees.set([1, 2]);
-
-    expect(component.getAromateInput()).toEqual({
-      partie_utilisee: 'Feuilles',
-      propriete: 'Parfumée',
-      usage_culinaire: 'Sauces et salades',
-      proprietes_ids: [1, 2],
-    });
-  });
-
-  it('devrait ajouter une propriété médicinale sélectionnée', () => {
-    const event = {
-      target: {
-        checked: true,
-      },
-    } as unknown as Event;
-
-    component.changerPropriete(event, 1);
-
-    expect(component.proprietesSelectionnees()).toEqual([1]);
-  });
-
-  it('devrait retirer une propriété médicinale décochée', () => {
-    component.proprietesSelectionnees.set([1, 2]);
-
-    const event = {
-      target: {
-        checked: false,
-      },
-    } as unknown as Event;
-
-    component.changerPropriete(event, 1);
-
-    expect(component.proprietesSelectionnees()).toEqual([2]);
-  });
-
   it('ne devrait pas enregistrer si le formulaire est invalide', async () => {
     component.varieteForm.patchValue({
       espece_id: 0,
@@ -215,6 +212,7 @@ describe('VarieteAjouterComponent', () => {
     await component.enregistrer();
 
     expect(component.message()).toBe('Veuillez remplir les champs obligatoires.');
+    expect(varieteServiceMock.construireVarieteCreateInput).not.toHaveBeenCalled();
     expect(varieteServiceMock.createVariete).not.toHaveBeenCalled();
   });
 
@@ -246,14 +244,14 @@ describe('VarieteAjouterComponent', () => {
       duree_avant_recolte: '',
       type_de_sol: '',
       conseil_plantation: '',
-      partie_utilisee: 'Feuilles',
-      propriete_aromate: 'Parfumée',
-      usage_culinaire: 'Cuisine',
     });
 
-    component.proprietesSelectionnees.set([1]);
 
     await component.enregistrer();
+
+    expect(varieteServiceMock.construireVarieteCreateInput).toHaveBeenCalledWith(
+      component.varieteForm.getRawValue()
+    );
 
     expect(varieteServiceMock.createVariete).toHaveBeenCalledWith({
       espece_id: 1,
@@ -280,12 +278,6 @@ describe('VarieteAjouterComponent', () => {
       duree_avant_recolte: null,
       type_de_sol: null,
       conseil_plantation: null,
-      aromate: {
-        partie_utilisee: 'Feuilles',
-        propriete: 'Parfumée',
-        usage_culinaire: 'Cuisine',
-        proprietes_ids: [1],
-      },
     });
 
     expect(navigateSpy).toHaveBeenCalledWith(['/varietes']);
@@ -293,6 +285,9 @@ describe('VarieteAjouterComponent', () => {
 
   it('devrait afficher un message si la variété existe déjà', async () => {
     varieteServiceMock.createVariete.mockRejectedValue('DUPLICATE_VARIETE');
+    varieteServiceMock.getMessageErreurCreation.mockReturnValueOnce(
+      'Une variété avec ce nom existe déjà pour cette espèce.'
+    );
 
     component.varieteForm.patchValue({
       espece_id: 1,
@@ -302,11 +297,13 @@ describe('VarieteAjouterComponent', () => {
 
     await component.enregistrer();
 
+    expect(varieteServiceMock.getMessageErreurCreation).toHaveBeenCalled();
     expect(component.message()).toBe('Une variété avec ce nom existe déjà pour cette espèce.');
   });
 
   it('devrait afficher un message si la création échoue techniquement', async () => {
-    varieteServiceMock.createVariete.mockRejectedValue(new Error('Erreur technique'));
+    const error = new Error('Erreur technique');
+    varieteServiceMock.createVariete.mockRejectedValue(error);
 
     component.varieteForm.patchValue({
       espece_id: 1,
@@ -316,6 +313,7 @@ describe('VarieteAjouterComponent', () => {
 
     await component.enregistrer();
 
+    expect(varieteServiceMock.getMessageErreurCreation).toHaveBeenCalled();
     expect(component.message()).toBe('Une erreur technique est survenue pendant la création de la variété.');
   });
 });

@@ -1,11 +1,11 @@
-@if (categorie()) {
+@if (categorieId()) {
   <a class="back-link" routerLink="/categories">← Catégories</a>
 }
 
 <div class="page-header">
-  <h2>{{ getTitrePage() }}</h2>
+  <h2>Produits</h2>
 
-  @if (!categorie() && authService.hasAnyRole(['ADMIN', 'GESTIONNAIRE_CATALOGUE'])) {
+  @if (!categorieId() && authService.hasAnyRole(['ADMIN', 'GESTIONNAIRE_CATALOGUE'])) {
     <a class="add-link" routerLink="/produits/ajouter">Ajouter un produit</a>
   }
 </div>
@@ -22,13 +22,10 @@
     <app-produit-filtres 
       [(recherche)]="recherche"
       [(stockRecherche)]="stockRecherche"
-      [(aromateRecherche)]="aromateRecherche"
       [(prixMinRecherche)]="prixMinRecherche"
       [(prixMaxRecherche)]="prixMaxRecherche"
-      [(categorieRecherche)]="categorieRecherche"
       [(varieteRecherche)]="varieteRecherche"
       [(especeRecherche)]="especeRecherche"
-      [categories]="categoriesDisponibles()"
       [varietes]="varietesDisponibles()"
       [especes]="especesDisponibles()"
       [prixMinimumDisponible]="prixMinimumDisponible()"
@@ -46,14 +43,9 @@
             <h3>{{ produit.intitule }}</h3>
 
             <div class="infos">
-              <p><strong>Catégorie: </strong>{{ produit.categorie.nom_categorie }}</p>
               <p><strong>Variété: </strong>{{ produit.variete.nom }}</p>
               <p><strong>Espèce: </strong>{{ produit.variete.espece.nom_commun }}</p>
               <p class="nom-scientifique">{{ produit.variete.espece.nom_scientifique }}</p>
-
-              @if (produit.variete.aromate) {
-                <p><strong>Aromate: </strong>Oui</p>
-              }
             </div>
 
             <div class="produit-footer">

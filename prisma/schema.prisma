@@ -37,20 +37,6 @@ model aromate_propriete {
   @@id([aromate_id, propriete_id])
 }
 
-model avis {
-  id_avis        Int         @id @default(autoincrement())
-  note           Int?        @default(5)
-  titre          String?
-  commentaire    String?
-  date_depot     String?     @default("CURRENT_TIMESTAMP")
-  statut         String?     @default("nouveau")
-  nombre_jaime   Int?        @default(0)
-  utilisateur_id Int
-  produit_id     Int
-  produit        produit     @relation(fields: [produit_id], references: [id_produit], onDelete: Cascade, onUpdate: NoAction)
-  utilisateur    utilisateur @relation(fields: [utilisateur_id], references: [id_utilisateur], onDelete: Cascade, onUpdate: NoAction)
-}
-
 model categorie {
   id_categorie  Int       @id @default(autoincrement())
   nom_categorie String    @unique(map: "sqlite_autoindex_categorie_1")
@@ -85,7 +71,6 @@ model produit {
   date_ajout    String?   @default("CURRENT_TIMESTAMP")
   variete_id    Int
   categorie_id  Int
-  avis          avis[]
   categorie     categorie @relation(fields: [categorie_id], references: [id_categorie], onUpdate: NoAction)
   variete       variete   @relation(fields: [variete_id], references: [id_variete], onUpdate: NoAction)
 }
@@ -112,7 +97,6 @@ model utilisateur {
   date_inscription  String?             @default("CURRENT_TIMESTAMP")
   actif             Int?                @default(1)
   adresse_livraison adresse_livraison[]
-  avis              avis[]
   utilisateur_role  utilisateur_role[]
 }
 

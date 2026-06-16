@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { Role, Utilisateur, UtilisateurRole } from '../../../types/electron';
 import { RoleService } from '../../../services/role.service';
 import { UtilisateurService } from '../../../services/utilisateur.service';
+import { UtilisateurRoleService } from '../../../services/utilisateur-role.service';
 
 @Component({
   selector: 'app-utilisateur-roles',
@@ -16,6 +17,7 @@ export class UtilisateurRolesComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly utilisateurService = inject(UtilisateurService);
   private readonly roleService = inject(RoleService);
+  private readonly utilisateurRoleService = inject(UtilisateurRoleService);
   private readonly router = inject(Router);
 
   id = input<string>();
@@ -46,7 +48,7 @@ export class UtilisateurRolesComponent {
     try {
       const utilisateur = await this.utilisateurService.getUtilisateurById(idUtilisateur);
       const roles = await this.roleService.getRoles();
-      const utilisateurRoles = await this.roleService.getUtilisateurRoles(idUtilisateur);
+      const utilisateurRoles = await this.utilisateurRoleService.getUtilisateurRoles(idUtilisateur);
 
       if (!utilisateur) {
         this.message.set('Utilisateur introuvable.');
@@ -58,13 +60,13 @@ export class UtilisateurRolesComponent {
       this.utilisateurRoles.set(utilisateurRoles);
 
       this.rolesForm.patchValue({
-        roles_ids: utilisateurRoles.map(utilisateurRole => utilisateurRole.role_id),
+        roles_ids: this.utilisateurRoleService.getRoleIdsDepuisUtilisateurRoles(utilisateurRoles),
       });
 
       this.message.set('');
     }
     catch (error) {
-      console.error(error);
+      console.error('Erreur chargement rôles utilisateur', { error, idUtilisateur });
       this.message.set('Erreur pendant le chargement des rôles de l’utilisateur.');
     }
     finally {
@@ -73,19 +75,13 @@ export class UtilisateurRolesComponent {
   }
 
   getNomComplet(): string {
-    const utilisateur = this.utilisateur();
-
-    if (!utilisateur) {
-      return '';
-    }
-
-    return `${utilisateur.prenom} ${utilisateur.nom}`;
+    return this.utilisateurRoleService.getNomComplet(this.utilisateur());
   }
 
   isRoleCoche(role: Role): boolean {
     const rolesIds = this.rolesForm.controls.roles_ids.value ?? [];
 
-    return rolesIds.includes(role.id_role);
+    return this.utilisateurRoleService.isRoleCoche(role, rolesIds);
   }
 
   modifierRole(role: Role, event: Event): void {
@@ -93,17 +89,21 @@ export class UtilisateurRolesComponent {
     const rolesIds = this.rolesForm.controls.roles_ids.value ?? [];
 
     if (input.checked) {
-      this.rolesForm.controls.roles_ids.setValue([ ...rolesIds, role.id_role ]);
+      this.rolesForm.controls.roles_ids.setValue(
+        this.utilisateurRoleService.ajouterRoleId(rolesIds, role)
+      );
       return;
     }
 
     this.rolesForm.controls.roles_ids.setValue(
-      rolesIds.filter(roleId => roleId !== role.id_role)
+      this.utilisateurRoleService.retirerRoleId(rolesIds, role)
     );
   }
 
   async enregistrer(): Promise<void> {
-    if (!this.utilisateur()) {
+    const utilisateur = this.utilisateur();
+
+    if (!utilisateur) {
       this.message.set('Utilisateur introuvable.');
       return;
     }
@@ -111,21 +111,23 @@ export class UtilisateurRolesComponent {
     const rolesIds = this.rolesForm.controls.roles_ids.value ?? [];
 
     if (rolesIds.length === 0) {
-      this.message.set('Un utilisateur doit avoir au moins un rôle.');
+      this.message.set(this.utilisateurRoleService.getMessageErreurAucunRole());
       return;
     }
 
     try {
-      await this.roleService.updateUtilisateurRoles({
-        utilisateur_id: this.utilisateur()!.id_utilisateur,
-        roles_ids: rolesIds,
-      });
+      const donnees = this.utilisateurRoleService.construireUtilisateurRoleUpdateInput(
+        utilisateur.id_utilisateur,
+        rolesIds
+      );
 
-      await this.router.navigate(['/utilisateurs', this.utilisateur()!.id_utilisateur]);
+      await this.utilisateurRoleService.updateUtilisateurRoles(donnees);
+
+      await this.router.navigate(['/utilisateurs', utilisateur.id_utilisateur]);
     }
     catch (error) {
-      console.error(error);
-      this.message.set('Une erreur technique est survenue pendant la modification des rôles.');
+      console.error('Erreur modification rôles utilisateur', { error, utilisateur, rolesIds });
+      this.message.set(this.utilisateurRoleService.getMessageErreurModification());
     }
   }
 }

@@ -15,13 +15,6 @@
     <option value="non-bio">Non bio</option>
   </select>
 
-  <label for="filtreType">Type</label>
-  <select id="filtreType" [value]="typeRecherche()" (change)="changerTypeRecherche($event)">
-    <option value="">Tous</option>
-    <option value="aromate">Aromate</option>
-    <option value="legume">Légume</option>
-  </select>
-
   <label for="filtreEspece">Espèce</label>
   <select id="filtreEspece" [value]="especeRecherche()" (change)="changerEspeceRecherche($event)">
     <option value="">Toutes</option>

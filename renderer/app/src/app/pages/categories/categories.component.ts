@@ -10,6 +10,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.css',
 })
+
 export class CategoriesComponent {
   private readonly categorieService = inject(CategorieService);
   readonly authService = inject(AuthService);
@@ -31,7 +32,8 @@ export class CategoriesComponent {
       this.categories.set(result);
       this.message.set('');
     }
-    catch {
+    catch (error) {
+      console.error('Erreur chargement catégories', { error });
       this.message.set('Erreur pendant le chargement des catégories.');
     }
     finally {
@@ -40,15 +42,11 @@ export class CategoriesComponent {
   }
 
   categoriesFiltrees = computed(() => {
-    const rechercheNom = this.rechercheNom().toLowerCase().trim();
-    const rechercheDescriptif = this.rechercheDescriptif().toLowerCase().trim();
-
-    return this.categories().filter(categorie => {
-      const correspondNom = rechercheNom === '' ||  categorie.nom_categorie.toLowerCase().includes(rechercheNom);
-      const correspondDescriptif = rechercheDescriptif === '' || (categorie.descriptif ?? '').toLowerCase().includes(rechercheDescriptif);
-
-      return correspondNom && correspondDescriptif;
-    });
+    return this.categorieService.filtrerCategories(
+      this.categories(),
+      this.rechercheNom(),
+      this.rechercheDescriptif()
+    );
   });
 
   changerRechercheNom(event: Event): void {
@@ -62,7 +60,7 @@ export class CategoriesComponent {
   }
 
   getNombreProduits(categorie: Categorie): number {
-    return categorie._count?.produit ?? 0;
+    return this.categorieService.getNombreProduits(categorie);
   }
 
 }

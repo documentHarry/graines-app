@@ -86,6 +86,23 @@ type AromateInput = {
   proprietes_ids: number[];
 };
 
+type AromateCreateInput = {
+  partie_utilisee: string | null;
+  propriete: string | null;
+  usage_culinaire: string | null;
+  variete_id: number;
+  proprietes_ids: number[];
+};
+
+type AromateUpdateInput = {
+  id_aromate: number;
+  partie_utilisee: string | null;
+  propriete: string | null;
+  usage_culinaire: string | null;
+  variete_id: number;
+  proprietes_ids: number[];
+};
+
 type ProprieteMedicinaleCreateInput = {
   nom_propriete: string;
 };
@@ -160,21 +177,14 @@ type UtilisateurRoleUpdateInput = {
   roles_ids: number[];
 };
 
-type AvisCreateInput = {
-  note: number;
-  titre: string | null;
-  commentaire: string | null;
-  utilisateur_id: number;
-  produit_id: number;
+type RoleCreateInput = {
+  nom_role: string;
 };
 
-type AvisUpdateInput = {
-  id_avis: number;
-  note: number;
-  titre: string | null;
-  commentaire: string | null;
+type RoleUpdateInput = {
+  id_role: number;
+  nom_role: string;
 };
-
 
 contextBridge.exposeInMainWorld('api', {
   login: (email: string, motDePasse: string) => ipcRenderer.invoke(
@@ -195,12 +205,18 @@ contextBridge.exposeInMainWorld('api', {
   createEspece: (espece: EspeceCreateInput) => ipcRenderer.invoke('especes:create', espece),
   updateEspece: (espece: EspeceUpdateInput) => ipcRenderer.invoke('especes:update', espece),
   deleteEspece: (id: number) => ipcRenderer.invoke('especes:delete', id),
-  
+
   getVarietes: () => ipcRenderer.invoke('varietes:get-all'),
   getVarieteById: (id: number) => ipcRenderer.invoke('varietes:get-by-id', id),
   createVariete: (variete: VarieteCreateInput) => ipcRenderer.invoke('varietes:create', variete),
   updateVariete: (variete: VarieteUpdateInput) => ipcRenderer.invoke('varietes:update', variete),
   deleteVariete: (id: number) => ipcRenderer.invoke('varietes:delete', id),
+
+  getAromates: () => ipcRenderer.invoke('aromates:get-all'),
+  getAromateById: (id: number) => ipcRenderer.invoke('aromates:get-by-id', id),
+  createAromate: (aromate: AromateCreateInput) => ipcRenderer.invoke('aromates:create', aromate),
+  updateAromate: (aromate: AromateUpdateInput) => ipcRenderer.invoke('aromates:update', aromate),
+  deleteAromate: (id: number) => ipcRenderer.invoke('aromates:delete', id),
 
   getProprietesMedicinales: () => ipcRenderer.invoke('proprietes-medicinales:get-all'),
   createProprieteMedicinale: (propriete: ProprieteMedicinaleCreateInput) =>  ipcRenderer.invoke('proprietes-medicinales:create', propriete),
@@ -210,7 +226,6 @@ contextBridge.exposeInMainWorld('api', {
   getProduits: () => ipcRenderer.invoke('produits:get-all'),
   getProduitById: (id: number) => ipcRenderer.invoke('produits:get-by-id', id),
   getProduitsByCategorie: (categorieId: number) => ipcRenderer.invoke('produits:get-by-categorie', categorieId),
-  getProduitsSimilaires: (id: number) => ipcRenderer.invoke('produits:get-similaires', id),
   createProduit: (produit: ProduitCreateInput) => ipcRenderer.invoke('produits:create', produit),
   updateProduit: (produit: ProduitUpdateInput) => ipcRenderer.invoke('produits:update', produit),
   deleteProduit: (id: number) => ipcRenderer.invoke('produits:delete', id),
@@ -231,14 +246,11 @@ contextBridge.exposeInMainWorld('api', {
   deleteAdresseLivraison: (id: number) => ipcRenderer.invoke('adresses-livraison:delete', id),
 
   getRoles: () => ipcRenderer.invoke('roles:get-all'),
+  createRole: (role: RoleCreateInput) => ipcRenderer.invoke('roles:create', role),
+  updateRole: (role: RoleUpdateInput) => ipcRenderer.invoke('roles:update', role),
+  deleteRole: (id: number) => ipcRenderer.invoke('roles:delete', id),
+
   getUtilisateurRoles: (idUtilisateur: number) => ipcRenderer.invoke('utilisateur-roles:get-by-utilisateur', idUtilisateur),
   updateUtilisateurRoles: (donnees: UtilisateurRoleUpdateInput) => ipcRenderer.invoke('utilisateur-roles:update', donnees),
 
-  getAvis: () => ipcRenderer.invoke('avis:get-all'),
-  getAvisById: (id: number) => ipcRenderer.invoke('avis:get-by-id', id),
-  getAvisByProduit: (produitId: number) => ipcRenderer.invoke('avis:get-by-produit', produitId),
-  createAvis: (avis: AvisCreateInput) => ipcRenderer.invoke('avis:create', avis),
-  updateAvis: (avis: AvisUpdateInput) => ipcRenderer.invoke('avis:update', avis),
-  deleteAvis: (id: number) => ipcRenderer.invoke('avis:delete', id),
-  likeAvis: (id: number) => ipcRenderer.invoke('avis:like', id),
 });

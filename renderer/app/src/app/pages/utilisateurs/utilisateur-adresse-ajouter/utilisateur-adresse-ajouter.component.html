@@ -1,0 +1,71 @@
+@if (utilisateur()) {
+  <a class="back-link" [routerLink]="['/utilisateurs', utilisateur()?.id_utilisateur]">← Détail de l'utilisateur</a>
+}
+@else {
+  <a class="back-link" routerLink="/utilisateurs">← Retour aux utilisateurs</a>
+}
+
+<h1>Ajouter une adresse</h1>
+
+@if (isLoading()) {
+  <p>Chargement des données...</p>
+}
+@else if (message() && !utilisateur()) {
+  <p class="message">{{ message() }}</p>
+}
+@else {
+  @if (message()) {
+    <p class="message">{{ message() }}</p>
+  }
+
+  <form class="adresse-form" [formGroup]="adresseForm" (ngSubmit)="enregistrer()">
+    <p class="form-help">Tous les champs sont obligatoires.</p>
+
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="rue">Rue</label>
+        <input id="rue" type="text" formControlName="rue">
+
+        @if (adresseForm.controls.rue.invalid && adresseForm.controls.rue.touched) {
+          <p class="error">La rue est obligatoire.</p>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="numero">Numéro</label>
+        <input id="numero" type="text" formControlName="numero">
+
+        @if (adresseForm.controls.numero.invalid && adresseForm.controls.numero.touched) {
+          <p class="error">Le numéro est obligatoire.</p>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="localite_id">Localité</label>
+        <select id="localite_id" formControlName="localite_id" required>
+        <option [value]="0">Sélectionner une localité</option>
+
+        @for (localite of localites(); track localite.id_localite) {
+            <option [value]="localite.id_localite">
+              {{ localite.code_postal }} {{ localite.localite }}
+            </option>
+        }
+        </select>
+
+        @if (adresseForm.controls.localite_id.invalid && adresseForm.controls.localite_id.touched) {
+          <p class="error">La localité est obligatoire.</p>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="par_defaut">Type d'adresse</label>
+        <select id="par_defaut" formControlName="par_defaut" required>
+          <option [value]="0">Adresse secondaire</option>
+          <option [value]="1">Adresse par défaut</option>
+        </select>
+      </div>
+    </div>
+
+    <button type="submit">Enregistrer l'adresse</button>
+  </form>
+}
