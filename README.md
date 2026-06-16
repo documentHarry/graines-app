@@ -1,94 +1,227 @@
-# Description de l'application
+# Graines App
 
-Graines App est une application de gestion interne développée avec Angular et Electron. Elle utilise une base de données locale SQLite afin de permettre la gestion d'un catalogue de graines, de variétés végétales, de produits et d'avis utilisateurs.
+## Description
 
-L'application est destinée à un usage interne. Elle ne propose pas de système de commande, de panier ou de paiement en ligne. Les prix et les quantités des produits sont uniquement utilisés à des fins de gestion du catalogue et de consultation interne.
+Graines App est une application de bureau développée avec Angular et Electron. Elle utilise une base de données SQLite locale afin de gérer un catalogue de graines, de variétés végétales, d'aromates, de propriétés médicinales, de produits et d'utilisateurs.
+
+L'application est destinée à un usage interne. Elle ne propose ni système de commande, ni panier, ni paiement en ligne. Les informations relatives aux produits servent uniquement à la gestion et à la consultation du catalogue.
 
 ## Objectif de l'application
 
-L'objectif de Graines App est de fournir une application de bureau simple et structurée pour gérer un catalogue interne de graines et de produits associés. L'application centralise les informations botaniques, commerciales et utilisateurs dans une base SQLite locale, tout en proposant une interface Angular organisée par pages, formulaires et filtres multicritères.
+L'objectif de Graines App est de fournir une application de gestion permettant de centraliser les informations botaniques, commerciales et utilisateurs dans une base de données locale SQLite.
 
+L'application permet notamment :
+
+- la gestion des utilisateurs et de leurs rôles
+- la gestion des catégories de produits
+- la gestion des espèces végétales
+- la gestion des variétés
+- la gestion des aromates
+- la gestion des propriétés médicinales
+- la gestion des produits
+- la gestion des localités et adresses associées aux utilisateurs
 
 ## Technologies utilisées
 
-L'application repose sur les technologies suivantes :
+- Angular
+- Electron
+- SQLite
+- better-sqlite3
+- Prisma
+- Electron Forge
+- TypeScript
 
-* Angular pour l'interface utilisateur
-* Electron pour l'exécution de l'application sous forme d'application de bureau
-* SQLite pour la base de données locale
-* better-sqlite3 pour l'accès à la base de données
-* Prisma pour la couche d'accès aux données
-* Electron Forge pour le lancement et le packaging de l'application
+## Prérequis
 
-## Fonctionnement général
+Installer les logiciels suivants :
 
-Au premier lancement, l'application crée automatiquement sa base de données SQLite si celle-ci n'existe pas encore. Les scripts SQL de création et d'initialisation sont stockés dans les dossiers `database/schema` et `database/seed`.
+- Node.js
+- npm
+- Git
 
-L'application permet de gérer plusieurs grands ensembles de données :
+Vérifier l'installation :
 
-* les utilisateurs
-* les rôles
-* les localités et adresses de livraison
-* les catégories de produits
-* les espèces végétales
-* les variétés
-* les aromates et leurs propriétés médicinales
-* les produits
+```bash
+node -v
+npm -v
+git --version
+```
 
-## Gestion des utilisateurs et des rôles
+## Installation
 
-L'application utilise un système de rôles afin de protéger certaines pages et certaines actions.
+Cloner le dépôt :
 
-Les rôles utilisés sont :
+```bash
+git clone https://github.com/documentHarry/graines-app.git
+cd graines-app-main
+```
 
-* `ADMIN`
-* `GESTIONNAIRE_CATALOGUE`
-* `CLIENT`
+Installer les dépendances du projet Electron :
 
-Un administrateur peut gérer les utilisateurs et leurs rôles. Les utilisateurs peuvent être actifs ou inactifs. Chaque utilisateur peut également posséder une ou plusieurs adresses de livraison. Ces adresses servent à gérer les informations associées à l'utilisateur, mais elles ne sont pas utilisées pour passer une commande dans l'application.
+```bash
+npm install
+```
 
-## Gestion du catalogue
+Installer les dépendances Angular :
 
-Le catalogue est structuré autour de plusieurs entités :
+```bash
+cd renderer/app
+npm install
+cd ../..
+```
 
-* les catégories
-* les espèces
-* les variétés
-* les produits
+Générer le client Prisma :
+
+```bash
+npx prisma generate
+```
+
+## Lancement de l'application
+
+Depuis la racine du projet :
+
+```bash
+npm start
+```
+
+Cette commande construit automatiquement l'application Angular puis lance l'application Electron.
+
+## Electron Forge
+
+Le projet utilise Electron Forge pour le lancement de l'application.
+
+La configuration est définie dans :
+
+```txt
+forge.config.ts
+```
+
+Cette configuration permet notamment d'inclure les dépendances nécessaires à Prisma, SQLite et better-sqlite3.
+
+## Base de données
+
+L'application utilise SQLite avec Prisma et better-sqlite3.
+
+La base de données est créée automatiquement au premier lancement si elle n'existe pas encore.
+
+Les scripts SQL nécessaires sont stockés dans les dossiers :
+
+```txt
+database/schema
+database/seed
+```
+
+Ces dossiers doivent rester présents dans le projet.
 
 ## Diagrammes de base de données
 
-- [Diagramme ERD au format PNG](database/diagram/graine-app-erd-diagram.png)
-- [Diagramme ERD au format SVG](database/diagram/graine-app-erd-diagram.svg)
+Les diagrammes sont disponibles dans :
 
-### Organisation des tables
+```txt
+database/diagram/
+```
 
-Une catégorie permet de regrouper les produits. Une espèce représente une plante au sens botanique, avec un nom commun et un nom scientifique. Une variété est rattachée à une espèce et contient des informations détaillées comme le caractère bio, le cycle de vie, les conseils de plantation, le type de sol, l'ensoleillement, les espacements de plantation ou encore les périodes de semis.
+- graine-app-erd-diagram.png
+- graine-app-erd-diagram.svg
 
-Les produits sont rattachés à une catégorie et à une variété. Ils possèdent un intitulé, un prix unitaire, une quantité disponible et éventuellement une image. Ces informations permettent de présenter et gérer le catalogue, sans fonctionnalité de vente ou de paiement.
+## Comptes de test
 
-## Gestion des aromates et propriétés médicinales
+| Rôle | Email | Mot de passe |
+|--------|--------|--------|
+| ADMIN | jthomas@example.org | &o)FpKqbK0 |
+| GESTIONNAIRE_CATALOGUE | daan27@example.org | iFVsP9Ma(6 |
+| CLIENT | mariannesimon@example.org | r%K4Ncv1x( |
 
-Certaines variétés peuvent être associées à des informations aromatiques. Une variété peut donc être décrite comme aromate grâce à des informations telles que :
+Le compte administrateur permet de tester l'ensemble des fonctionnalités de l'application.
 
-* la partie utilisée
-* les propriétés
-* l'usage culinaire
-* les propriétés médicinales associées
+## Gestion des utilisateurs et des rôles
 
-Les propriétés médicinales sont gérées séparément afin de pouvoir être associées à différents aromates.
+L'application utilise un système d'authentification avec gestion des rôles.
 
-La page de détail d'un produit affiche les avis liés à ce produit. Les clients peuvent ajouter un avis, modifier leur propre avis et supprimer leur propre avis selon les droits prévus. Les administrateurs disposent également de droits étendus.
+Les rôles disponibles sont :
 
-Une page générale de modération permet aux modérateurs et aux administrateurs de consulter les avis et de supprimer ceux qui doivent être retirés. Cette page est protégée par les rôles.
+- ADMIN
+- GESTIONNAIRE_CATALOGUE
+- CLIENT
 
-## Protection des pages
+Les routes Angular ainsi que les actions de gestion sont protégées selon les rôles de l'utilisateur connecté.
 
-La navigation et les routes sont protégées selon les rôles de l'utilisateur connecté. Les pages publiques permettent la consultation du catalogue, tandis que les pages de gestion sont réservées aux rôles autorisés.
+### ADMIN
 
-Le gestionnaire catalogue intervient principalement sur les données du catalogue : catégories, espèces, variétés, produits et propriétés médicinales.
+L'administrateur dispose de tous les droits sur l'application, notamment :
 
-Le modérateur intervient principalement sur la modération des avis.
+- gestion des utilisateurs
+- gestion des rôles
+- gestion du catalogue
 
-L'administrateur dispose des droits les plus larges, notamment sur la gestion des utilisateurs et des rôles.
+### GESTIONNAIRE_CATALOGUE
 
+Le gestionnaire catalogue peut gérer :
+
+- les catégories
+- les espèces
+- les variétés
+- les aromates
+- les propriétés médicinales
+- les produits
+
+### CLIENT
+
+Le client dispose uniquement des fonctionnalités de consultation autorisées.
+
+## Gestion du catalogue
+
+Le catalogue est organisé autour des entités suivantes :
+
+- catégories
+- espèces
+- variétés
+- aromates
+- propriétés médicinales
+- produits
+
+### Catégories
+
+Les catégories permettent de regrouper les produits.
+
+### Espèces
+
+Les espèces contiennent notamment :
+
+- un nom commun
+- un nom scientifique
+
+### Variétés
+
+Chaque variété est associée à une espèce et possède de nombreuses informations descriptives :
+
+- caractère biologique
+- cycle de vie
+- durée de germination
+- périodes de semis
+- type de sol
+- type d'ensoleillement
+- espacements
+- conseils de plantation
+- informations de récolte
+
+### Aromates
+
+Certaines variétés peuvent être associées à des informations aromatiques :
+
+- partie utilisée
+- propriété
+- usage culinaire
+- propriétés médicinales associées
+
+### Produits
+
+Les produits sont associés à une catégorie et à une variété.
+
+Ils possèdent notamment :
+
+- un intitulé
+- un prix
+- une quantité disponible
+- une description
+- une image éventuelle
